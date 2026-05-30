@@ -226,3 +226,50 @@ Expected Output:
 - El PDF contiene el texto formalizado (o el borrador si no fue formalizado)
 
 Dependencies: TASK-INFORME-02
+
+---
+
+## TASK-ROLL-MODALIDAD: Soporte de 3 modalidades de colaborador
+**Estado:** ⏳ Pendiente
+
+Title: Implementar las modalidades FULL, MT (turno doble) y FIJO (T1 o T2 fijo)
+
+Context:
+Confirmado por Eli Daniel (2026-05-30). Existen 3 tipos:
+- `FULL` — Ciclo completo Mañana+Tarde+Noche (ya implementado como default)
+- `MT` — Solo Mañana+Tarde. Cuando el grupo cae en T3, estos colaboradores permanecen en T2.
+- `FIJO_T1` — Siempre Mañana (06:00–14:00), sin ciclo.
+- `FIJO_T2` — Siempre Tarde (14:00–22:00), sin ciclo.
+
+Steps:
+1. **Schema Prisma** — Agregar a `Colaborador`:
+   - `modalidad String @default("FULL") @db.NVarChar(10)` — valores: `"FULL"` | `"MT"` | `"FIJO"`
+   - `turnoFijo String? @db.NVarChar(2)` — `"T1"` | `"T2"` | `null` (solo usado cuando `modalidad = "FIJO"`)
+   - Correr `npx prisma db push` desde `src/`
+   - Correr `npx prisma generate`
+2. **RollEngine** (`lib/roll-engine.ts`) — Nueva función:
+   ```ts
+   export function getTurnoEfectivo(modalidad: string, turnoFijo: string | null, turnoSemana: Turno): Turno {
+     if (modalidad === "FIJO" && turnoFijo) return turnoFijo as Turno;
+     if (modalidad === "MT" && turnoSemana === "T3") return "T2"; // no trabajan de noche
+     return turnoSemana;
+   }
+   ```
+3. **API `/api/roll/hoy`** — Usar `getTurnoEfectivo()` por cada colaborador antes de asignarlo a `turnos[turno]` o `libre[]`.
+4. **API `/api/roll`** — Igual: usar `getTurnoEfectivo()` al generar la vista semanal.
+5. **API `/api/colaboradores`** — Incluir `modalidad` y `turnoFijo` en GET/POST/PUT.
+6. **UI `/admin/colaboradores`** — Agregar en el formulario:
+   - Select "Modalidad": Mixto / Doble (M+T) / Fijo
+   - Si "Fijo": mostrar select "Turno fijo": Mañana / Tarde
+7. **Tests** — Agregar casos en `roll-engine.test.ts`:
+   - MT en semana T3 → devuelve T2
+   - FIJO_T1 en cualquier semana → siempre T1
+   - FIJO_T2 en semana T3 → siempre T2
+
+Expected Output:
+- Un colaborador MT nunca aparece en Noche en la Vista de Hoy
+- Un colaborador FIJO siempre aparece en el mismo turno independientemente de la semana del grupo
+- El formulario de colaboradores permite seleccionar la modalidad
+- 22 + 7 = mínimo 29 tests passing
+
+Dependencies: PC-05 (RollEngine), TASK-ROLL-03

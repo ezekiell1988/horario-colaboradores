@@ -1,7 +1,7 @@
 # 07 — Issues Conocidos
 
 > **Última actualización:** 2026-05-30
-> **Fuente de descubrimiento:** Cruce PDF programación Eli Daniel + audios WhatsApp 2026-05-29
+> **Fuente de descubrimiento:** Cruce PDF programación Eli Daniel + audios WhatsApp 2026-05-29 y 2026-05-30
 
 ---
 
@@ -104,3 +104,34 @@ En ~2 días de cada ciclo de 21 días (el sábado/domingo de cambio de turno), e
 **Workaround:** Excepción manual para el colaborador en esa semana. El hallazgo 2 (ISSUE-02) cuando se implemente también resolvería esto parcialmente.
 
 **Fix propuesto:** Diferido — resolver junto con ISSUE-02.
+
+---
+
+## ISSUE-07: El modelo no soporta las 3 modalidades de colaborador
+**Severidad:** high
+**Estado:** abierto — pendiente implementación
+
+**Descripción:**
+Confirmado por Eli Daniel (audios 2026-05-30 + mensaje WhatsApp 2026-05-30 12:26):
+
+> "Oficiales con turno mixto — Mañana, Tarde y Noche.
+> Oficiales turno doble — Mañana, Tarde.
+> Oficiales turnos fijos — Solo Mañana / Solo Tarde."
+
+El modelo actual trata a **todos los colaboradores** como `FULL` (ciclo T3→T2→T1). Esto es incorrecto para:
+
+- **Turno doble (`MT`):** participan del ciclo del grupo pero **nunca hacen Noche**. Cuando el grupo está en T3, ellos continúan en T2.
+- **Fijos (`FIJO_T1` / `FIJO_T2`):** sin rotación. Siempre el mismo turno, 1 puesto fijo, no siguen el ciclo.
+
+**Impacto:**
+- Vista de Hoy (`/admin/hoy`): colaboradores MT aparecen en Noche cuando no deberían.
+- Vista oficial: muestra turno incorrecto para MT y FIJO.
+- Roll semanal: asigna turno incorrecto.
+
+**Fix requerido:**
+1. Agregar `modalidad String @default("FULL")` y `turnoFijo String?` a `Colaborador` en Prisma.
+2. Actualizar `getDiasLibres()` y la lógica del API `/api/roll/hoy` para respetar la modalidad.
+3. Actualizar UI de colaboradores para seleccionar modalidad.
+4. Actualizar vista oficial para colaboradores FIJO.
+
+**Ver:** TASK-ROLL-MODALIDAD (pendiente crear)

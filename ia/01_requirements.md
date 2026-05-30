@@ -1,7 +1,7 @@
 # 01 — Requisitos del Sistema
 
-> **Última actualización:** 2026-05-29
-> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29
+> **Última actualización:** 2026-05-30
+> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29 y 2026-05-30
 
 ## Propósito del sistema
 Roll Manager gestiona el roll automático de turnos rotativos semanales de colaboradores de seguridad, registra su asistencia diaria y permite generar, editar con IA y exportar informes formales en PDF.
@@ -14,6 +14,23 @@ Roll Manager gestiona el roll automático de turnos rotativos semanales de colab
 - El sistema nunca debe dejar un turno activo sin al menos un colaborador asignado.
 - Solo el **administrador** puede crear/modificar colaboradores, grupos, asistencia e informes.
 - Los **oficiales** solo pueden consultar su turno actual y próximo.
+
+## Modalidades de colaborador (confirmado Eli Daniel 2026-05-30)
+
+Existen 3 tipos de colaborador según su patrón de rotación:
+
+| Modalidad | Nombre oficial | Turnos que rota | Ciclo | Días libres |
+|-----------|---------------|-----------------|-------|-------------|
+| `FULL` | Turno mixto | Mañana + Tarde + Noche | 21 días (3 semanas) | T3=Vie+Sáb, T2=Sáb, T1=ninguno |
+| `MT` | Turno doble | Solo Mañana + Tarde | 14 días (2 semanas) | T2=Sáb, T1=ninguno |
+| `FIJO_T1` | Fijo mañana | Solo Mañana (06:00–14:00) | Sin ciclo | ninguno |
+| `FIJO_T2` | Fijo tarde | Solo Tarde (14:00–22:00) | Sin ciclo | ninguno |
+
+**Reglas de negocio por modalidad:**
+- `FULL` y `MT` usan la misma `fechaInicioRotacion` del grupo — el cálculo es idéntico, solo cambia qué turnos participan.
+- `MT`: cuando el ciclo del grupo cae en T3 (Noche), el colaborador MT simplemente continúa en T2 (Tarde) — **no trabaja de noche**.
+- `FIJO_T1` / `FIJO_T2`: no participan del ciclo; siempre ocupan el mismo turno. Solo necesitan 1 puesto en la Vista de Hoy.
+- Los fijos trabajan 6×1 igual que los rotativos (mismo patrón de días libres: no definido aún).
 
 ## Flujos principales
 
