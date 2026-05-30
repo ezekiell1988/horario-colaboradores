@@ -3,11 +3,11 @@
 > **Última actualización:** 2026-05-29
 
 ## Visión general
-Proyecto en fase de inicialización. Stack definido; código aún no iniciado.
+Fase 1 completada. Iniciando Fase 2 — CRUD de colaboradores, grupos y motor de rotación.
 
 ## Fases del proyecto
 
-### Fase 1 — Setup & Infraestructura Base 🔄 En curso
+### Fase 1 — Setup & Infraestructura Base ✅ Completada
 | Componente | Estado |
 |------------|--------|
 | Inicializar proyecto Next.js 15 + TypeScript | ✅ |
@@ -15,10 +15,10 @@ Proyecto en fase de inicialización. Stack definido; código aún no iniciado.
 | Definir schema Prisma + Azure SQL | ✅ |
 | Correr primera migración (`db push`) | ✅ |
 | Variables de entorno + `.env.example` | ✅ |
-| Configurar NextAuth.js (roles admin/oficial) | ⏳ |
-| Pantalla de login | ⏳ |
+| Configurar NextAuth.js (roles admin/oficial) | ✅ |
+| Pantalla de login | ✅ |
 
-### Fase 2 — Módulo Roll de Turnos ⏳ Pendiente
+### Fase 2 — Módulo Roll de Turnos 🔄 En curso
 | Componente | Estado |
 |------------|--------|
 | CRUD Colaboradores | ⏳ |

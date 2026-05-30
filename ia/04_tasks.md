@@ -1,12 +1,12 @@
 # 04 — Tareas Accionables
 
 > **Última actualización:** 2026-05-29
-> **Prioridad actual:** Fase 1 — Setup & Infraestructura Base
+> **Prioridad actual:** Fase 2 — Módulo Roll de Turnos
 
 ---
 
 ## TASK-SETUP-01: Inicializar proyecto Next.js 15
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado
 
 Title: Crear el proyecto base Next.js 15 con TypeScript y Tailwind CSS
 
@@ -29,7 +29,7 @@ Dependencies: ninguna
 ---
 
 ## TASK-SETUP-02: Configurar Prisma + Azure SQL
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — Prisma 7 + `@prisma/adapter-mssql` + schema `rm` + 5 tablas en Azure SQL
 
 Title: Instalar Prisma, conectar a Azure SQL y correr la migración inicial
 
@@ -53,7 +53,7 @@ Dependencies: TASK-SETUP-01
 ---
 
 ## TASK-SETUP-03: Configurar NextAuth.js con roles
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — `lib/auth.ts` + `proxy.ts` + `app/(auth)/login/page.tsx` + `prisma/seed.ts` + `types/next-auth.d.ts`
 
 Title: Autenticación con NextAuth.js v5 — roles admin y oficial
 

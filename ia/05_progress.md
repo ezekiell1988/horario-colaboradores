@@ -1,7 +1,7 @@
 # 05 — Progreso del Proyecto
 
 > **Última actualización:** 2026-05-29
-> **Fase activa:** Fase 1 — Setup & Infraestructura Base
+> **Fase activa:** Fase 2 — Módulo Roll de Turnos
 
 ## ✅ Completado
 
@@ -23,13 +23,21 @@
 - `prisma.config.ts` con `DATABASE_URL` desde env
 - Ver TASK-SETUP-02
 
-## 🔄 En curso — Fase 1: Setup & Infraestructura Base
-
-### PC-03: NextAuth.js ⏳
-- Roles `admin` y `oficial` definidos en arquitectura
-- `NEXTAUTH_SECRET` generado y en `.env.local`
-- Falta: instalar next-auth, `lib/auth.ts`, login page, middleware, seed
+### PC-03: NextAuth.js v5 ✅
+- `lib/auth.ts` — CredentialsProvider con bcrypt + `rm.User`
+- `types/next-auth.d.ts` — tipos extendidos (`id`, `rol` en JWT y Session)
+- `app/(auth)/login/page.tsx` — formulario email+contraseña (labels vinculados, accesible)
+- `proxy.ts` — protección de `/admin/**` (rol admin) y `/oficial/**` (rol oficial)
+- `app/api/auth/[...nextauth]/route.ts` — handler de NextAuth
+- `prisma/seed.ts` — seed ejecutado ✓ (`admin@rollmanager.com` / `Admin1234!`)
+- Build limpio ✓
 - Ver TASK-SETUP-03
+
+## 🔄 En curso — Fase 2: Módulo Roll de Turnos
+
+### PC-04: CRUD Colaboradores y Grupos ⏳
+- Falta: API Routes + páginas de administración
+- Ver TASK-ROLL-01
 
 ## ⏳ Pendiente — Fases siguientes
 
