@@ -128,6 +128,8 @@
 - `app/api/roll/route.ts` — expone `turnoEfectivo` por colaborador en la respuesta
 - `app/api/colaboradores/route.ts` + `[id]/route.ts` — aceptan y validan `modalidad` y `turnoFijo`
 - `app/(admin)/admin/colaboradores/page.tsx` — select Modalidad + select condicional Turno Fijo + badge en lista
+- `app/api/oficial/turno/route.ts` — aplica `getTurnoEfectivo()` para turnoActual y turnoProximo; expone `modalidad`
+- `app/(oficial)/oficial/page.tsx` — etiquetas "Mañana/Tarde/Noche" con horario; badge Turno fijo / Turno doble
 - Build limpio ✓ / 33 tests ✓
 
 - `lib/__tests__/roll-engine.test.ts` — tests actualizados + 6 tests nuevos de validación contra PDF Eli Daniel

@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-const TURNO_LABELS: Record<string, string> = {
-  T1: "T1 — 06:00 a 14:00",
-  T2: "T2 — 14:00 a 22:00",
-  T3: "T3 — 22:00 a 06:00",
+const TURNO_LABELS: Record<string, { nombre: string; horario: string }> = {
+  T1: { nombre: "Mañana", horario: "06:00 – 14:00" },
+  T2: { nombre: "Tarde",  horario: "14:00 – 22:00" },
+  T3: { nombre: "Noche",  horario: "22:00 – 06:00" },
 };
 
 const TURNO_COLORS: Record<string, string> = {
@@ -26,6 +26,7 @@ function formatSemana(fecha: string): string {
 type TurnoData = {
   nombre: string;
   grupo: string;
+  modalidad: string;
   semanaActual: string;
   turnoActual: string;
   semanaProxima: string;
@@ -68,7 +69,19 @@ export default function OficialPage() {
       <div className="mb-6">
         <p className="text-gray-500 text-sm">Bienvenido,</p>
         <h1 className="text-2xl font-bold text-gray-900">{data.nombre}</h1>
-        <p className="text-gray-500 text-sm mt-0.5">Grupo: {data.grupo}</p>
+        <p className="text-gray-500 text-sm mt-0.5">
+          Grupo: {data.grupo}
+          {data.modalidad === "FIJO" && (
+            <span className="ml-2 inline-block rounded-full bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-0.5">
+              Turno fijo
+            </span>
+          )}
+          {data.modalidad === "MT" && (
+            <span className="ml-2 inline-block rounded-full bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5">
+              Turno doble
+            </span>
+          )}
+        </p>
       </div>
 
       {/* Turno actual */}
@@ -77,8 +90,12 @@ export default function OficialPage() {
         <div
           className={`rounded-2xl border-2 px-5 py-5 ${TURNO_COLORS[data.turnoActual] ?? "bg-gray-50 border-gray-200"}`}
         >
-          <p className="text-4xl font-black tracking-tight">{data.turnoActual}</p>
-          <p className="text-sm font-medium mt-1">{TURNO_LABELS[data.turnoActual]}</p>
+          <p className="text-4xl font-black tracking-tight">
+            {TURNO_LABELS[data.turnoActual]?.nombre ?? data.turnoActual}
+          </p>
+          <p className="text-sm font-medium mt-1">
+            {TURNO_LABELS[data.turnoActual]?.horario}
+          </p>
           <p className="text-xs mt-2 opacity-70">{formatSemana(data.semanaActual)}</p>
         </div>
       </div>
@@ -89,8 +106,12 @@ export default function OficialPage() {
         <div
           className={`rounded-2xl border px-5 py-4 opacity-75 ${TURNO_COLORS[data.turnoProximo] ?? "bg-gray-50 border-gray-200"}`}
         >
-          <p className="text-2xl font-bold">{data.turnoProximo}</p>
-          <p className="text-sm mt-0.5">{TURNO_LABELS[data.turnoProximo]}</p>
+          <p className="text-2xl font-bold">
+            {TURNO_LABELS[data.turnoProximo]?.nombre ?? data.turnoProximo}
+          </p>
+          <p className="text-sm mt-0.5">
+            {TURNO_LABELS[data.turnoProximo]?.horario}
+          </p>
           <p className="text-xs mt-1 opacity-70">{formatSemana(data.semanaProxima)}</p>
         </div>
       </div>

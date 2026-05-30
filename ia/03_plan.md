@@ -50,6 +50,6 @@ Fases 1, 2, 3, 4 y buena parte de la 5 completadas. Pendiente: Vista Oficial par
 |------------|--------|
 | UI mobile-first completa y consistente | ✅ |
 | Manejo de errores y estados de carga | ✅ |
-| Vista oficial adaptada a modalidad FIJO | ⏳ |
+| Vista oficial adaptada a modalidad FIJO | ✅ |
 | Despliegue en Azure App Service / Vercel | ⏳ |
 | Pruebas básicas de flujos críticos | ⏳ |
