@@ -1,4 +1,4 @@
-import { getTurnoForWeek, getDiasLibres, getWeekStart, getTurnoEfectivo, getTurnoPorDia, GrupoRotacion } from "../roll-engine";
+import { getTurnoForWeek, getDiasLibres, getWeekStart, getTurnoEfectivo, getTurnoPorDia, GrupoRotacion, TurnoDia } from "../roll-engine";
 
 // Grupo de referencia: inicia en T1 el lunes 2026-01-05
 const grupoT1: GrupoRotacion = {
@@ -257,6 +257,57 @@ describe("getTurnoPorDia — modalidad MT_ALTERNO", () => {
       const turno = getTurnoPorDia(refSemanA, new Date(`${d}T00:00:00Z`));
       expect(turno).not.toBe("T3");
     });
+  });
+});
+
+// -------------------------------------------------------------------
+// MT_ALTERNO — Golden Master: todos los días de Junio 2026
+// Fuente: calendario real enviado por Eli Daniel (cliente)
+// M = Mañana = T1 (06:00–14:00)  |  T = Tarde = T2 (14:00–22:00)
+// -------------------------------------------------------------------
+describe("getTurnoPorDia — golden master Junio 2026 (calendario real)", () => {
+  const ref = new Date("2026-06-01T00:00:00Z"); // Semana A de referencia
+
+  const calendario: Array<[string, TurnoDia]> = [
+    // Semana A
+    ["2026-06-01", "T2"],   // Lun — T
+    ["2026-06-02", "T2"],   // Mar — T
+    ["2026-06-03", "LIBRE"],// Mié
+    ["2026-06-04", "T1"],   // Jue — M
+    ["2026-06-05", "T1"],   // Vie — M
+    ["2026-06-06", "T2"],   // Sáb — T
+    ["2026-06-07", "T2"],   // Dom — T
+    // Semana B
+    ["2026-06-08", "T1"],   // Lun — M
+    ["2026-06-09", "T1"],   // Mar — M
+    ["2026-06-10", "LIBRE"],// Mié
+    ["2026-06-11", "T2"],   // Jue — T
+    ["2026-06-12", "T2"],   // Vie — T
+    ["2026-06-13", "T1"],   // Sáb — M
+    ["2026-06-14", "T1"],   // Dom — M
+    // Semana A (+2)
+    ["2026-06-15", "T2"],   // Lun — T
+    ["2026-06-16", "T2"],   // Mar — T
+    ["2026-06-17", "LIBRE"],// Mié
+    ["2026-06-18", "T1"],   // Jue — M
+    ["2026-06-19", "T1"],   // Vie — M
+    ["2026-06-20", "T2"],   // Sáb — T
+    ["2026-06-21", "T2"],   // Dom — T
+    // Semana B (+3)
+    ["2026-06-22", "T1"],   // Lun — M
+    ["2026-06-23", "T1"],   // Mar — M
+    ["2026-06-24", "LIBRE"],// Mié
+    ["2026-06-25", "T2"],   // Jue — T
+    ["2026-06-26", "T2"],   // Vie — T
+    ["2026-06-27", "T1"],   // Sáb — M
+    ["2026-06-28", "T1"],   // Dom — M
+    // Semana A (+4)
+    ["2026-06-29", "T2"],   // Lun — T
+    ["2026-06-30", "T2"],   // Mar — T
+  ];
+
+  it.each(calendario)("%s → %s", (fecha, esperado) => {
+    expect(getTurnoPorDia(ref, new Date(`${fecha}T00:00:00Z`))).toBe(esperado);
   });
 });
 

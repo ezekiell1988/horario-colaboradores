@@ -3,7 +3,7 @@
 > **Última actualización:** 2026-05-30
 
 ## Visión general
-Fases 1–4 y Fase 5 completadas en su totalidad. Pendiente: despliegue en producción y pruebas finales.
+Fases 1–7 completadas en su totalidad. Proyecto en producción en https://roll-manager.ezekl.com con login funcional.
 
 ## Fases del proyecto
 
@@ -57,16 +57,35 @@ Fases 1–4 y Fase 5 completadas en su totalidad. Pendiente: despliegue en produ
 | Despliegue en VM Azure (Docker + nginx + Certbot) | ✅ |
 | Pruebas básicas de flujos críticos (Playwright) | ✅ |
 
-### Fase 6 — Modalidad MT_ALTERNO ⬅ nueva
+### Fase 6 — Modalidad MT_ALTERNO ✅ Completada
 > **Origen:** audio8 + imagen calendario Junio 2026 (2026-05-30)
 
 | Componente | Estado |
 |------------|--------|
-| Migración schema: campo `fechaInicioPersonal` en `Colaborador` | ⏳ Pendiente |
-| `roll-engine.ts`: nuevo tipo `MT_ALTERNO` + función `getTurnoEfectivoPorDia()` | ⏳ Pendiente |
-| Tests unitarios `roll-engine` para `MT_ALTERNO` | ⏳ Pendiente |
-| CRUD colaboradores: soporte para `MT_ALTERNO` + `fechaInicioPersonal` | ⏳ Pendiente |
-| Vista Hoy (`/admin`): mostrar `MT_ALTERNO` correctamente (por día, no semana) | ⏳ Pendiente |
-| Vista Roll (`/admin/roll`): columna por día con Libre en miércoles | ⏳ Pendiente |
-| Vista Asistencia: omitir miércoles para `MT_ALTERNO` | ⏳ Pendiente |
-| Vista Oficial: mostrar turno del día (no semana) para `MT_ALTERNO` | ⏳ Pendiente |
+| Migración schema: campo `fechaInicioPersonal` en `Colaborador` | ✅ |
+| `roll-engine.ts`: nuevo tipo `MT_ALTERNO` + función `getTurnoPorDia()` | ✅ |
+| Tests unitarios `roll-engine` para `MT_ALTERNO` (48/48 ✓) | ✅ |
+| CRUD colaboradores: soporte para `MT_ALTERNO` + `fechaInicioPersonal` | ✅ |
+| APIs roll y asistencia: lógica diaria para `MT_ALTERNO` | ✅ |
+| Vista Asistencia: omitir miércoles para `MT_ALTERNO` | ✅ |
+| Vista Oficial: mostrar turno del día (hoy/mañana) para `MT_ALTERNO` | ✅ |
+
+### Fase 7 — Fix deploy producción ✅ Completada
+> **Fecha:** 2026-05-30
+
+| Componente | Estado |
+|------------|--------|
+| Fix `DATABASE_URL`: `172.191.128.24` → `localhost` en VM | ✅ |
+| Secret `DATABASE_URL` actualizado en GitHub Actions | ✅ |
+| Login `admin@rollmanager.com` verificado en producción | ✅ |
+
+### Fase 8 — Validación con calendario real del cliente ✅ Completada
+> **Fecha:** 2026-05-30 — Fuente: imagen calendario Junio 2026 enviada por Eli Daniel
+
+| Componente | Estado |
+|------------|--------|
+| Lectura del calendario real (imagen WhatsApp, Junio 2026) | ✅ |
+| Verificación 1:1 implementación vs calendario (M=T1, T=T2, Libre=Mié) | ✅ |
+| Test golden master: 30 días de Junio 2026 cubriendo ciclo A+B completo | ✅ |
+| `ia/00_context.md` actualizado con contacto Eli Daniel | ✅ |
+| Suite total: 78/78 tests ✓ | ✅ |

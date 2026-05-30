@@ -1,7 +1,7 @@
 # 04 — Tareas Accionables
 
 > **Última actualización:** 2026-05-30
-> **Prioridad actual:** Fase 6 — Modalidad MT_ALTERNO
+> **Prioridad actual:** Ninguna — proyecto al día
 
 ---
 
@@ -145,6 +145,28 @@ Expected Output:
 - Si es miércoles, ve "Día libre" claramente.
 
 Dependencies: TASK-MT_ALTERNO-02, TASK-MT_ALTERNO-03
+
+---
+
+## TASK-GOLDEN-01: Test golden master — calendario real Eli Daniel
+**Estado:** ✅ Completado — 2026-05-30
+
+Title: Agregar test `it.each` con los 30 días de Junio 2026 del calendario real
+
+Context:
+Eli Daniel (cliente, primo del desarrollador) envió una imagen con el calendario de Junio 2026
+mostrando el patrón real de turnos: M=Mañana(T1), T=Tarde(T2), Miércoles=Libre.
+Se verificó que la implementación en `roll-engine.ts` coincide 100% con el calendario.
+
+Steps:
+1. Agregar `TurnoDia` al import de `roll-engine.test.ts`.
+2. Agregar bloque `describe` con `it.each` cubriendo los 30 días de Junio 2026 (15 días laborales x2 semanas = ciclo A+B completo y sus repeticiones).
+3. Ejecutar `npx jest roll-engine` → 78/78 tests ✓.
+
+Expected Output:
+- Si alguien rompe la lógica de `getTurnoPorDia`, el test detecta exactamente qué fecha falla.
+
+Dependencies: TASK-MT_ALTERNO-02
 
 ---
 

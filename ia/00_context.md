@@ -1,12 +1,13 @@
 # 00 — Contexto del Proyecto
 
-> **Última actualización:** 2026-05-29
+> **Última actualización:** 2026-05-30
 > **Scope:** /
 
 ## Identidad del proyecto
 **Nombre:** Roll Manager
 **Propósito:** Gestionar automáticamente el roll de turnos rotativos semanales de colaboradores de seguridad, registrar asistencia diaria y generar informes formales exportables a PDF con apoyo de IA.
 **Cliente:** An Allied Universal Company
+**Contacto directo:** Eli Daniel (primo del desarrollador) — provee los horarios reales y valida la implementación
 
 ## Stack tecnológico
 | Capa | Tecnología |

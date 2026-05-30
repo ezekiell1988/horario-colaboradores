@@ -1,22 +1,38 @@
 # 05 — Progreso del Proyecto
 
 > **Última actualización:** 2026-05-30
-> **Fase activa:** Fase 6 — Modalidad MT_ALTERNO
+> **Estado:** Proyecto completo — en producción
 
-## ⏳ Pendiente — Fase 6: Modalidad MT_ALTERNO
+## ✅ Completado
 
-### PC-F6: Modalidad MT_ALTERNO ⏳
-- Requisito documentado en `ia/01_requirements.md` ✅
-- Tareas creadas: TASK-MT_ALTERNO-01 a 05 en `ia/04_tasks.md` ✅
-- Schema migration (`fechaInicioPersonal`) → pendiente
-- RollEngine + tests → pendiente
-- CRUD colaboradores → pendiente
-- Vistas Roll / Hoy / Asistencia → pendiente
-- Vista oficial → pendiente
+### PC-F6: Modalidad MT_ALTERNO ✅
+- Schema: `fechaInicioPersonal DateTime?` + `modalidad @db.NVarChar(15)` — `db push` + `generate` ✓
+- `roll-engine.ts`: tipo `MT_ALTERNO`, función `getTurnoPorDia(fechaInicioPersonal, fecha)`, `getDiasLibres` devuelve `[3]`
+- Tests: 48/48 ✓ — cubre Semana A, Semana B, ciclo completo, nunca T3
+- CRUD colaboradores: opción MT_ALTERNO + date picker condicional `fechaInicioPersonal`
+- `api/roll/route.ts`: para MT_ALTERNO devuelve `turnoPorDia[]` (7 días)
+- `api/asistencia/route.ts`: omite miércoles para MT_ALTERNO
+- `api/oficial/turno/route.ts`: devuelve turno de hoy/mañana con `esLibreHoy`/`esLibreManana`
+- `oficial/page.tsx`: labels Hoy/Mañana + tarjeta verde Día libre si miércoles
+- Build limpio ✓
+
+### PC-F7: Fix deploy producción ✅
+- Causa raíz: `DATABASE_URL` usaba `172.191.128.24` (IP pública de Azure, no enrutable desde la propia VM)
+- Fix en VM: `sed` sobre `~/projects/roll-manager/.env` → `sqlserver://localhost:1433...`
+- Secret `DATABASE_URL` en GitHub Actions actualizado con `localhost` vía `gh secret set`
+- Contenedor `roll-manager-sha-60360df1-v2` corriendo con red `host` y BD accesible
+- Login `admin@rollmanager.com / Admin1234!` verificado en https://roll-manager.ezekl.com ✓
+
+### PC-F8: Validación con calendario real del cliente ✅
+- Fuente: imagen `WhatsApp Image 2026-05-30 at 12.03.00.jpeg` — calendario Junio 2026 de Eli Daniel
+- Verificación completa: M=T1(Mañana), T=T2(Tarde), Miércoles=Libre — implementación 100% correcta
+- Test golden master agregado en `roll-engine.test.ts`: 30 días de Junio 2026 con `it.each`
+- `ia/00_context.md` actualizado: contacto directo = Eli Daniel (primo del desarrollador)
+- Suite total: **78/78 tests ✓**
 
 ---
 
-## ✅ Completado
+## Historial completado
 
 ### PC-01: Scaffolding del proyecto ✅
 - Proyecto Next.js 15 + TypeScript + Tailwind inicializado en `src/`
