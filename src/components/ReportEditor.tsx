@@ -127,6 +127,16 @@ export default function ReportEditor({
           {formalizing ? "Formalizando…" : "✦ Formalizar con IA"}
         </button>
 
+        <a
+          href={`/api/informes/${informeId}/pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg font-medium hover:bg-green-700 transition-colors inline-block"
+        >
+          ↓ Exportar PDF
+        </a>
+
         <span className="text-xs text-gray-400 ml-auto">
           {saving
             ? "Guardando…"

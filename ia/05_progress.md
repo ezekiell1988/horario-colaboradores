@@ -83,11 +83,16 @@
 - Build limpio ✓
 - Ver TASK-INFORME-01 / TASK-INFORME-02
 
-## ⏳ Pendiente — Fases siguientes
+### PC-10: Exportar PDF ✅
+- `lib/pdf-exporter.tsx` — componente `InformePDF` con encabezado institucional, cuerpo y pie de página numerado
+- `app/api/informes/[id]/pdf/route.ts` — GET devuelve PDF (`application/pdf`) con `Content-Disposition: attachment`; usa `textoFormal` si existe, si no `contenido`
+- `components/ReportEditor.tsx` — botón "↓ Exportar PDF" agregado junto a "Formalizar con IA"
+- Build limpio ✓
+- Ver TASK-INFORME-03
+
+## ⏳ Pendiente — Fase 5
 
 | Fase | Descripción | Tasks |
 |------|-------------|-------|
-| Fase 2 | Roll de turnos | TASK-ROLL-01, 02, 03 |
-| Fase 3 | Asistencia diaria | TASK-ASIST-01 |
-| Fase 4 | Informes + IA + PDF | TASK-INFORME-01, 02, 03 |
+| Fase 5 | Pulido y despliegue | — |
 | Fase 5 | Pulido y despliegue | — |

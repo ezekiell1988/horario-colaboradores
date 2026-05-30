@@ -41,7 +41,7 @@ Fase 1 completada. Iniciando Fase 2 — CRUD de colaboradores, grupos y motor de
 |------------|--------|
 | Editor de texto (borrador) | ⏳ |
 | Integración Azure AI (formalizar texto) | ⏳ |
-| Generación de PDF | ⏳ |
+| Generación de PDF | ✅ |
 | Historial de informes guardados | ⏳ |
 
 ### Fase 5 — Pulido y Despliegue ⏳ Pendiente

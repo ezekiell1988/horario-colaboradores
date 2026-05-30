@@ -208,7 +208,7 @@ Dependencies: TASK-INFORME-01
 ---
 
 ## TASK-INFORME-03: Exportar Informe a PDF
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — `lib/pdf-exporter.tsx` + `api/informes/[id]/pdf/route.ts` + botón en ReportEditor
 
 Title: Generar y descargar el informe como archivo PDF
 
