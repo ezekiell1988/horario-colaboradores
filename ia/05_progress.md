@@ -90,6 +90,12 @@
 - Build limpio ✓
 - Ver TASK-INFORME-03
 
+### PC-11: Excepciones del Roll ✅
+- `prisma/schema.prisma` — modelo `ExcepcionRoll` + relación en `Colaborador` + `db push` + `generate`
+- `app/api/roll/excepciones/route.ts` — GET ?grupoId+semana + POST upsert/delete por tipo
+- `app/(admin)/admin/roll/page.tsx` — selector de excepción inline por colaborador, badge coloreado (vacaciones/permiso/ausencia), tachado del nombre
+- Build limpio ✓
+
 ## ⏳ Pendiente — Fase 5
 
 | Fase | Descripción | Tasks |

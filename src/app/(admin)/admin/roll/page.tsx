@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
 const TURNO_LABELS: Record<string, string> = {
@@ -15,6 +15,18 @@ const TURNO_COLORS: Record<string, string> = {
   T3: "bg-purple-100 text-purple-800",
 };
 
+const EXCEPCION_LABELS: Record<string, string> = {
+  vacaciones: "Vacaciones",
+  permiso: "Permiso",
+  ausencia: "Ausencia",
+};
+
+const EXCEPCION_COLORS: Record<string, string> = {
+  vacaciones: "bg-green-100 text-green-700 border-green-200",
+  permiso: "bg-yellow-100 text-yellow-700 border-yellow-200",
+  ausencia: "bg-red-100 text-red-700 border-red-200",
+};
+
 type Grupo = { id: string; nombre: string };
 type Colaborador = { id: string; nombre: string };
 type RollData = {
@@ -23,6 +35,12 @@ type RollData = {
   turno: string;
   semana: string;
   colaboradores: Colaborador[];
+};
+type ExcepcionRoll = {
+  id: string;
+  colaboradorId: string;
+  semana: string;
+  tipo: string;
 };
 
 /** Devuelve el lunes de la semana actual en formato YYYY-MM-DD (UTC) */
@@ -60,6 +78,8 @@ export default function RollPage() {
   const [roll, setRoll] = useState<RollData | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingGrupos, setLoadingGrupos] = useState(true);
+  const [excepciones, setExcepciones] = useState<ExcepcionRoll[]>([]);
+  const [savingExc, setSavingExc] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetch("/api/grupos")
@@ -71,6 +91,12 @@ export default function RollPage() {
       .finally(() => setLoadingGrupos(false));
   }, []);
 
+  const fetchExcepciones = useCallback((gId: string, s: string) => {
+    fetch(`/api/roll/excepciones?grupoId=${gId}&semana=${s}`)
+      .then((r) => r.json())
+      .then((data: ExcepcionRoll[]) => setExcepciones(Array.isArray(data) ? data : []));
+  }, []);
+
   useEffect(() => {
     if (!grupoId) return;
     setLoading(true);
@@ -78,7 +104,26 @@ export default function RollPage() {
       .then((r) => r.json())
       .then(setRoll)
       .finally(() => setLoading(false));
-  }, [grupoId, semana]);
+    fetchExcepciones(grupoId, semana);
+  }, [grupoId, semana, fetchExcepciones]);
+
+  async function handleExcepcion(colaboradorId: string, tipo: string) {
+    setSavingExc((s) => ({ ...s, [colaboradorId]: true }));
+    try {
+      await fetch("/api/roll/excepciones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ colaboradorId, semana, tipo }),
+      });
+      fetchExcepciones(grupoId, semana);
+    } finally {
+      setSavingExc((s) => ({ ...s, [colaboradorId]: false }));
+    }
+  }
+
+  function getExcepcion(colaboradorId: string): string {
+    return excepciones.find((e) => e.colaboradorId === colaboradorId)?.tipo ?? "";
+  }
 
   return (
     <div>
@@ -170,22 +215,59 @@ export default function RollPage() {
             </p>
           ) : (
             <ul className="space-y-2">
-              {roll.colaboradores.map((c) => (
-                <li
-                  key={c.id}
-                  className="bg-white rounded-xl px-4 py-3 shadow-sm flex items-center gap-3"
-                >
-                  <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500 shrink-0">
-                    {c.nombre.charAt(0).toUpperCase()}
-                  </span>
-                  <span className="text-sm font-medium text-gray-800">{c.nombre}</span>
-                  <span
-                    className={`ml-auto text-xs font-semibold px-2 py-0.5 rounded-full ${TURNO_COLORS[roll.turno] ?? ""}`}
+              {roll.colaboradores.map((c) => {
+                const excTipo = getExcepcion(c.id);
+                const tieneExc = excTipo !== "";
+                return (
+                  <li
+                    key={c.id}
+                    className={`bg-white rounded-xl px-4 py-3 shadow-sm flex flex-col gap-2 ${tieneExc ? "opacity-70" : ""}`}
                   >
-                    {roll.turno}
-                  </span>
-                </li>
-              ))}
+                    <div className="flex items-center gap-3">
+                      <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500 shrink-0">
+                        {c.nombre.charAt(0).toUpperCase()}
+                      </span>
+                      <span className={`text-sm font-medium ${tieneExc ? "line-through text-gray-400" : "text-gray-800"}`}>
+                        {c.nombre}
+                      </span>
+                      {tieneExc ? (
+                        <span className={`ml-auto text-xs font-semibold px-2 py-0.5 rounded-full border ${EXCEPCION_COLORS[excTipo] ?? "bg-gray-100 text-gray-600 border-gray-200"}`}>
+                          {EXCEPCION_LABELS[excTipo] ?? excTipo}
+                        </span>
+                      ) : (
+                        <span className={`ml-auto text-xs font-semibold px-2 py-0.5 rounded-full ${TURNO_COLORS[roll.turno] ?? ""}`}>
+                          {roll.turno}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Selector de excepción */}
+                    <div className="flex items-center gap-2 pl-11">
+                      <label
+                        htmlFor={`exc-${c.id}`}
+                        className="text-xs text-gray-500 shrink-0"
+                      >
+                        Excepción:
+                      </label>
+                      <select
+                        id={`exc-${c.id}`}
+                        value={excTipo}
+                        disabled={savingExc[c.id]}
+                        onChange={(e) => handleExcepcion(c.id, e.target.value)}
+                        className="text-xs border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400 bg-white disabled:opacity-50"
+                      >
+                        <option value="">Sin excepción</option>
+                        <option value="vacaciones">Vacaciones</option>
+                        <option value="permiso">Permiso</option>
+                        <option value="ausencia">Ausencia</option>
+                      </select>
+                      {savingExc[c.id] && (
+                        <span className="text-xs text-gray-400">Guardando…</span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

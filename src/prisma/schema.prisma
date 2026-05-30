@@ -21,12 +21,13 @@ model User {
 }
 
 model Colaborador {
-  id          String       @id @default(cuid())
+  id          String          @id @default(cuid())
   nombre      String
-  activo      Boolean      @default(true)
+  activo      Boolean         @default(true)
   grupoId     String
-  grupo       Grupo        @relation(fields: [grupoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  grupo       Grupo           @relation(fields: [grupoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   asistencias Asistencia[]
+  excepciones ExcepcionRoll[]
   user        User?
 
   @@map("Colaborador")
@@ -70,5 +71,18 @@ model Informe {
   creadoAt     DateTime @default(now())
 
   @@map("Informe")
+  @@schema("rm")
+}
+
+model ExcepcionRoll {
+  id            String      @id @default(cuid())
+  colaboradorId String
+  colaborador   Colaborador @relation(fields: [colaboradorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  semana        DateTime    // lunes de la semana (UTC 00:00:00)
+  tipo          String      // "vacaciones" | "permiso" | "ausencia"
+  nota          String?
+
+  @@unique([colaboradorId, semana])
+  @@map("ExcepcionRoll")
   @@schema("rm")
 }
