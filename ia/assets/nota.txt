@@ -1,0 +1,14 @@
+Roll de trabajadores 
+
+Busco que la aplicación genere un roll automático de los trabajadores ya que el sistema de trabajo tiene un roll de cambio de turno 
+
+Una semana de:
+06:00-14:00
+14:00-22:00
+22:00-06:00
+
+También que se me genera un recuadro de asistencia de los oficiales reportados para enviar diario 
+
+GESTIÓN DE INFORMES 
+
+Lo que busco es un espacio donde pueda generar informes o reportes diarios para enviarlos por medio de WhatsApp ya que me indicas que podrías meterle IA sería genial que dentro de la misma app me ingreses un sistema donde pueda editar un texto y me lo edite de forma automática a una versión formal tal cual hace chat gpt 
