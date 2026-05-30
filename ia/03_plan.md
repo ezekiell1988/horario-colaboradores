@@ -56,3 +56,17 @@ Fases 1–4 y Fase 5 completadas en su totalidad. Pendiente: despliegue en produ
 | Tours guiados en todas las pantallas (driver.js) | ✅ |
 | Despliegue en VM Azure (Docker + nginx + Certbot) | ✅ |
 | Pruebas básicas de flujos críticos (Playwright) | ✅ |
+
+### Fase 6 — Modalidad MT_ALTERNO ⬅ nueva
+> **Origen:** audio8 + imagen calendario Junio 2026 (2026-05-30)
+
+| Componente | Estado |
+|------------|--------|
+| Migración schema: campo `fechaInicioPersonal` en `Colaborador` | ⏳ Pendiente |
+| `roll-engine.ts`: nuevo tipo `MT_ALTERNO` + función `getTurnoEfectivoPorDia()` | ⏳ Pendiente |
+| Tests unitarios `roll-engine` para `MT_ALTERNO` | ⏳ Pendiente |
+| CRUD colaboradores: soporte para `MT_ALTERNO` + `fechaInicioPersonal` | ⏳ Pendiente |
+| Vista Hoy (`/admin`): mostrar `MT_ALTERNO` correctamente (por día, no semana) | ⏳ Pendiente |
+| Vista Roll (`/admin/roll`): columna por día con Libre en miércoles | ⏳ Pendiente |
+| Vista Asistencia: omitir miércoles para `MT_ALTERNO` | ⏳ Pendiente |
+| Vista Oficial: mostrar turno del día (no semana) para `MT_ALTERNO` | ⏳ Pendiente |

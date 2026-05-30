@@ -19,17 +19,18 @@ model User {
 }
 
 model Colaborador {
-  id          String          @id @default(cuid())
-  nombre      String
-  puesto      String?         @db.NVarChar(50)
-  modalidad   String          @default("FULL") @db.NVarChar(10)
-  turnoFijo   String?         @db.NVarChar(2)
-  activo      Boolean         @default(true)
-  grupoId     String
-  grupo       Grupo           @relation(fields: [grupoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  asistencias Asistencia[]
-  excepciones ExcepcionRoll[]
-  user        User?
+  id                   String          @id @default(cuid())
+  nombre               String
+  puesto               String?         @db.NVarChar(50)
+  modalidad            String          @default("FULL") @db.NVarChar(15) // "FULL" | "MT" | "FIJO" | "MT_ALTERNO"
+  turnoFijo            String?         @db.NVarChar(2)
+  fechaInicioPersonal  DateTime?       // solo MT_ALTERNO: lunes de referencia del ciclo propio
+  activo               Boolean         @default(true)
+  grupoId              String
+  grupo                Grupo           @relation(fields: [grupoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  asistencias          Asistencia[]
+  excepciones          ExcepcionRoll[]
+  user                 User?
 
   @@map("Colaborador")
 }

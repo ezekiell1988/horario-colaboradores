@@ -22,17 +22,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
-  const { nombre, grupoId, puesto, modalidad, turnoFijo } = await req.json();
+  const { nombre, grupoId, puesto, modalidad, turnoFijo, fechaInicioPersonal } = await req.json();
 
   if (!nombre || !grupoId) {
     return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
   }
 
-  const modalidadValida = ["FULL", "MT", "FIJO"].includes(modalidad) ? modalidad : "FULL";
+  const modalidadValida = ["FULL", "MT", "FIJO", "MT_ALTERNO"].includes(modalidad) ? modalidad : "FULL";
   const turnoFijoValido = modalidadValida === "FIJO" && ["T1", "T2"].includes(turnoFijo) ? turnoFijo : null;
 
+  if (modalidadValida === "MT_ALTERNO" && !fechaInicioPersonal) {
+    return NextResponse.json({ error: "Fecha de inicio personal requerida para MT_ALTERNO" }, { status: 400 });
+  }
+  const fechaInicioPersonalValida = modalidadValida === "MT_ALTERNO" && fechaInicioPersonal
+    ? new Date(fechaInicioPersonal)
+    : null;
+
   const colaborador = await prisma.colaborador.create({
-    data: { nombre, grupoId, puesto: puesto || null, modalidad: modalidadValida, turnoFijo: turnoFijoValido },
+    data: { nombre, grupoId, puesto: puesto || null, modalidad: modalidadValida, turnoFijo: turnoFijoValido, fechaInicioPersonal: fechaInicioPersonalValida },
     include: { grupo: { select: { id: true, nombre: true } } },
   });
 

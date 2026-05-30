@@ -1,7 +1,20 @@
 # 05 — Progreso del Proyecto
 
 > **Última actualización:** 2026-05-30
-> **Fase activa:** Fase 5 — Pulido y Despliegue
+> **Fase activa:** Fase 6 — Modalidad MT_ALTERNO
+
+## ⏳ Pendiente — Fase 6: Modalidad MT_ALTERNO
+
+### PC-F6: Modalidad MT_ALTERNO ⏳
+- Requisito documentado en `ia/01_requirements.md` ✅
+- Tareas creadas: TASK-MT_ALTERNO-01 a 05 en `ia/04_tasks.md` ✅
+- Schema migration (`fechaInicioPersonal`) → pendiente
+- RollEngine + tests → pendiente
+- CRUD colaboradores → pendiente
+- Vistas Roll / Hoy / Asistencia → pendiente
+- Vista oficial → pendiente
+
+---
 
 ## ✅ Completado
 

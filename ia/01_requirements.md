@@ -1,7 +1,7 @@
 # 01 — Requisitos del Sistema
 
 > **Última actualización:** 2026-05-30
-> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29 y 2026-05-30
+> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29 y 2026-05-30, audio8 + imagen calendario Junio 2026 (2026-05-30)
 
 ## Propósito del sistema
 Roll Manager gestiona el roll automático de turnos rotativos semanales de colaboradores de seguridad, registra su asistencia diaria y permite generar, editar con IA y exportar informes formales en PDF.
@@ -25,12 +25,67 @@ Existen 3 tipos de colaborador según su patrón de rotación:
 | `MT` | Turno doble | Solo Mañana + Tarde | 14 días (2 semanas) | T2=Sáb, T1=ninguno |
 | `FIJO_T1` | Fijo mañana | Solo Mañana (06:00–14:00) | Sin ciclo | ninguno |
 | `FIJO_T2` | Fijo tarde | Solo Tarde (14:00–22:00) | Sin ciclo | ninguno |
+| `MT_ALTERNO` | Alterno M/T | Mañana + Tarde, bloques de 2 días | 2 semanas (propio) | **Miércoles fijo** |
 
 **Reglas de negocio por modalidad:**
 - `FULL` y `MT` usan la misma `fechaInicioRotacion` del grupo — el cálculo es idéntico, solo cambia qué turnos participan.
 - `MT`: cuando el ciclo del grupo cae en T3 (Noche), el colaborador MT simplemente continúa en T2 (Tarde) — **no trabaja de noche**.
 - `FIJO_T1` / `FIJO_T2`: no participan del ciclo; siempre ocupan el mismo turno. Solo necesitan 1 puesto en la Vista de Hoy.
 - Los fijos trabajan 6×1 igual que los rotativos (mismo patrón de días libres: no definido aún).
+- `MT_ALTERNO`: ver sección completa a continuación.
+
+---
+
+## Modalidad MT_ALTERNO — Especificación detallada
+> **Origen:** audio8 (2026-05-30) + imagen calendario Junio 2026 facilitada por Eli Daniel.
+
+### Descripción
+Colaborador que trabaja únicamente Mañana (T1) y Tarde (T2) **nunca Noche (T3)**, tiene siempre el **miércoles libre**, y alterna turnos en bloques de 2 días con un ciclo personal de **2 semanas independiente del grupo**.
+
+### Patrón semanal confirmado (imagen Junio 2026)
+
+| Semana | Lun | Mar | Mié | Jue | Vie | Sáb | Dom |
+|--------|-----|-----|-----|-----|-----|-----|-----|
+| **A** (impar del ciclo) | T | T | **Libre** | M | M | T | T |
+| **B** (par del ciclo)   | M | M | **Libre** | T | T | M | M |
+
+El ciclo se repite cada 2 semanas (Semana A → Semana B → Semana A → …).
+
+### Reglas
+1. **Miércoles = siempre libre**, sin excepción, independiente del ciclo.
+2. **No trabaja T3 (noche)** en ningún caso.
+3. Su ciclo es **independiente del grupo** — usa `fechaInicioPersonal` propia (lunes de referencia donde empezó Semana A o B).
+4. `turnoFijo` se reutiliza para indicar el turno del **lunes de la semana de referencia** (`T1` = la semana de referencia es Semana B, `T2` = es Semana A). Véase fórmula abajo.
+5. El colaborador sigue perteneciendo a un grupo (para efectos de administración), pero su rotación no depende del ciclo del grupo.
+
+### Fórmula de cálculo del turno efectivo por día
+
+```
+semanasDesdeInicio = floor((inicioSemanaActual - fechaInicioPersonal) / 7 días)
+esSemanaPar = semanasDesdeInicio % 2 === 0
+
+si esSemanaPar (Semana A):
+  Lun → T2, Mar → T2, Mié → Libre, Jue → T1, Vie → T1, Sáb → T2, Dom → T2
+
+si esSemanasImpar (Semana B):
+  Lun → T1, Mar → T1, Mié → Libre, Jue → T2, Vie → T2, Sáb → T1, Dom → T1
+```
+
+> Nota: la paridad (A/B) se determina según la `fechaInicioPersonal` del colaborador. Debe ser un lunes en que el colaborador estaba en Semana A.
+
+### Cambios requeridos en la base de datos
+
+| Campo | Tabla | Tipo | Propósito |
+|-------|-------|------|-----------|
+| `fechaInicioPersonal` | `Colaborador` | `DateTime?` | Lunes de referencia del ciclo propio (solo `MT_ALTERNO`) |
+
+La nueva modalidad se agrega al enum `Modalidad` en `roll-engine.ts`: `"FULL" | "MT" | "FIJO" | "MT_ALTERNO"`.
+
+### Impacto en vistas existentes
+- **Vista del Roll (`/admin/roll`):** calcular turno por día (no por semana) para este colaborador, marcar Mié como "Libre".
+- **Vista Hoy (`/admin`):** mostrar en T1 o T2 según el día actual; no aparece en T3; si es miércoles, mostrar como "Libre".
+- **Vista Asistencia:** si es miércoles, el colaborador `MT_ALTERNO` no debe generar registro de asistencia (día libre fijo).
+- **Vista Oficial:** el oficial con esta modalidad ve su turno día por día (no el turno de la semana completa).
 
 ## Flujos principales
 

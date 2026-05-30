@@ -1,7 +1,150 @@
 # 04 — Tareas Accionables
 
-> **Última actualización:** 2026-05-29
-> **Prioridad actual:** Fase 2 — Módulo Roll de Turnos
+> **Última actualización:** 2026-05-30
+> **Prioridad actual:** Fase 6 — Modalidad MT_ALTERNO
+
+---
+
+## TASK-MT_ALTERNO-01: Migración schema — campo `fechaInicioPersonal`
+**Estado:** ✅ Completado
+
+Title: Agregar `fechaInicioPersonal DateTime?` al modelo `Colaborador` en Prisma
+
+Context:
+La nueva modalidad `MT_ALTERNO` requiere un ciclo de 2 semanas independiente del grupo.
+Se necesita una fecha de referencia propia (lunes) para calcular si la semana actual es Semana A o B.
+La modalidad `MT_ALTERNO` también se agrega al esquema como valor válido de `modalidad`.
+
+Steps:
+1. En `src/prisma/schema.prisma`, agregar al modelo `Colaborador`:
+   ```
+   fechaInicioPersonal DateTime?
+   ```
+2. Ejecutar desde `src/`: `npx prisma db push`
+3. Ejecutar: `npx prisma generate`
+4. Verificar que build no rompe: `npm run build`
+
+Expected Output:
+- Columna `fechaInicioPersonal` disponible en Azure SQL
+- `@prisma/client` tipado actualizado
+
+Dependencies: ninguna
+
+---
+
+## TASK-MT_ALTERNO-02: RollEngine — soporte `MT_ALTERNO`
+**Estado:** ✅ Completado
+
+Title: Extender `roll-engine.ts` con lógica de cálculo diario para `MT_ALTERNO`
+
+Context:
+La modalidad `MT_ALTERNO` no puede calcularse solo con el turno semanal del grupo —
+necesita saber el día específico de la semana (0-6) para devolver T1, T2 o "Libre".
+Ver especificación completa en `ia/01_requirements.md` sección "Modalidad MT_ALTERNO".
+
+Steps:
+1. Agregar `"MT_ALTERNO"` al tipo `Modalidad` en `roll-engine.ts`.
+2. Crear función `getTurnoPorDia(modalidad, fechaInicioPersonal, turnoFijo, fecha)`:
+   - Si `modalidad !== "MT_ALTERNO"` devuelve `null` (el llamador usa `getTurnoEfectivo`).
+   - Si el día de la semana es miércoles (3) → devuelve `"LIBRE"`.
+   - Calcular paridad: `semanasDesdeInicio = Math.round((weekStart - fechaInicioPersonal) / MS_PER_WEEK)`.
+   - Si par (Semana A): Lun/Mar/Sáb/Dom=T2, Jue/Vie=T1.
+   - Si impar (Semana B): Lun/Mar/Sáb/Dom=T1, Jue/Vie=T2.
+3. Actualizar `getDiasLibres()`: para `MT_ALTERNO` devolver `[3]` (miércoles).
+4. Agregar tests unitarios en `lib/__tests__/roll-engine.test.ts`:
+   - Semana A: verificar T2 lunes, T1 jueves, LIBRE miércoles.
+   - Semana B: verificar T1 lunes, T2 jueves.
+   - Cambio de semana correcto en +1 y +2 semanas.
+5. `npm test` — todos los tests pasan.
+
+Expected Output:
+- Función `getTurnoPorDia()` exportada.
+- `npm test` — 100% passing (mínimo 6 tests nuevos).
+
+Dependencies: TASK-MT_ALTERNO-01
+
+---
+
+## TASK-MT_ALTERNO-03: CRUD Colaboradores — soporte `MT_ALTERNO`
+**Estado:** ✅ Completado
+
+Title: Actualizar formulario de colaboradores para crear/editar `MT_ALTERNO` con `fechaInicioPersonal`
+
+Context:
+El modal de creación/edición de colaboradores debe mostrar el campo `fechaInicioPersonal` (date picker)
+solo cuando la modalidad seleccionada es `MT_ALTERNO`.
+
+Steps:
+1. En `app/(admin)/admin/colaboradores/page.tsx`:
+   - Agregar `"MT_ALTERNO"` al selector de modalidad.
+   - Mostrar input `date` para `fechaInicioPersonal` condicionalmente si `modalidad === "MT_ALTERNO"`.
+   - Incluir `fechaInicioPersonal` en el body del POST/PUT.
+2. En `app/api/colaboradores/route.ts` y `[id]/route.ts`:
+   - Aceptar y persistir `fechaInicioPersonal` (convertir a `Date` antes de Prisma).
+3. Validar que si `modalidad === "MT_ALTERNO"` y `fechaInicioPersonal` está vacío → error de validación.
+4. `get_errors` sobre archivos modificados. `npm run build` limpio.
+
+Expected Output:
+- Se puede crear/editar un colaborador `MT_ALTERNO` con su fecha de inicio personal.
+- La BD almacena `fechaInicioPersonal` correctamente.
+
+Dependencies: TASK-MT_ALTERNO-01
+
+---
+
+## TASK-MT_ALTERNO-04: Vistas — adaptar Roll, Hoy y Asistencia
+**Estado:** ✅ Completado
+
+Title: Actualizar las tres vistas principales para reflejar el patrón diario de `MT_ALTERNO`
+
+Context:
+Las vistas actuales calculan el turno por semana. Para `MT_ALTERNO` el turno varía por día.
+- Vista Hoy (`/admin`): debe mostrar el turno del día actual para este colaborador.
+- Vista Roll (`/admin/roll`): debe mostrar una columna por día de la semana, con "Libre" el miércoles.
+- Vista Asistencia: miércoles no genera registro para `MT_ALTERNO` (es día libre fijo).
+
+Steps:
+1. En `app/api/roll/route.ts`: al construir la respuesta, si el colaborador es `MT_ALTERNO`,
+   usar `getTurnoPorDia()` para cada día en lugar del turno semanal del grupo.
+2. En `app/(admin)/admin/roll/page.tsx`: para `MT_ALTERNO`, mostrar turno por día en la tabla.
+   Marcar el miércoles como "Libre" con color verde (igual que excepciones).
+3. En `app/api/asistencia/route.ts`: al hacer upsert inicial del día, si el colaborador es
+   `MT_ALTERNO` y es miércoles → no crear registro (o marcarlo como `estado: "libre_fijo"`).
+4. En `app/(admin)/admin/asistencia/page.tsx`: no mostrar a colaboradores `MT_ALTERNO` en miércoles.
+5. `get_errors` sobre archivos modificados. `npm run build` limpio.
+
+Expected Output:
+- Vista Hoy muestra `MT_ALTERNO` en T1 o T2 según el día.
+- Vista Roll muestra "Libre" verde en miércoles para `MT_ALTERNO`.
+- Vista Asistencia omite a `MT_ALTERNO` los miércoles.
+
+Dependencies: TASK-MT_ALTERNO-02, TASK-MT_ALTERNO-03
+
+---
+
+## TASK-MT_ALTERNO-05: Vista Oficial — turno del día para `MT_ALTERNO`
+**Estado:** ✅ Completado
+
+Title: Actualizar vista oficial para mostrar el turno del día (no de la semana) cuando la modalidad es `MT_ALTERNO`
+
+Context:
+El oficial con modalidad `MT_ALTERNO` tiene turno variable por día dentro de la semana.
+La vista actual muestra "turno de la semana" — para este oficial debe mostrar el turno
+de hoy y el turno de mañana (no el de la semana próxima).
+
+Steps:
+1. En `app/api/oficial/turno/route.ts`: si el colaborador es `MT_ALTERNO`, usar `getTurnoPorDia()`
+   para calcular el turno de hoy y el de mañana (en lugar de la semana actual y próxima).
+2. En `app/(oficial)/oficial/page.tsx`: si la respuesta incluye `modalidad: "MT_ALTERNO"`,
+   cambiar el label de "Esta semana" / "Próxima semana" a "Hoy" / "Mañana".
+   Si hoy es miércoles → mostrar "Día libre" en la tarjeta principal.
+3. `get_errors`. `npm run build` limpio.
+
+Expected Output:
+- El oficial `MT_ALTERNO` ve su turno del día (hoy y mañana), no el semanal.
+- Si es miércoles, ve "Día libre" claramente.
+
+Dependencies: TASK-MT_ALTERNO-02, TASK-MT_ALTERNO-03
 
 ---
 

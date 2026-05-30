@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getTurnoForWeek, getTurnoEfectivo } from "@/lib/roll-engine";
+import { getTurnoForWeek, getTurnoEfectivo, getTurnoPorDia } from "@/lib/roll-engine";
 import type { Modalidad } from "@/lib/roll-engine";
 
 export async function GET(req: Request) {
@@ -34,17 +34,44 @@ export async function GET(req: Request) {
 
   const turno = getTurnoForWeek(grupo, new Date(fecha));
 
+  // Para MT_ALTERNO calculamos el turno por cada día de la semana
+  const fechaBase = new Date(fecha);
+  const dias = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(fechaBase);
+    d.setUTCDate(fechaBase.getUTCDate() + i);
+    return d;
+  });
+
   return NextResponse.json({
     grupoId: grupo.id,
     grupoNombre: grupo.nombre,
     turno,
     semana: fecha,
-    colaboradores: grupo.colaboradores.map((c) => ({
-      id: c.id,
-      nombre: c.nombre,
-      modalidad: c.modalidad,
-      turnoFijo: c.turnoFijo,
-      turnoEfectivo: getTurnoEfectivo((c.modalidad as Modalidad) ?? "FULL", c.turnoFijo ?? null, turno),
-    })),
+    colaboradores: grupo.colaboradores.map((c) => {
+      const modalidad = (c.modalidad as Modalidad) ?? "FULL";
+      if (modalidad === "MT_ALTERNO" && c.fechaInicioPersonal) {
+        const ref = new Date(c.fechaInicioPersonal);
+        const turnoPorDia = dias.map((d) => ({
+          fecha: d.toISOString().split("T")[0],
+          turno: getTurnoPorDia(ref, d),
+        }));
+        return {
+          id: c.id,
+          nombre: c.nombre,
+          modalidad,
+          turnoFijo: c.turnoFijo,
+          turnoEfectivo: null,
+          turnoPorDia,
+        };
+      }
+      return {
+        id: c.id,
+        nombre: c.nombre,
+        modalidad,
+        turnoFijo: c.turnoFijo,
+        turnoEfectivo: getTurnoEfectivo(modalidad, c.turnoFijo ?? null, turno),
+        turnoPorDia: null,
+      };
+    }),
   });
 }

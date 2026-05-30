@@ -51,15 +51,16 @@ export function getTurnoForWeek(grupo: GrupoRotacion, fecha: Date): Turno {
   return TURNOS[index];
 }
 
-export type Modalidad = "FULL" | "MT" | "FIJO";
+export type Modalidad = "FULL" | "MT" | "FIJO" | "MT_ALTERNO";
 
 /**
  * Calcula el turno efectivo de un colaborador dado su modalidad, turnoFijo y
  * el turno del grupo en la semana actual.
  *
- * - FULL: usa el turno del grupo sin cambios.
- * - MT:   si el grupo está en T3 (Noche), el colaborador permanece en T2 (Tarde).
- * - FIJO: siempre el turno indicado en `turnoFijo`, sin importar el ciclo.
+ * - FULL:       usa el turno del grupo sin cambios.
+ * - MT:         si el grupo está en T3 (Noche), el colaborador permanece en T2 (Tarde).
+ * - FIJO:       siempre el turno indicado en `turnoFijo`, sin importar el ciclo.
+ * - MT_ALTERNO: usar `getTurnoPorDia()` en su lugar — esta función no aplica.
  */
 export function getTurnoEfectivo(
   modalidad: Modalidad,
@@ -71,6 +72,49 @@ export function getTurnoEfectivo(
   return turnoSemana;
 }
 
+export type TurnoDia = Turno | "LIBRE";
+
+/**
+ * Calcula el turno efectivo de un colaborador `MT_ALTERNO` para un día concreto.
+ *
+ * Patrón (confirmado con imagen calendario Junio 2026):
+ *   Miércoles (3) → siempre LIBRE
+ *   Semana A (semanasDesdeInicio par):
+ *     Lun(1), Mar(2), Sáb(6), Dom(0) → T2
+ *     Jue(4), Vie(5)                 → T1
+ *   Semana B (semanasDesdeInicio impar):
+ *     Lun(1), Mar(2), Sáb(6), Dom(0) → T1
+ *     Jue(4), Vie(5)                 → T2
+ *
+ * @param fechaInicioPersonal - Lunes de referencia donde comienza la Semana A del colaborador.
+ * @param fecha               - Fecha concreta a evaluar.
+ * @returns TurnoDia          - "T1" | "T2" | "LIBRE"
+ */
+export function getTurnoPorDia(
+  fechaInicioPersonal: Date,
+  fecha: Date,
+): TurnoDia {
+  const weekStart = getWeekStart(fecha);
+  const refStart = getWeekStart(fechaInicioPersonal);
+  const semanasDesdeInicio = Math.round(
+    (weekStart.getTime() - refStart.getTime()) / MS_PER_WEEK,
+  );
+  const diaSemana = fecha.getUTCDay(); // 0=Dom, 1=Lun … 6=Sáb
+
+  if (diaSemana === 3) return "LIBRE"; // miércoles siempre libre
+
+  const esSemanaPar = ((semanasDesdeInicio % 2) + 2) % 2 === 0; // Semana A
+
+  // Días con patrón invertido entre semanas
+  const esDiaAlternado = diaSemana === 4 || diaSemana === 5; // Jue o Vie
+
+  if (esSemanaPar) {
+    return esDiaAlternado ? "T1" : "T2";
+  } else {
+    return esDiaAlternado ? "T2" : "T1";
+  }
+}
+
 /**
  * Devuelve los días de la semana (UTC getDay: 0=Dom … 5=Vie, 6=Sáb) en que
  * un colaborador con el turno dado tiene día libre.
@@ -79,8 +123,10 @@ export function getTurnoEfectivo(
  *   T3 (Noche → T2 la próxima): libre Viernes(5) + Sábado(6)
  *   T2 (Tarde → T1 la próxima): libre Sábado(6)
  *   T1 (Mañana → T3 la próxima): 0 libres (el sábado empieza T3 a las 22:00)
+ *   MT_ALTERNO: siempre libre el Miércoles(3)
  */
-export function getDiasLibres(turno: Turno): number[] {
+export function getDiasLibres(turno: Turno | "MT_ALTERNO"): number[] {
+  if (turno === "MT_ALTERNO") return [3]; // Miércoles
   const diasPorTurno: Record<Turno, number[]> = {
     T3: [5, 6], // Viernes + Sábado
     T2: [6],    // Sábado

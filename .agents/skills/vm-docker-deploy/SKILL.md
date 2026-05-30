@@ -529,19 +529,36 @@ curl -s -X DELETE \
 
 ## Verificación post-deploy
 
+> **Checklist completo:** `references/post-deploy-checklist.md`  
+> Cubre 4 capas en orden: GHA workflow → VM state → smoke tests curl → revisión visual Playwright.
+
+### Resumen rápido (comandos mínimos)
+
 ```bash
-# 1. Contenedor corriendo
-ssh -i credentials/id_rsa.pem azureuser@172.191.128.24 "docker ps | grep roll-manager"
+# 1. Estado del workflow (esperar conclusion=success)
+gh run list --repo ezekiell1988/horario-colaboradores --limit 1 --json status,conclusion
 
-# 2. App responde localmente en la VM
-ssh -i credentials/id_rsa.pem azureuser@172.191.128.24 "curl -s -o /dev/null -w '%{http_code}' http://localhost:3000"
+# 2. Estado de la VM en un comando
+ssh -i credentials/id_rsa.pem -o StrictHostKeyChecking=no azureuser@172.191.128.24 \
+  "docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}' \
+   && sudo grep proxy_pass /etc/nginx/sites-available/roll-manager.ezekl.com \
+   && df -h / | tail -1"
 
-# 3. Verificar HTTPS público
-curl -s -o /dev/null -w '%{http_code}' https://roll-manager.ezekl.com
+# 3. Smoke test HTTPS
+curl -s -o /dev/null -w "HTTP %{http_code}\n" https://roll-manager.ezekl.com/api/auth/session
 
-# 4. Ver logs del contenedor
-ssh -i credentials/id_rsa.pem azureuser@172.191.128.24 "docker logs --tail 50 roll-manager-green"
+# 4. Revisión visual → invocar skill playwright-design-review
+#    open_browser_page https://roll-manager.ezekl.com  (desktop 1280×900 + mobile 390×844)
 ```
+
+### Qué esperar en la VM
+
+| Check | Valor esperado |
+|-------|---------------|
+| Contenedor activo | `roll-manager-sha-<SHA>` en estado `Up X minutes` |
+| `proxy_pass` | Puerto opuesto al anterior (`:3000` ↔ `:3001`) |
+| Disco `/` | < 85% usado |
+| Contenedor viejo | Ausente de `docker ps` |
 
 ---
 

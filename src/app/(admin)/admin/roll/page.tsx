@@ -56,7 +56,14 @@ const EXCEPCION_COLORS: Record<string, string> = {
 };
 
 type Grupo = { id: string; nombre: string };
-type Colaborador = { id: string; nombre: string };
+type TurnoDia = { fecha: string; turno: string };
+type Colaborador = {
+  id: string;
+  nombre: string;
+  modalidad?: string;
+  turnoEfectivo?: string | null;
+  turnoPorDia?: TurnoDia[] | null;
+};
 type RollData = {
   grupoId: string;
   grupoNombre: string;
@@ -280,12 +287,37 @@ export default function RollPage() {
                         <span className={`ml-auto text-xs font-semibold px-2 py-0.5 rounded-full border ${EXCEPCION_COLORS[excTipo] ?? "bg-gray-100 text-gray-600 border-gray-200"}`}>
                           {EXCEPCION_LABELS[excTipo] ?? excTipo}
                         </span>
+                      ) : c.modalidad === "MT_ALTERNO" && c.turnoPorDia ? (
+                        <span className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full bg-teal-100 text-teal-700">
+                          Alterno M/T
+                        </span>
                       ) : (
-                        <span className={`ml-auto text-xs font-semibold px-2 py-0.5 rounded-full ${TURNO_COLORS[roll.turno] ?? ""}`}>
-                          {roll.turno}
+                        <span className={`ml-auto text-xs font-semibold px-2 py-0.5 rounded-full ${TURNO_COLORS[(c.turnoEfectivo ?? roll.turno)] ?? ""}`}>
+                          {c.turnoEfectivo ?? roll.turno}
                         </span>
                       )}
                     </div>
+
+                    {/* Turnos diarios para MT_ALTERNO */}
+                    {!tieneExc && c.modalidad === "MT_ALTERNO" && c.turnoPorDia && (
+                      <div className="pl-11 flex flex-wrap gap-1">
+                        {c.turnoPorDia.map(({ fecha, turno }) => {
+                          const dia = new Date(`${fecha}T00:00:00Z`);
+                          const nombreDia = dia.toLocaleDateString("es-CR", { weekday: "short", timeZone: "UTC" });
+                          const esLibre = turno === "LIBRE";
+                          return (
+                            <span
+                              key={fecha}
+                              className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                                esLibre ? "bg-green-100 text-green-700" : TURNO_COLORS[turno] ?? "bg-gray-100 text-gray-700"
+                              }`}
+                            >
+                              {nombreDia} {esLibre ? "Libre" : turno}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
 
                     {/* Selector de excepción */}
                     <div className="flex items-center gap-2 pl-11">

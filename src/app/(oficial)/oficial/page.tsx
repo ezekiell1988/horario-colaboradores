@@ -55,9 +55,11 @@ type TurnoData = {
   grupo: string;
   modalidad: string;
   semanaActual: string;
-  turnoActual: string;
+  turnoActual: string | null;
   semanaProxima: string;
-  turnoProximo: string;
+  turnoProximo: string | null;
+  esLibreHoy?: boolean;
+  esLibreManana?: boolean;
 };
 
 export default function OficialPage() {
@@ -109,6 +111,11 @@ export default function OficialPage() {
                 Turno doble
               </span>
             )}
+            {data.modalidad === "MT_ALTERNO" && (
+              <span className="ml-2 inline-block rounded-full bg-teal-100 text-teal-700 text-xs font-semibold px-2 py-0.5">
+                Alterno M/T
+              </span>
+            )}
           </p>
         </div>
         <TourButton steps={TOUR_STEPS} label="Tour de esta pantalla" />
@@ -116,34 +123,58 @@ export default function OficialPage() {
 
       {/* Turno actual */}
       <div id="oficial-turno-actual" className="mb-4">
-        <p className="text-xs font-semibold uppercase text-gray-400 mb-2">Esta semana</p>
-        <div
-          className={`rounded-2xl border-2 px-5 py-5 ${TURNO_COLORS[data.turnoActual] ?? "bg-gray-50 border-gray-200"}`}
-        >
-          <p className="text-4xl font-black tracking-tight">
-            {TURNO_LABELS[data.turnoActual]?.nombre ?? data.turnoActual}
-          </p>
-          <p className="text-sm font-medium mt-1">
-            {TURNO_LABELS[data.turnoActual]?.horario}
-          </p>
-          <p className="text-xs mt-2 opacity-70">{formatSemana(data.semanaActual)}</p>
-        </div>
+        <p className="text-xs font-semibold uppercase text-gray-400 mb-2">
+          {data.modalidad === "MT_ALTERNO" ? "Hoy" : "Esta semana"}
+        </p>
+        {data.esLibreHoy ? (
+          <div className="rounded-2xl border-2 px-5 py-5 bg-green-50 border-green-200">
+            <p className="text-4xl font-black tracking-tight text-green-700">Día libre</p>
+            <p className="text-sm font-medium mt-1 text-green-600">Miércoles — no se trabaja</p>
+            <p className="text-xs mt-2 opacity-70">{data.semanaActual}</p>
+          </div>
+        ) : (
+          <div
+            className={`rounded-2xl border-2 px-5 py-5 ${TURNO_COLORS[data.turnoActual ?? ""] ?? "bg-gray-50 border-gray-200"}`}
+          >
+            <p className="text-4xl font-black tracking-tight">
+              {TURNO_LABELS[data.turnoActual ?? ""]?.nombre ?? data.turnoActual}
+            </p>
+            <p className="text-sm font-medium mt-1">
+              {TURNO_LABELS[data.turnoActual ?? ""]?.horario}
+            </p>
+            <p className="text-xs mt-2 opacity-70">
+              {data.modalidad === "MT_ALTERNO" ? data.semanaActual : formatSemana(data.semanaActual)}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Turno próximo */}
       <div id="oficial-turno-proximo">
-        <p className="text-xs font-semibold uppercase text-gray-400 mb-2">Próxima semana</p>
-        <div
-          className={`rounded-2xl border px-5 py-4 opacity-75 ${TURNO_COLORS[data.turnoProximo] ?? "bg-gray-50 border-gray-200"}`}
-        >
-          <p className="text-2xl font-bold">
-            {TURNO_LABELS[data.turnoProximo]?.nombre ?? data.turnoProximo}
-          </p>
-          <p className="text-sm mt-0.5">
-            {TURNO_LABELS[data.turnoProximo]?.horario}
-          </p>
-          <p className="text-xs mt-1 opacity-70">{formatSemana(data.semanaProxima)}</p>
-        </div>
+        <p className="text-xs font-semibold uppercase text-gray-400 mb-2">
+          {data.modalidad === "MT_ALTERNO" ? "Mañana" : "Próxima semana"}
+        </p>
+        {data.esLibreManana ? (
+          <div className="rounded-2xl border px-5 py-4 opacity-75 bg-green-50 border-green-200">
+            <p className="text-2xl font-bold text-green-700">Día libre</p>
+            <p className="text-sm mt-0.5 text-green-600">Miércoles — no se trabaja</p>
+            <p className="text-xs mt-1 opacity-70">{data.semanaProxima}</p>
+          </div>
+        ) : (
+          <div
+            className={`rounded-2xl border px-5 py-4 opacity-75 ${TURNO_COLORS[data.turnoProximo ?? ""] ?? "bg-gray-50 border-gray-200"}`}
+          >
+            <p className="text-2xl font-bold">
+              {TURNO_LABELS[data.turnoProximo ?? ""]?.nombre ?? data.turnoProximo}
+            </p>
+            <p className="text-sm mt-0.5">
+              {TURNO_LABELS[data.turnoProximo ?? ""]?.horario}
+            </p>
+            <p className="text-xs mt-1 opacity-70">
+              {data.modalidad === "MT_ALTERNO" ? data.semanaProxima : formatSemana(data.semanaProxima)}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

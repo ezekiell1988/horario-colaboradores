@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getTurnoForWeek, getWeekStart } from "@/lib/roll-engine";
+import { getTurnoForWeek, getWeekStart, getTurnoPorDia } from "@/lib/roll-engine";
 
 export async function GET(req: Request) {
   const session = await auth();
@@ -32,7 +32,20 @@ export async function GET(req: Request) {
   // Para cada colaborador activo, obtener o crear su registro de asistencia para ese día
   const colaboradoresConTurno = grupos.flatMap((grupo: (typeof grupos)[number]) => {
     const turno = getTurnoForWeek(grupo, lunes);
-    return grupo.colaboradores.map((c) => ({ colaborador: c, grupoNombre: grupo.nombre, turno }));
+    return grupo.colaboradores
+      .filter((c) => {
+        // MT_ALTERNO: no crear registro los miércoles (día libre)
+        if (c.modalidad === "MT_ALTERNO" && fecha.getUTCDay() === 3) return false;
+        return true;
+      })
+      .map((c) => {
+        let turnoEfectivo: string = turno;
+        if (c.modalidad === "MT_ALTERNO" && c.fechaInicioPersonal) {
+          const td = getTurnoPorDia(new Date(c.fechaInicioPersonal), fecha);
+          turnoEfectivo = td === "LIBRE" ? turno : td; // LIBRE no debería llegar (ya filtrado)
+        }
+        return { colaborador: c, grupoNombre: grupo.nombre, turno: turnoEfectivo };
+      });
   });
 
   if (colaboradoresConTurno.length === 0) {

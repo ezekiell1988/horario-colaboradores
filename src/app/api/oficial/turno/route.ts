@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getTurnoEfectivo, getTurnoForWeek, getWeekStart, Modalidad } from "@/lib/roll-engine";
+import { getTurnoEfectivo, getTurnoForWeek, getWeekStart, getTurnoPorDia, Modalidad } from "@/lib/roll-engine";
 
 export async function GET() {
   const session = await auth();
@@ -34,6 +34,28 @@ export async function GET() {
 
   const modalidad = (colaborador.modalidad ?? "FULL") as Modalidad;
   const turnoFijo = colaborador.turnoFijo ?? null;
+
+  // MT_ALTERNO: turno calculado día por día
+  if (modalidad === "MT_ALTERNO" && colaborador.fechaInicioPersonal) {
+    const ref = new Date(colaborador.fechaInicioPersonal);
+    const manana = new Date(now);
+    manana.setUTCDate(now.getUTCDate() + 1);
+
+    const turnoHoy = getTurnoPorDia(ref, now);
+    const turnoManana = getTurnoPorDia(ref, manana);
+
+    return NextResponse.json({
+      nombre: colaborador.nombre,
+      grupo: colaborador.grupo.nombre,
+      modalidad,
+      semanaActual: semanaActual.toISOString().split("T")[0],
+      turnoActual: turnoHoy === "LIBRE" ? null : turnoHoy,
+      semanaProxima: manana.toISOString().split("T")[0],
+      turnoProximo: turnoManana === "LIBRE" ? null : turnoManana,
+      esLibreHoy: turnoHoy === "LIBRE",
+      esLibreManana: turnoManana === "LIBRE",
+    });
+  }
 
   const turnoSemanaActual = getTurnoForWeek(colaborador.grupo, semanaActual);
   const turnoSemanaProxima = getTurnoForWeek(colaborador.grupo, semanaProxima);

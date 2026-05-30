@@ -1,4 +1,4 @@
-import { getTurnoForWeek, getDiasLibres, getWeekStart, getTurnoEfectivo, GrupoRotacion } from "../roll-engine";
+import { getTurnoForWeek, getDiasLibres, getWeekStart, getTurnoEfectivo, getTurnoPorDia, GrupoRotacion } from "../roll-engine";
 
 // Grupo de referencia: inicia en T1 el lunes 2026-01-05
 const grupoT1: GrupoRotacion = {
@@ -179,5 +179,89 @@ describe("getTurnoEfectivo — modalidad FIJO", () => {
 
   it("FIJO T2 en semana T3 → T2", () => {
     expect(getTurnoEfectivo("FIJO", "T2", "T3")).toBe("T2");
+  });
+});
+
+// -------------------------------------------------------------------
+// MT_ALTERNO — ciclo propio de 2 semanas, miércoles siempre libre
+// Referencia: imagen calendario Junio 2026
+// fechaInicioPersonal: lunes 2026-06-01 = inicio Semana A
+//
+// Junio 2026:  Lun=1, Mar=2, Mié=3, Jue=4, Vie=5, Sáb=6, Dom=7
+//              Lun=8(Sem B), Mar=9, Mié=10, Jue=11, Vie=12, Sáb=13, Dom=14
+// -------------------------------------------------------------------
+describe("getTurnoPorDia — modalidad MT_ALTERNO", () => {
+  // Semana A inicia el 2026-06-01 (lunes)
+  const refSemanA = new Date("2026-06-01T00:00:00Z");
+
+  it("Semana A — Lunes (Jun 1) → T2", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-01T00:00:00Z"))).toBe("T2");
+  });
+
+  it("Semana A — Martes (Jun 2) → T2", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-02T00:00:00Z"))).toBe("T2");
+  });
+
+  it("Semana A — Miércoles (Jun 3) → LIBRE", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-03T00:00:00Z"))).toBe("LIBRE");
+  });
+
+  it("Semana A — Jueves (Jun 4) → T1", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-04T00:00:00Z"))).toBe("T1");
+  });
+
+  it("Semana A — Viernes (Jun 5) → T1", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-05T00:00:00Z"))).toBe("T1");
+  });
+
+  it("Semana A — Sábado (Jun 6) → T2", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-06T00:00:00Z"))).toBe("T2");
+  });
+
+  it("Semana A — Domingo (Jun 7) → T2", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-07T00:00:00Z"))).toBe("T2");
+  });
+
+  it("Semana B (+1 semana) — Lunes (Jun 8) → T1", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-08T00:00:00Z"))).toBe("T1");
+  });
+
+  it("Semana B — Miércoles (Jun 10) → LIBRE", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-10T00:00:00Z"))).toBe("LIBRE");
+  });
+
+  it("Semana B — Jueves (Jun 11) → T2", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-11T00:00:00Z"))).toBe("T2");
+  });
+
+  it("Semana B — Sábado (Jun 13) → T1", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-13T00:00:00Z"))).toBe("T1");
+  });
+
+  it("+2 semanas — Lunes (Jun 15) → Semana A de nuevo → T2", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-15T00:00:00Z"))).toBe("T2");
+  });
+
+  it("+3 semanas — Lunes (Jun 22) → Semana B → T1", () => {
+    expect(getTurnoPorDia(refSemanA, new Date("2026-06-22T00:00:00Z"))).toBe("T1");
+  });
+
+  it("nunca retorna T3 en ningún día del ciclo completo", () => {
+    const dias = [
+      "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04",
+      "2026-06-05", "2026-06-06", "2026-06-07", "2026-06-08",
+      "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12",
+      "2026-06-13", "2026-06-14",
+    ];
+    dias.forEach((d) => {
+      const turno = getTurnoPorDia(refSemanA, new Date(`${d}T00:00:00Z`));
+      expect(turno).not.toBe("T3");
+    });
+  });
+});
+
+describe("getDiasLibres — MT_ALTERNO", () => {
+  it("MT_ALTERNO → libre solo Miércoles(3)", () => {
+    expect(getDiasLibres("MT_ALTERNO")).toEqual([3]);
   });
 });

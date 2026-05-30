@@ -37,13 +37,14 @@ type Colaborador = {
   puesto: string | null;
   modalidad: string;
   turnoFijo: string | null;
+  fechaInicioPersonal: string | null;
   activo: boolean;
   grupoId: string;
   grupo: Grupo;
 };
-type FormState = { nombre: string; grupoId: string; activo: boolean; puesto: string; modalidad: string; turnoFijo: string };
+type FormState = { nombre: string; grupoId: string; activo: boolean; puesto: string; modalidad: string; turnoFijo: string; fechaInicioPersonal: string };
 
-const EMPTY_FORM: FormState = { nombre: "", grupoId: "", activo: true, puesto: "", modalidad: "FULL", turnoFijo: "" };
+const EMPTY_FORM: FormState = { nombre: "", grupoId: "", activo: true, puesto: "", modalidad: "FULL", turnoFijo: "", fechaInicioPersonal: "" };
 
 export default function ColaboradoresPage() {
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
@@ -85,7 +86,7 @@ export default function ColaboradoresPage() {
 
   function openEdit(c: Colaborador) {
     setEditId(c.id);
-    setForm({ nombre: c.nombre, grupoId: c.grupoId, activo: c.activo, puesto: c.puesto ?? "", modalidad: c.modalidad ?? "FULL", turnoFijo: c.turnoFijo ?? "" });
+    setForm({ nombre: c.nombre, grupoId: c.grupoId, activo: c.activo, puesto: c.puesto ?? "", modalidad: c.modalidad ?? "FULL", turnoFijo: c.turnoFijo ?? "", fechaInicioPersonal: c.fechaInicioPersonal ? c.fechaInicioPersonal.split("T")[0] : "" });
     setError("");
     setShowModal(true);
   }
@@ -100,7 +101,10 @@ export default function ColaboradoresPage() {
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        fechaInicioPersonal: form.modalidad === "MT_ALTERNO" ? form.fechaInicioPersonal || null : null,
+      }),
     });
 
     setSaving(false);
@@ -119,7 +123,7 @@ export default function ColaboradoresPage() {
       const res = await fetch(`/api/colaboradores/${c.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo, puesto: c.puesto, modalidad: c.modalidad, turnoFijo: c.turnoFijo }),
+        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo, puesto: c.puesto, modalidad: c.modalidad, turnoFijo: c.turnoFijo, fechaInicioPersonal: c.fechaInicioPersonal ? c.fechaInicioPersonal.split("T")[0] : null }),
       });
       if (!res.ok) throw new Error();
       await loadData();
@@ -171,9 +175,10 @@ export default function ColaboradoresPage() {
                   <span className={`font-medium ${
                     c.modalidad === "FIJO" ? "text-purple-600" :
                     c.modalidad === "MT" ? "text-orange-600" :
+                    c.modalidad === "MT_ALTERNO" ? "text-teal-600" :
                     "text-blue-600"
                   }`}>
-                    {c.modalidad === "FULL" ? "Mixto" : c.modalidad === "MT" ? "Doble" : `Fijo ${c.turnoFijo ?? ""}`}
+                    {c.modalidad === "FULL" ? "Mixto" : c.modalidad === "MT" ? "Doble" : c.modalidad === "MT_ALTERNO" ? "Alterno M/T" : `Fijo ${c.turnoFijo ?? ""}`}
                   </span>
                 </p>
               </div>
@@ -277,6 +282,7 @@ export default function ColaboradoresPage() {
                   <option value="FULL">Turno mixto (Mañana + Tarde + Noche)</option>
                   <option value="MT">Turno doble (Mañana + Tarde)</option>
                   <option value="FIJO">Turno fijo</option>
+                  <option value="MT_ALTERNO">Alterno M/T (ciclo propio, Mié libre)</option>
                 </select>
               </div>
               {form.modalidad === "FIJO" && (
@@ -298,6 +304,26 @@ export default function ColaboradoresPage() {
                     <option value="T1">Mañana (06:00–14:00)</option>
                     <option value="T2">Tarde (14:00–22:00)</option>
                   </select>
+                </div>
+              )}
+              {form.modalidad === "MT_ALTERNO" && (
+                <div>
+                  <label
+                    htmlFor="col-fechaInicioPersonal"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Lunes de inicio Semana A
+                    <span className="ml-1 text-xs text-gray-400 font-normal">(debe ser lunes)</span>
+                  </label>
+                  <input
+                    id="col-fechaInicioPersonal"
+                    type="date"
+                    required
+                    value={form.fechaInicioPersonal}
+                    onChange={(e) => setForm({ ...form, fechaInicioPersonal: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                  <p className="text-xs text-teal-700 mt-1">Semana A: Lun/Mar/Sáb/Dom=Tarde, Jue/Vie=Mañana.</p>
                 </div>
               )}
               {editId && (
