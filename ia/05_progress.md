@@ -116,9 +116,17 @@
 - `lib/toast.ts` + `components/Toast.tsx` — sistema de toasts global DOM-event-based
 - Todos los `fetch` en páginas admin protegidos con try/catch + `showToast()`
 
+### ISSUE-01: Dirección de rotación corregida ✅
+- `lib/roll-engine.ts` — fórmula `+ weeksElapsed` → `- weeksElapsed` (rotación descendente T3→T2→T1→T3)
+- `lib/__tests__/roll-engine.test.ts` — tests actualizados + 6 tests nuevos de validación contra PDF Eli Daniel
+- 17/17 tests en verde ✓, build limpio ✓ (23 rutas)
+- `ia/07_issues.md` — documentados ISSUE-01 (resuelto), ISSUE-02 y ISSUE-03 (abiertos)
+
 ## ⏳ Pendiente — Fase 5 (resto)
 
 | Tarea | Descripción |
 |-------|-------------|
+| ISSUE-02 | Días libres por turno no modelados en Vista de Hoy (medium) |
+| ISSUE-03 | Días de transición Sáb/Dom asignados al turno incorrecto (low, diferido) |
 | Despliegue | Azure App Service o Vercel — vars de entorno en producción |
 | Testing básico | Flujos críticos: login → roll → asistencia → informe → PDF |

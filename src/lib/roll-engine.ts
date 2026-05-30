@@ -47,6 +47,6 @@ export function getTurnoForWeek(grupo: GrupoRotacion, fecha: Date): Turno {
     (weekStart.getTime() - refStart.getTime()) / MS_PER_WEEK,
   );
   const index =
-    ((grupo.turnoInicioIndex + weeksElapsed) % 3 + 3) % 3; // +3 para evitar módulo negativo
+    ((grupo.turnoInicioIndex - weeksElapsed) % 3 + 3) % 3; // rotación descendente: T3→T2→T1→T3
   return TURNOS[index];
 }
