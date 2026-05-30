@@ -17,30 +17,38 @@ export default function AdminNav() {
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      {/* Fila superior: logo + salir */}
+      <div className="px-4 py-3 flex items-center justify-between">
         <span className="font-bold text-gray-800 text-base">Roll Manager</span>
-        <nav className="flex items-center gap-1">
-          {links.map((link) => (
+        <button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="text-sm font-medium text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
+        >
+          Salir
+        </button>
+      </div>
+      {/* Fila inferior: tabs scrollables */}
+      <nav
+        className="flex overflow-x-auto scrollbar-none border-t border-gray-100"
+        aria-label="Navegación principal"
+      >
+        {links.map((link) => {
+          const active = pathname.startsWith(link.href);
+          return (
             <Link
               key={link.href}
               href={link.href}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                pathname.startsWith(link.href)
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100"
+              className={`shrink-0 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
+                active
+                  ? "border-blue-600 text-blue-700 bg-blue-50/50"
+                  : "border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800"
               }`}
             >
               {link.label}
             </Link>
-          ))}
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="ml-2 px-3 py-1.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-          >
-            Salir
-          </button>
-        </nav>
-      </div>
+          );
+        })}
+      </nav>
     </header>
   );
 }

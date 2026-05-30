@@ -46,6 +46,13 @@ Referencia rápida de archivos:
 4. No usar estilos inline — usar clases Tailwind.
 5. Los Server Components son el default; agregar `"use client"` solo cuando se necesite estado o eventos del navegador.
 
+## Al crear un skill
+
+Antes de crear cualquier skill nuevo, **leer obligatoriamente** el skill `create-skill`:
+- Archivo: `.agents/skills/create-skill/SKILL.md` y su referencia técnica en `.agents/skills/create-skill/references/spec.md`.
+- Seguir la estructura estándar: carpeta en `.agents/skills/<nombre>/`, con `SKILL.md` (frontmatter + cuerpo), y subcarpetas `examples/`, `references/` o `assets/` según corresponda.
+- El `name` del frontmatter debe coincidir exactamente con el nombre del directorio (minúsculas, solo `a-z 0-9 -`, sin espacios ni mayúsculas).
+
 ## Seguridad
 
 - No exponer `DATABASE_URL`, `NEXTAUTH_SECRET` ni `AZURE_OPENAI_API_KEY` al cliente.

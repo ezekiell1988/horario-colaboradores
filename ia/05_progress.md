@@ -96,9 +96,19 @@
 - `app/(admin)/admin/roll/page.tsx` — selector de excepción inline por colaborador, badge coloreado (vacaciones/permiso/ausencia), tachado del nombre
 - Build limpio ✓
 
-## ⏳ Pendiente — Fase 5
+## 🔄 En curso — Fase 5: Pulido y Despliegue
 
-| Fase | Descripción | Tasks |
-|------|-------------|-------|
-| Fase 5 | Pulido y despliegue | — |
-| Fase 5 | Pulido y despliegue | — |
+### UI mobile-first (parcial ✅)
+- `components/AdminNav.tsx` — reestructurado: fila superior logo+Salir, fila inferior tabs scrollables con indicador activo de borde inferior. Sin desbordamiento en pantallas de 375px.
+- `app/(admin)/admin/layout.tsx` — padding reducido en móvil (`px-3 py-4`) y mayor en sm+.
+- `app/(admin)/admin/informes/page.tsx` — sidebar cambia a columna en mobile (`flex-col md:flex-row`).
+- `app/globals.css` — clase `.scrollbar-none` agregada (scrollbar-width: none + webkit).
+- Build limpio ✓
+
+## ⏳ Pendiente — Fase 5 (resto)
+
+| Tarea | Descripción |
+|-------|-------------|
+| Manejo de errores | Toasts/alerts globales para fetch fallidos |
+| Despliegue | Azure App Service o Vercel — vars de entorno en producción |
+| Testing básico | Flujos críticos: login → roll → asistencia → informe → PDF |

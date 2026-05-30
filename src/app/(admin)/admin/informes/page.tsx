@@ -82,9 +82,9 @@ export default function InformesPage() {
   });
 
   return (
-    <div className="flex gap-6 min-h-[calc(100vh-4rem)]">
+    <div className="flex flex-col gap-4 md:flex-row md:gap-6 min-h-[calc(100vh-8rem)]">
       {/* Sidebar — historial del mes */}
-      <aside className="w-64 shrink-0 space-y-4">
+      <aside className="w-full md:w-64 md:shrink-0 space-y-4">
         {/* Navegación de mes */}
         <div className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-3 py-2">
           <button
