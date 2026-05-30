@@ -71,6 +71,18 @@
 - Build limpio ✓
 - Ver TASK-ASIST-01
 
+### PC-09: Informes con IA ✅
+- `prisma/schema.prisma` — campo `textoFormal String? @db.NVarChar(Max)` agregado a Informe + `db push` + `generate`
+- `lib/azure-ai.ts` — `formalizarTexto(borrador)` via gpt-5.5 (max_completion_tokens, sin temperature)
+- `app/api/informes/route.ts` — GET ?mes=YYYY-MM + POST crear informe
+- `app/api/informes/[id]/route.ts` — GET detalle + PUT titulo/contenido/textoFormal + DELETE
+- `app/api/informes/formalizar/route.ts` — POST llama azure-ai y devuelve textoFormal
+- `components/ReportEditor.tsx` — textarea borrador con autoguardado debounce 2s + botón "✦ Formalizar con IA" + área editable del resultado
+- `app/(admin)/admin/informes/page.tsx` — sidebar con nav mensual + crear nuevo + lista; editor a la derecha
+- `components/AdminNav.tsx` — enlace "Informes" agregado
+- Build limpio ✓
+- Ver TASK-INFORME-01 / TASK-INFORME-02
+
 ## ⏳ Pendiente — Fases siguientes
 
 | Fase | Descripción | Tasks |

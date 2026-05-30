@@ -165,7 +165,7 @@ Dependencies: TASK-ROLL-03
 ---
 
 ## TASK-INFORME-01: Editor de Informes
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — `api/informes/route.ts` + `[id]/route.ts` + `ReportEditor.tsx` + `admin/informes/page.tsx`
 
 Title: Pantalla para escribir y guardar el borrador del informe diario
 
@@ -186,7 +186,7 @@ Dependencies: TASK-SETUP-03
 ---
 
 ## TASK-INFORME-02: Integración Azure AI — Formalizar Texto
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — `lib/azure-ai.ts` + `api/informes/formalizar/route.ts` + botón en ReportEditor
 
 Title: Botón "Formalizar con IA" que reescribe el borrador en tono formal institucional
 

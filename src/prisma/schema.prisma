@@ -59,14 +59,15 @@ model Asistencia {
 }
 
 model Informe {
-  id         String   @id @default(cuid())
-  fecha      DateTime
-  titulo     String
-  contenido  String   @db.NVarChar(Max)
-  pdfUrl     String?
-  creadoPor  String
-  creadoBy   User     @relation(fields: [creadoPor], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  creadoAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  fecha        DateTime
+  titulo       String
+  contenido    String   @db.NVarChar(Max)
+  textoFormal  String?  @db.NVarChar(Max)
+  pdfUrl       String?
+  creadoPor    String
+  creadoBy     User     @relation(fields: [creadoPor], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  creadoAt     DateTime @default(now())
 
   @@map("Informe")
   @@schema("rm")
