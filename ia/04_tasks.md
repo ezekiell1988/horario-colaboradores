@@ -143,7 +143,7 @@ Dependencies: TASK-ROLL-01, TASK-ROLL-02
 ---
 
 ## TASK-ASIST-01: Registro de Asistencia Diaria
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — `api/asistencia/route.ts` + `[id]/route.ts` + `AttendanceTable.tsx` + `admin/asistencia/page.tsx`
 
 Title: Recuadro de asistencia del día con estado editable por colaborador
 

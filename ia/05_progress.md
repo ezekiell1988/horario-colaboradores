@@ -55,9 +55,21 @@
 ### PC-06: Vista del Roll Semanal ✅
 - `app/api/roll/route.ts` — GET grupoId + fecha → turno + colaboradores activos
 - `app/(admin)/admin/roll/page.tsx` — selector de grupo, navegación semanal, colores por turno
+- `app/api/oficial/turno/route.ts` — turno actual y próximo del oficial logueado
+- `app/(oficial)/layout.tsx` + `components/OficialNav.tsx` — layout y nav del oficial
+- `app/(oficial)/oficial/page.tsx` — tarjeta grande con turno actual + tarjeta próxima semana
 - `components/AdminNav.tsx` — enlace "Roll" agregado
 - Build limpio ✓
 - Ver TASK-ROLL-03
+
+### PC-07: Asistencia Diaria ✅
+- `app/api/asistencia/route.ts` — GET ?fecha=, upsert automático de registros (estado inicial "presente")
+- `app/api/asistencia/[id]/route.ts` — PATCH estado/puesto con validación
+- `components/AttendanceTable.tsx` — tabla editable con select de estado + input puesto con debounce
+- `app/(admin)/admin/asistencia/page.tsx` — navegador de días + resumen presente/ausente/permiso + tabla
+- `components/AdminNav.tsx` — enlace "Asistencia" agregado
+- Build limpio ✓
+- Ver TASK-ASIST-01
 
 ## ⏳ Pendiente — Fases siguientes
 
