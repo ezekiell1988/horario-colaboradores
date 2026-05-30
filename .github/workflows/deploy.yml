@@ -1,0 +1,127 @@
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │  CI/CD — Roll Manager                                                   │
+# │  Trigger: push a main                                                   │
+# │  Estrategia: blue-green con SHA tag. El contenedor nuevo arranca en el  │
+# │  slot inactivo, pasa healthcheck y nginx redirige antes de detener el   │
+# │  antiguo. Al final se eliminan imágenes viejas para liberar espacio.    │
+# │                                                                         │
+# │  Secrets requeridos en GitHub (Settings → Secrets → Actions):           │
+# │    VM_SSH_KEY             — contenido completo de credentials/id_rsa.pem│
+# │    DATABASE_URL           — cadena de conexión SQL Server producción     │
+# │    NEXTAUTH_SECRET        — clave aleatoria para firmar tokens           │
+# │    AZURE_OPENAI_ENDPOINT  — endpoint AI Foundry                         │
+# │    AZURE_OPENAI_API_KEY   — API key AI Foundry                          │
+# │    AZURE_OPENAI_DEPLOYMENT — nombre del deployment (gpt-5.5)            │
+# │    AZURE_AI_PROJECT_ENDPOINT — endpoint del proyecto AI                 │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+name: 🚀 Deploy Roll Manager
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # permite lanzar un deploy manual desde la UI
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false  # nunca cancelar un deploy en curso
+
+env:
+  VM_HOST: 172.191.128.24
+  VM_USER: azureuser
+  PROJECTS_DIR: /home/azureuser/projects/roll-manager
+
+jobs:
+  build-and-deploy:
+    name: Build → Transfer → Deploy (blue-green)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      # ── 1. Código ────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set short SHA (8 chars)
+        id: vars
+        run: echo "SHA=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+
+      # ── 2. Build imagen para linux/amd64 (obligatorio desde Apple Silicon)
+      - name: Build Docker image (linux/amd64)
+        working-directory: src
+        run: |
+          docker build \
+            --platform linux/amd64 \
+            --label "org.opencontainers.image.revision=${{ steps.vars.outputs.SHA }}" \
+            -t "roll-manager:sha-${{ steps.vars.outputs.SHA }}" \
+            .
+
+      # ── 3. Exportar imagen comprimida ────────────────────────────────────
+      - name: Export & compress image
+        run: |
+          docker save "roll-manager:sha-${{ steps.vars.outputs.SHA }}" \
+            | gzip > /tmp/roll-manager.tar.gz
+          echo "Compressed size: $(du -sh /tmp/roll-manager.tar.gz | cut -f1)"
+
+      # ── 4. SSH ───────────────────────────────────────────────────────────
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "${{ env.VM_HOST }}" >> ~/.ssh/known_hosts
+
+      # ── 5. Construir .env de producción desde secrets ────────────────────
+      - name: Write production .env
+        env:
+          DATABASE_URL:              ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET:           ${{ secrets.NEXTAUTH_SECRET }}
+          AZURE_OPENAI_ENDPOINT:     ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_API_KEY:      ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_DEPLOYMENT:   ${{ secrets.AZURE_OPENAI_DEPLOYMENT }}
+          AZURE_AI_PROJECT_ENDPOINT: ${{ secrets.AZURE_AI_PROJECT_ENDPOINT }}
+        run: |
+          {
+            echo "NODE_ENV=production"
+            echo "DATABASE_URL=${DATABASE_URL}"
+            echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}"
+            echo "NEXTAUTH_URL=https://roll-manager.ezekl.com"
+            echo "AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}"
+            echo "AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}"
+            echo "AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT}"
+            echo "AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}"
+          } > /tmp/prod.env
+
+      # ── 6. Transferir imagen + .env + script a la VM ─────────────────────
+      - name: Transfer files to VM
+        run: |
+          scp -i ~/.ssh/id_rsa \
+            /tmp/roll-manager.tar.gz \
+            "${{ env.VM_USER }}@${{ env.VM_HOST }}:/tmp/roll-manager.tar.gz"
+
+          scp -i ~/.ssh/id_rsa \
+            /tmp/prod.env \
+            "${{ env.VM_USER }}@${{ env.VM_HOST }}:${{ env.PROJECTS_DIR }}/.env"
+
+          scp -i ~/.ssh/id_rsa \
+            .github/scripts/deploy-bluegreen.sh \
+            "${{ env.VM_USER }}@${{ env.VM_HOST }}:/tmp/deploy-bluegreen.sh"
+
+          ssh -i ~/.ssh/id_rsa "${{ env.VM_USER }}@${{ env.VM_HOST }}" \
+            "chmod 600 ${{ env.PROJECTS_DIR }}/.env && chmod +x /tmp/deploy-bluegreen.sh"
+
+      # ── 7. Deploy blue-green en la VM ────────────────────────────────────
+      - name: Blue-green deploy
+        run: |
+          ssh -i ~/.ssh/id_rsa "${{ env.VM_USER }}@${{ env.VM_HOST }}" \
+            "/tmp/deploy-bluegreen.sh ${{ steps.vars.outputs.SHA }}"
+
+      # ── 8. Smoke test en producción ──────────────────────────────────────
+      - name: Smoke test production
+        run: |
+          sleep 5
+          STATUS=$(curl -s -o /dev/null -w '%{http_code}' \
+            https://roll-manager.ezekl.com/api/auth/session)
+          echo "Production HTTP status: ${STATUS}"
+          [[ "${STATUS}" == "200" ]] || { echo "❌ Smoke test failed"; exit 1; }
+          echo "✅ Production is healthy"

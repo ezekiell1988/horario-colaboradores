@@ -5,6 +5,30 @@
 
 ---
 
+## ISSUE-06: Seed falla al migrar a nueva BD — `DATABASE_URL` vacío en tiempo de ejecución
+**Severidad:** high
+**Estado:** resuelto — fix aplicado 2026-05-30
+
+**Descripción:**
+Al ejecutar `npx tsx prisma/seed.ts` contra la nueva BD, el proceso fallaba con `Failed to connect to :1433` (host vacío). El problema era que `seed.ts` importaba `lib/prisma.ts` antes de que `dotenv` cargara las variables de entorno. Como `lib/prisma.ts` evalúa `process.env.DATABASE_URL` en el momento del import, la URL quedaba vacía y el adaptador MSSQL intentaba conectar a `""`.
+
+**Reproducción:**
+```
+npx tsx prisma/seed.ts
+→ PrismaClientKnownRequestError: Failed to connect to :1433 - Could not connect
+```
+
+**Fix aplicado:** Agregar `import "dotenv/config"` como primera línea de `prisma/seed.ts`, antes del import de `lib/prisma`.
+
+```ts
+// prisma/seed.ts — orden correcto
+import "dotenv/config";          // ← primero
+import { prisma } from "../lib/prisma";
+import bcrypt from "bcryptjs";
+```
+
+---
+
 ## ISSUE-01: Dirección de rotación de turnos invertida
 **Severidad:** critical
 **Estado:** resuelto — fix aplicado 2026-05-29

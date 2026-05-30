@@ -29,7 +29,7 @@
 - `app/(auth)/login/page.tsx` — formulario email+contraseña (labels vinculados, accesible)
 - `proxy.ts` — protección de `/admin/**` (rol admin) y `/oficial/**` (rol oficial)
 - `app/api/auth/[...nextauth]/route.ts` — handler de NextAuth
-- `prisma/seed.ts` — seed ejecutado ✓ (`admin@rollmanager.com` / `Admin1234!`)
+- `prisma/seed.ts` — seed ejecutado ✓ (`admin@rollmanager.com` / `Admin1234!`); fix 2026-05-30: agregado `import "dotenv/config"` como primera línea para evitar `DATABASE_URL` vacío al migrar BD (ver ISSUE-06)
 - Build limpio ✓
 - Ver TASK-SETUP-03
 

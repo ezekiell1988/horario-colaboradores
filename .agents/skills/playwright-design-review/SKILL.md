@@ -121,6 +121,18 @@ const result = await page.evaluate(() => {
 
 Usa las tools `open_browser_page`, `run_playwright_code` y `screenshot_page` del agente (NO el script de terminal) para inspección rápida interactiva.
 
+### Modo mobile nativo del browser integrado
+
+El **Simple Browser** y el **Browser Preview** de VS Code tienen un botón **Toggle device emulation** (ícono de celular/tablet) en la barra de herramientas del panel. Al activarlo, el viewport cambia al dispositivo seleccionado directamente en la UI, **sin necesidad de llamar `page.setViewportSize()`** desde Playwright.
+
+- El botón aparece en la barra superior del panel del browser integrado.
+- Permite elegir entre varios dispositivos predefinidos (iPhone, Pixel, iPad, etc.) desde un desplegable.
+- Es equivalente al DevTools Device Toolbar de Chrome (Ctrl+Shift+M / Cmd+Shift+M).
+- **Cuándo usarlo:** revisión visual rápida e interactiva directamente en VS Code, sin escribir código.
+- **Cuándo usar `setViewportSize` vía Playwright:** cuando el agente necesita capturar screenshots automáticos a un viewport exacto de forma reproducible (CI, comparación antes/después), o cuando el browser integrado no está visible.
+
+> Si ya tienes el browser integrado abierto en VS Code, prueba primero el botón de device emulation antes de escribir código Playwright para mobile.
+
 ### Versión web (desktop)
 
 ```js

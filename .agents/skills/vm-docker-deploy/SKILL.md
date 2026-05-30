@@ -542,3 +542,67 @@ curl -s -o /dev/null -w '%{http_code}' https://roll-manager.ezekl.com
 # 4. Ver logs del contenedor
 ssh -i credentials/id_rsa.pem azureuser@172.191.128.24 "docker logs --tail 50 roll-manager-green"
 ```
+
+---
+
+## CI/CD con GitHub Actions (blue-green automático)
+
+El flujo de deploy manual está **automatizado** en `.github/workflows/deploy.yml`. Cada push a `main` ejecuta:
+
+```
+1. Build imagen --platform linux/amd64 etiquetada roll-manager:sha-<SHORT_SHA>
+2. Comprime y transfiere imagen + .env a la VM via SCP
+3. Copia .github/scripts/deploy-bluegreen.sh y lo ejecuta
+4. El script hace blue-green:
+   a. Lee puerto activo desde nginx (3000 ó 3001)
+   b. Arranca nuevo contenedor en puerto inactivo
+   c. Healthcheck /api/auth/session (30 reintentos × 3s = 90s max)
+   d. Si pasa: sed nginx → reload (zero-downtime)
+   e. Si falla: rollback automático (elimina el contenedor nuevo)
+   f. Detiene y elimina el contenedor anterior
+   g. Elimina imágenes viejas (conserva 2 más recientes) + image prune
+5. Smoke test final contra https://roll-manager.ezekl.com
+```
+
+### Naming convention
+
+| Componente | Patrón | Ejemplo |
+|---|---|---|
+| Imagen | `roll-manager:sha-<8chars>` | `roll-manager:sha-a1b2c3d4` |
+| Contenedor | `roll-manager-sha-<8chars>` | `roll-manager-sha-a1b2c3d4` |
+| Puerto activo | determinado por nginx conf | `proxy_pass http://127.0.0.1:3000` |
+
+> El slot activo se determina leyendo `proxy_pass` en el nginx conf — no hay archivo de estado aparte.
+
+### Secrets de GitHub requeridos
+
+Configurar en `Settings → Secrets and variables → Actions`:
+
+| Secret | Descripción |
+|---|---|
+| `VM_SSH_KEY` | Contenido completo de `credentials/id_rsa.pem` |
+| `DATABASE_URL` | Cadena de conexión SQL Server producción |
+| `NEXTAUTH_SECRET` | Clave aleatoria para JWT |
+| `AZURE_OPENAI_ENDPOINT` | Endpoint AI Foundry |
+| `AZURE_OPENAI_API_KEY` | API key AI Foundry |
+| `AZURE_OPENAI_DEPLOYMENT` | Nombre del deployment (ej: `gpt-5.5`) |
+| `AZURE_AI_PROJECT_ENDPOINT` | Endpoint del proyecto AI |
+
+Cargar desde `.env.local` con `gh` CLI:
+```bash
+source <(grep -E '^(DATABASE_URL|NEXTAUTH_SECRET|AZURE_OPENAI_ENDPOINT|AZURE_OPENAI_API_KEY|AZURE_OPENAI_DEPLOYMENT|AZURE_AI_PROJECT_ENDPOINT)=' src/.env.local | sed 's/^/export /')
+REPO="ezekiell1988/horario-colaboradores"
+gh secret set DATABASE_URL              --repo "$REPO" --body "$DATABASE_URL"
+gh secret set NEXTAUTH_SECRET           --repo "$REPO" --body "$NEXTAUTH_SECRET"
+gh secret set AZURE_OPENAI_ENDPOINT     --repo "$REPO" --body "$AZURE_OPENAI_ENDPOINT"
+gh secret set AZURE_OPENAI_API_KEY      --repo "$REPO" --body "$AZURE_OPENAI_API_KEY"
+gh secret set AZURE_OPENAI_DEPLOYMENT   --repo "$REPO" --body "$AZURE_OPENAI_DEPLOYMENT"
+gh secret set AZURE_AI_PROJECT_ENDPOINT --repo "$REPO" --body "$AZURE_AI_PROJECT_ENDPOINT"
+gh secret set VM_SSH_KEY                --repo "$REPO" --body "$(cat credentials/id_rsa.pem)"
+```
+
+### Trigger manual sin push
+
+```bash
+gh workflow run deploy.yml --repo ezekiell1988/horario-colaboradores
+```
