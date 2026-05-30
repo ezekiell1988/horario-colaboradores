@@ -182,13 +182,15 @@ USER appuser
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD wget -qO- http://localhost:3000/api/auth/session || exit 1
+    CMD wget -qO- http://127.0.0.1:3000/api/auth/session || exit 1
 
 CMD ["node", "server.js"]
 ```
 
 > **Crítico — plataforma**: La VM es `linux/amd64`. Siempre buildear con `--platform linux/amd64` desde macOS (Apple Silicon) para evitar errores de binaries de Prisma.
 > **Crítico — Prisma**: Correr `npx prisma generate` dentro del builder antes del `npm run build`. Sin esto el build falla porque `@prisma/client` no tiene los binaries generados.
+> **Crítico — Healthcheck**: Usar `http://127.0.0.1:3000` (IPv4 explícito) en el `HEALTHCHECK`, **nunca `localhost`**. En Alpine Linux, `localhost` puede resolver a `::1` (IPv6) mientras Next.js solo escucha en `0.0.0.0` (IPv4), causando "Connection refused" aunque la app esté activa.
+> **Crítico — NextAuth v5**: Incluir `trustHost: true` como primera propiedad del objeto de configuración `NextAuth({...})` en `lib/auth.ts`. Sin esto, NextAuth v5 lanza `UntrustedHost` cuando recibe requests de un host/dominio no conocido, lo que rompe la sesión y provoca redirect loops en el login. La variable `NEXTAUTH_URL` (v4) **es ignorada** por NextAuth v5; usar `AUTH_URL` o `trustHost: true`.
 
 ---
 

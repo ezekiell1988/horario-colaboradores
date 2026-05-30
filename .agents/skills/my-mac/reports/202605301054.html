@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reporte de Salud del Mac — 30 mayo 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      padding: 32px 16px;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      border-radius: 20px;
+      padding: 40px 36px;
+      color: white;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::after {
+      content: "🖥️";
+      position: absolute;
+      right: 36px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 80px;
+      opacity: 0.15;
+    }
+    .header .badge {
+      display: inline-block;
+      background: #e94560;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 15px;
+      opacity: 0.75;
+    }
+
+    /* ─── Hero numbers ─── */
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .hero-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      border-top: 4px solid #e94560;
+    }
+    .hero-card.green  { border-color: #27ae60; }
+    .hero-card.blue   { border-color: #2980b9; }
+    .hero-card.purple { border-color: #8e44ad; }
+    .hero-card .number {
+      font-size: 42px;
+      font-weight: 800;
+      color: #1a1a2e;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .hero-card .label {
+      font-size: 13px;
+      color: #888;
+      font-weight: 500;
+    }
+
+    /* ─── Section ─── */
+    .section {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+    .section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section h2 .icon {
+      font-size: 22px;
+    }
+
+    /* ─── Before / After comparison ─── */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 540px) { .compare { grid-template-columns: 1fr; } }
+    .compare-box {
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .compare-box.before { background: #fdf0f0; border: 1.5px solid #f5c6cb; }
+    .compare-box.after  { background: #f0fdf4; border: 1.5px solid #a8e6b8; }
+    .compare-box h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+    .compare-box.before h3 { color: #c0392b; }
+    .compare-box.after  h3 { color: #27ae60; }
+    .compare-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 14px;
+    }
+    .compare-row:last-child { border-bottom: none; }
+    .compare-row .item-name { color: #555; }
+    .compare-row .item-val  { font-weight: 700; color: #1a1a2e; }
+
+    /* ─── Task list ─── */
+    .task-list { list-style: none; }
+    .task-list li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .task-list li:last-child { border-bottom: none; }
+    .task-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .task-icon.xcode  { background: #fff3e0; }
+    .task-icon.npm    { background: #fce4ec; }
+    .task-icon.chat   { background: #e8f5e9; }
+    .task-icon.docker { background: #e3f2fd; }
+    .task-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .task-body p  { font-size: 13px; color: #777; line-height: 1.5; }
+    .task-body .saved {
+      display: inline-block;
+      margin-top: 6px;
+      background: #e8f5e9;
+      color: #27ae60;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ─── Disk bar ─── */
+    .disk-bar-wrap { margin-top: 20px; }
+    .disk-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .disk-bar {
+      height: 20px;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .disk-bar .fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.4s;
+    }
+    .disk-bar .fill.before { background: #e74c3c; width: 93%; }
+    .disk-bar .fill.after  { background: #27ae60; width: 80%; }
+
+    /* ─── Conservation list ─── */
+    .keep-list { list-style: none; }
+    .keep-list li {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+      color: #555;
+    }
+    .keep-list li:last-child { border-bottom: none; }
+    .keep-list li .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #f39c12;
+      flex-shrink: 0;
+    }
+
+    /* ─── Next steps ─── */
+    .next-list { list-style: none; counter-reset: step; }
+    .next-list li {
+      counter-increment: step;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+      color: #444;
+    }
+    .next-list li:last-child { border-bottom: none; }
+    .next-list li::before {
+      content: counter(step);
+      width: 26px; height: 26px;
+      background: #1a1a2e;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #aaa;
+      margin-top: 32px;
+      padding-bottom: 16px;
+    }
+    .footer strong { color: #1a1a2e; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <span class="badge">Reporte de salud del Mac</span>
+    <h1>MacBook Pro — Limpieza y Optimización</h1>
+    <p>Viernes 30 de mayo de 2026 · 10:54 hrs · 2 sesiones de mantenimiento</p>
+  </div>
+
+  <!-- Hero numbers -->
+  <div class="hero">
+    <div class="hero-card">
+      <div class="number">57</div>
+      <div class="label">GB liberados en total</div>
+    </div>
+    <div class="hero-card green">
+      <div class="number">90</div>
+      <div class="label">GB disponibles ahora</div>
+    </div>
+    <div class="hero-card blue">
+      <div class="number">33</div>
+      <div class="label">GB que había antes</div>
+    </div>
+    <div class="hero-card purple">
+      <div class="number">4</div>
+      <div class="label">limpiezas completadas</div>
+    </div>
+  </div>
+
+  <!-- Before / After -->
+  <div class="section">
+    <h2><span class="icon">📊</span> Antes y después</h2>
+
+    <div class="disk-bar-wrap">
+      <div class="disk-bar-label">
+        <span>⚠️ Antes de limpiar (uso del disco ~93%)</span>
+        <span><strong>~370 GB usados</strong> de 460 GB</span>
+      </div>
+      <div class="disk-bar"><div class="fill before"></div></div>
+
+      <div class="disk-bar-label">
+        <span>✅ Después de limpiar (uso del disco ~80%)</span>
+        <span><strong>~370 GB → ~313 GB usados</strong> de 460 GB</span>
+      </div>
+      <div class="disk-bar"><div class="fill after"></div></div>
+    </div>
+
+    <div class="compare" style="margin-top: 24px;">
+      <div class="compare-box before">
+        <h3>🔴 Antes</h3>
+        <div class="compare-row"><span class="item-name">Espacio libre</span><span class="item-val">~33 GB</span></div>
+        <div class="compare-row"><span class="item-name">Builds Xcode guardados</span><span class="item-val">25 GB</span></div>
+        <div class="compare-row"><span class="item-name">Caché de paquetes npm</span><span class="item-val">14 GB</span></div>
+        <div class="compare-row"><span class="item-name">Caché Docker (builds)</span><span class="item-val">24 GB</span></div>
+        <div class="compare-row"><span class="item-name">Caché ChatGPT Desktop</span><span class="item-val">1.6 GB</span></div>
+      </div>
+      <div class="compare-box after">
+        <h3>🟢 Después</h3>
+        <div class="compare-row"><span class="item-name">Espacio libre</span><span class="item-val">90 GB ✨</span></div>
+        <div class="compare-row"><span class="item-name">Builds Xcode guardados</span><span class="item-val">0 B</span></div>
+        <div class="compare-row"><span class="item-name">Caché de paquetes npm</span><span class="item-val">0 B</span></div>
+        <div class="compare-row"><span class="item-name">Caché Docker (builds)</span><span class="item-val">3.6 GB</span></div>
+        <div class="compare-row"><span class="item-name">Caché ChatGPT Desktop</span><span class="item-val">0 B</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What was done -->
+  <div class="section">
+    <h2><span class="icon">🧹</span> ¿Qué se limpió?</h2>
+    <ul class="task-list">
+
+      <li>
+        <div class="task-icon xcode">🔨</div>
+        <div class="task-body">
+          <h4>Compilaciones guardadas de Xcode (DerivedData)</h4>
+          <p>Xcode guarda automáticamente el resultado de cada compilación de iOS para abrirla más rápido la próxima vez. Con el tiempo esto puede acumular decenas de gigabytes que ya no se usan. Se borró todo de forma segura — Xcode lo regenera solo la próxima vez que compiles.</p>
+          <span class="saved">Liberado: 25 GB</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="task-icon npm">📦</div>
+        <div class="task-body">
+          <h4>Caché de paquetes de programación (npm)</h4>
+          <p>Cada vez que un proyecto de JavaScript descarga sus herramientas, npm guarda una copia local por si la necesita otra vez. Esta caché no se limpia sola y fue creciendo hasta ocupar 14 GB. Se limpió completamente — npm la va reconstruyendo solo cuando la necesite.</p>
+          <span class="saved">Liberado: 14 GB</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="task-icon docker">🐳</div>
+        <div class="task-body">
+          <h4>Caché de construcción de Docker (sesión anterior)</h4>
+          <p>Docker guarda pasos intermedios de las "recetas" de construcción de aplicaciones para no repetirlos. Ese archivo auxiliar había crecido a 24 GB. Se redujo a 3.6 GB conservando solo lo que se reutiliza activamente.</p>
+          <span class="saved">Liberado: ~20.6 GB</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="task-icon chat">💬</div>
+        <div class="task-body">
+          <h4>Caché de ChatGPT para Mac</h4>
+          <p>La app de escritorio de ChatGPT guarda imágenes, recursos y datos temporales en una carpeta que fue creciendo hasta 1.6 GB. Se borró de forma segura — la app la recrea sola al abrirla.</p>
+          <span class="saved">Liberado: 1.6 GB</span>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+
+  <!-- What was kept -->
+  <div class="section">
+    <h2><span class="icon">🛡️</span> ¿Qué se revisó pero no se tocó?</h2>
+    <p style="font-size:14px; color:#777; margin-bottom:16px;">
+      Estas carpetas se analizaron pero se decidió conservarlas porque tienen un propósito activo:
+    </p>
+    <ul class="keep-list">
+      <li><div class="dot"></div><strong>iOS DeviceSupport (22 GB)</strong> — Solo tiene versiones recientes de iOS 26. Son necesarias para conectar el iPhone al Mac.</li>
+      <li><div class="dot"></div><strong>Android SDK (8.8 GB)</strong> — Herramientas para desarrollo de apps Android. Se necesitan para compilar.</li>
+      <li><div class="dot"></div><strong>Paquetes .NET / NuGet (7.6 GB)</strong> — Dependencias del ecosistema .NET. Reutilizadas por proyectos activos.</li>
+      <li><div class="dot"></div><strong>Extensiones VS Code (4.1 GB)</strong> — Las extensiones del editor de código. Borrarlo requeriría reinstalar todo.</li>
+      <li><div class="dot"></div><strong>Caché JetBrains (3.3 GB)</strong> — IDEs como WebStorm/Rider los regeneran solos; candidato para próxima sesión.</li>
+      <li><div class="dot"></div><strong>Dispositivos del simulador iOS (3.1 GB)</strong> — Simuladores de iPhone activos en Xcode.</li>
+    </ul>
+  </div>
+
+  <!-- Next steps -->
+  <div class="section">
+    <h2><span class="icon">📅</span> ¿Qué hacer en el próximo mantenimiento?</h2>
+    <ol class="next-list">
+      <li>Correr <strong>brew cleanup</strong> — Homebrew acumuló ~981 MB de versiones viejas de herramientas. Seguro de borrar.</li>
+      <li>Revisar la carpeta <strong>JetBrains</strong> (3.3 GB) — si no usás IntelliJ/WebStorm activamente, se puede limpiar.</li>
+      <li>Borrar <strong>pip cache</strong> (737 MB) — si no estás desarrollando en Python en este momento.</li>
+      <li>Revisar <strong>~/Documents</strong> (32 GB) — validar que no hay proyectos viejos o archivos descargados sin uso.</li>
+      <li>Volver a correr <strong>npm cache clean --force</strong> — en 3-4 meses puede volver a crecer.</li>
+    </ol>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Generado por el skill <strong>my-mac</strong> · GitHub Copilot · 30/05/2026 10:54<br/>
+    MacBook Pro · macOS · 460 GB de almacenamiento total
+  </div>
+
+</div>
+</body>
+</html>

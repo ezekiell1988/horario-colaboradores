@@ -1,9 +1,64 @@
 # 02 — Arquitectura del Sistema
 
-> **Última actualización:** 2026-05-29
-> **Scope:** Roll Manager — Next.js 15 + Azure SQL
+> **Última actualización:** 2026-05-30
+> **Scope:** Roll Manager — Next.js 15 + Azure SQL + VM Azure + Cloudflare
 
-## Pipeline principal
+## Infraestructura de producción
+
+### VM Azure `demo-itqs`
+
+| Campo | Valor |
+|-------|-------|
+| Proveedor | Azure — Suscripción `Sponsorship-DEV-ITQS` |
+| Grupo de recursos | `rg-ezequiel` |
+| IP pública | `172.191.128.24` |
+| OS | Ubuntu 24.04.3 LTS |
+| Tamaño | Standard_DS1_v2 (1 vCPU, 3.5 GB RAM) |
+| Docker | 29.1.0 |
+| nginx | 1.24.0 (TLS gestionado por Certbot) |
+| SSH | `ssh -i credentials/id_rsa.pem azureuser@172.191.128.24` |
+
+### DNS — Cloudflare
+
+| Campo | Valor |
+|-------|-------|
+| Dominio | `ezekl.com` |
+| Zone ID | `1ab102a0434b960afd1ff5543c09c9cd` |
+| Token | `credentials/dns-token.txt` |
+| Registro A | `roll-manager.ezekl.com → 172.191.128.24` |
+| Modo | **DNS-only (`proxied=false`)** — requerido para SSL con Certbot |
+
+> ⚠️ **Crítico:** el registro DNS **debe** tener `proxied=false` (nube gris). Si se activa el proxy de Cloudflare, Certbot falla al renovar/emitir el certificado SSL (HTTP-01 challenge bloqueado).
+
+### Contenedor de producción
+
+```
+roll-manager-green
+  imagen : roll-manager-green-image:latest
+  puerto : 127.0.0.1:3000:3000  (solo accesible desde nginx, no expuesto públicamente)
+  .env   : ~/projects/roll-manager/.env  (chmod 600)
+  restart: unless-stopped
+```
+
+El flujo de tráfico es:
+
+```
+Internet (HTTPS 443)
+      │
+      ▼
+Cloudflare DNS (DNS-only)
+      │
+      ▼
+nginx en VM (TLS Certbot — cert válido hasta 2026-08-28)
+      │  proxy_pass http://127.0.0.1:3000
+      ▼
+Docker container roll-manager-green (Next.js, puerto 3000)
+      │
+      ├─── Prisma ORM ──► Azure SQL (sqlserveritqsdemos.database.windows.net)
+      └─── Azure OpenAI ──► gpt-5.5
+```
+
+## Pipeline de la aplicación
 
 ```
 Celular (browser)
@@ -23,7 +78,7 @@ Celular (browser)
               │                            │
               ▼                            ▼
        Prisma ORM                   Azure AI
-              │                    (OpenAI)  
+              │                    (OpenAI)
               ▼                    formalizar texto
        Azure SQL
        (MSSQL)

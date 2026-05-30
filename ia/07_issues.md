@@ -1,7 +1,7 @@
 # 07 — Issues Conocidos
 
 > **Última actualización:** 2026-05-30
-> **Fuente de descubrimiento:** Cruce PDF programación Eli Daniel + audios WhatsApp 2026-05-29 y 2026-05-30
+> **Fuente de descubrimiento:** Cruce PDF programación Eli Daniel + audios WhatsApp 2026-05-29 y 2026-05-30, sesión de deploy 2026-05-30
 
 ---
 

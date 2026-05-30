@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roll Manager — Guía de Usuario</title>
+  <style>
+    :root {
+      --blue:   #1d4ed8;
+      --blue-l: #eff6ff;
+      --green:  #15803d;
+      --green-l:#f0fdf4;
+      --amber:  #b45309;
+      --amber-l:#fffbeb;
+      --red:    #dc2626;
+      --red-l:  #fef2f2;
+      --indigo: #4338ca;
+      --indigo-l:#eef2ff;
+      --gray:   #374151;
+      --gray-l: #f9fafb;
+      --border: #e5e7eb;
+      --radius: 12px;
+      --shadow: 0 2px 12px rgba(0,0,0,.08);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f1f5f9;
+      color: var(--gray);
+      line-height: 1.65;
+    }
+
+    /* ── Hero ──────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #1d4ed8 60%, #3b82f6 100%);
+      color: #fff;
+      padding: 56px 24px 48px;
+      text-align: center;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
+      padding: 4px 16px;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .hero h1 { font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 800; margin-bottom: 12px; }
+    .hero p  { font-size: 1.05rem; opacity: .88; max-width: 560px; margin: 0 auto 8px; }
+    .hero .url {
+      display: inline-block;
+      margin-top: 18px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-size: .9rem;
+      font-family: monospace;
+      color: #bfdbfe;
+    }
+
+    /* ── Layout ────────────────────────────── */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+
+    /* ── Section ───────────────────────────── */
+    .section {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-top: 32px;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-header .icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 1.1rem; font-weight: 700; }
+    .section-header p  { font-size: .82rem; color: #6b7280; margin-top: 2px; }
+    .section-body { padding: 20px 24px; }
+
+    /* ── Colors per section ─────────────────── */
+    .blue   .section-header { background: var(--blue-l);   border-color: #bfdbfe; }
+    .blue   .icon           { background: var(--blue);   color:#fff; }
+    .green  .section-header { background: var(--green-l);  border-color: #bbf7d0; }
+    .green  .icon           { background: var(--green);  color:#fff; }
+    .amber  .section-header { background: var(--amber-l);  border-color: #fde68a; }
+    .amber  .icon           { background: var(--amber);  color:#fff; }
+    .red    .section-header { background: var(--red-l);    border-color: #fecaca; }
+    .red    .icon           { background: var(--red);    color:#fff; }
+    .indigo .section-header { background: var(--indigo-l); border-color: #c7d2fe; }
+    .indigo .icon           { background: var(--indigo); color:#fff; }
+
+    /* ── Steps list ─────────────────────────── */
+    .steps { list-style: none; counter-reset: step; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .steps li:last-child { border-bottom: none; }
+    .steps li::before {
+      content: counter(step);
+      min-width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .steps .step-title { font-weight: 600; margin-bottom: 4px; }
+    .steps .step-desc  { font-size: .88rem; color: #6b7280; }
+
+    /* ── Table ──────────────────────────────── */
+    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th {
+      background: #f1f5f9;
+      text-align: left;
+      padding: 9px 14px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border);
+    }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f9fafb; }
+
+    /* ── Callout ────────────────────────────── */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      font-size: .88rem;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .callout .ci { font-size: 1.1rem; line-height: 1.4; flex-shrink: 0; }
+    .callout.warn  { background: var(--amber-l); border-left: 4px solid #f59e0b; }
+    .callout.info  { background: var(--blue-l);  border-left: 4px solid #60a5fa; }
+    .callout.ok    { background: var(--green-l); border-left: 4px solid #4ade80; }
+    .callout.error { background: var(--red-l);   border-left: 4px solid #f87171; }
+
+    /* ── Badge ──────────────────────────────── */
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+    .pill-blue   { background:#dbeafe; color:#1d4ed8; }
+    .pill-green  { background:#dcfce7; color:#15803d; }
+    .pill-amber  { background:#fef3c7; color:#b45309; }
+    .pill-red    { background:#fee2e2; color:#dc2626; }
+    .pill-gray   { background:#f3f4f6; color:#374151; }
+    .pill-indigo { background:#e0e7ff; color:#4338ca; }
+    .pill-sky    { background:#e0f2fe; color:#0369a1; }
+
+    /* ── Flow arrows ────────────────────────── */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      align-items: center;
+      margin: 16px 0;
+    }
+    .flow-item {
+      background: var(--blue);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: .85rem;
+      font-weight: 600;
+      text-align: center;
+      flex: 1;
+      min-width: 100px;
+    }
+    .flow-arrow {
+      color: #94a3b8;
+      font-size: 1.3rem;
+      padding: 0 6px;
+    }
+
+    /* ── Turn cards ─────────────────────────── */
+    .turn-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .turn-card {
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid var(--border);
+    }
+    .turn-card .t-label { font-weight: 700; font-size: .85rem; margin-bottom: 4px; }
+    .turn-card .t-time  { font-size: 1rem; font-weight: 600; }
+    .turn-card .t-note  { font-size: .75rem; margin-top: 6px; opacity: .75; }
+    .t1 { background: #f0f9ff; border-color: #bae6fd; }
+    .t1 .t-label { color: #0369a1; }
+    .t2 { background: #fffbeb; border-color: #fde68a; }
+    .t2 .t-label { color: #b45309; }
+    .t3 { background: #f5f3ff; border-color: #ddd6fe; }
+    .t3 .t-label { color: #6d28d9; }
+
+    /* ── Roles cards ────────────────────────── */
+    .role-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 8px 0;
+    }
+    .role-card {
+      border-radius: 10px;
+      padding: 18px;
+      border: 1px solid var(--border);
+    }
+    .role-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .role-card ul { padding-left: 18px; font-size: .85rem; line-height: 1.7; }
+
+    /* ── Separator ──────────────────────────── */
+    .sep {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+
+    /* ── TOC ────────────────────────────────── */
+    .toc {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-top: 28px;
+      padding: 20px 24px;
+    }
+    .toc h2 { font-size: .95rem; font-weight: 700; margin-bottom: 12px; color: #374151; }
+    .toc ol { padding-left: 20px; font-size: .88rem; line-height: 1.9; }
+    .toc a  { color: var(--blue); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ── Small helpers ──────────────────────── */
+    .mt8  { margin-top: 8px; }
+    .mt14 { margin-top: 14px; }
+    .mt18 { margin-top: 18px; }
+    b { font-weight: 600; }
+    code {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: .82rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 36px 16px 32px; }
+      .section-body { padding: 16px; }
+      .section-header { padding: 14px 16px 12px; }
+      .flow-item { min-width: 80px; font-size: .78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="badge">Guía de usuario · Roll Manager</div>
+  <h1>🛡️ Roll Manager</h1>
+  <p>Sistema de gestión de turnos rotativos, asistencia e informes para un equipo de seguridad.</p>
+  <div class="url">https://roll-manager.ezekl.com</div>
+</div>
+
+<div class="container">
+
+  <!-- ── TOC ── -->
+  <nav class="toc" aria-label="Tabla de contenidos">
+    <h2>📋 Contenido de esta guía</h2>
+    <ol>
+      <li><a href="#que-es">¿Qué es Roll Manager y para qué sirve?</a></li>
+      <li><a href="#roles">Roles y accesos</a></li>
+      <li><a href="#conceptos">Conceptos clave que debes entender primero</a></li>
+      <li><a href="#orden">Orden correcto de configuración (paso a paso)</a></li>
+      <li><a href="#flujos">Uso diario del sistema</a></li>
+      <li><a href="#errores">Errores comunes y cómo evitarlos</a></li>
+    </ol>
+  </nav>
+
+  <!-- ════════════════════════════════════════════
+       1 · QUÉ ES
+  ════════════════════════════════════════════ -->
+  <section class="section blue" id="que-es">
+    <div class="section-header">
+      <div class="icon">🎯</div>
+      <div>
+        <h2>¿Qué es Roll Manager y para qué sirve?</h2>
+        <p>Alcance y finalidad del sistema</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <p><b>Roll Manager</b> es una aplicación web diseñada para gestionar el personal de seguridad de <b>An Allied Universal Company</b>. Resuelve tres problemas concretos del día a día:</p>
+
+      <div class="turn-cards mt14">
+        <div class="turn-card t1">
+          <div class="t-label">📅 Problema 1 — Turnos</div>
+          <div class="t-time">¿Quién trabaja esta semana y en qué turno?</div>
+          <div class="t-note">El sistema calcula automáticamente la rotación semanal de cada colaborador. Ya no hay que hacerlo a mano.</div>
+        </div>
+        <div class="turn-card t2">
+          <div class="t-label">✅ Problema 2 — Asistencia</div>
+          <div class="t-time">¿Quién llegó, quién faltó, quién tiene permiso?</div>
+          <div class="t-note">Registro digital diario por colaborador. Queda guardado y es consulable en cualquier momento.</div>
+        </div>
+        <div class="turn-card t3">
+          <div class="t-label">📄 Problema 3 — Informes</div>
+          <div class="t-time">¿Cómo genero el informe diario formal?</div>
+          <div class="t-note">El admin escribe el borrador, la IA lo formaliza, y se exporta a PDF para compartir por WhatsApp.</div>
+        </div>
+      </div>
+
+      <hr class="sep" />
+
+      <p><b>¿A quién está dirigido?</b> A coordinadores y administradores de seguridad que manejan grupos de oficiales con turnos rotativos de 8 horas.</p>
+
+      <div class="callout info mt8">
+        <span class="ci">📱</span>
+        <div>La app está optimizada para usarse desde el <b>navegador del celular</b>. No se instala nada — solo abres el link y ya.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       2 · ROLES
+  ════════════════════════════════════════════ -->
+  <section class="section green" id="roles">
+    <div class="section-header">
+      <div class="icon">👤</div>
+      <div>
+        <h2>Roles y accesos</h2>
+        <p>Quién puede hacer qué en el sistema</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="role-cards">
+        <div class="role-card" style="border-top:3px solid #dc2626;">
+          <h3>🔴 Administrador <span class="pill pill-red">admin</span></h3>
+          <ul>
+            <li>Crear y editar grupos</li>
+            <li>Crear y editar colaboradores</li>
+            <li>Ver el roll semanal de cualquier grupo</li>
+            <li>Registrar asistencia diaria</li>
+            <li>Crear y editar informes</li>
+            <li>Formalizar informes con IA y exportar PDF</li>
+            <li>Gestionar usuarios del sistema</li>
+          </ul>
+        </div>
+        <div class="role-card" style="border-top:3px solid #1d4ed8;">
+          <h3>🔵 Coordinador <span class="pill pill-blue">coordinador</span></h3>
+          <ul>
+            <li>Ver la Vista de Hoy (todos los grupos)</li>
+            <li>Registrar y consultar asistencia</li>
+            <li>No puede modificar colaboradores ni grupos</li>
+          </ul>
+        </div>
+        <div class="role-card" style="border-top:3px solid #15803d;">
+          <h3>🟢 Oficial <span class="pill pill-green">oficial</span></h3>
+          <ul>
+            <li>Solo puede ver <b>su propio</b> turno actual y próximo</li>
+            <li>No accede a otros colaboradores ni a informes</li>
+            <li>Vista simplificada y de solo lectura</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout warn mt14">
+        <span class="ci">⚠️</span>
+        <div><b>Primer acceso:</b> El admin inicial se crea con la cuenta <code>admin@rollmanager.com</code>. Desde el panel de Usuarios puedes crear nuevas cuentas para coordinadores y oficiales. <b>Crea los usuarios solo después de tener los colaboradores y grupos listos.</b></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       3 · CONCEPTOS CLAVE
+  ════════════════════════════════════════════ -->
+  <section class="section amber" id="conceptos">
+    <div class="section-header">
+      <div class="icon">💡</div>
+      <div>
+        <h2>Conceptos clave que debes entender primero</h2>
+        <p>Sin esto, la configuración no va a tener sentido</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- TURNOS -->
+      <p><b>Los 3 turnos (fijos, nunca cambian):</b></p>
+      <div class="turn-cards mt8">
+        <div class="turn-card t1">
+          <div class="t-label">T1 · Mañana</div>
+          <div class="t-time">06:00 – 14:00</div>
+          <div class="t-note">8 horas diurnas</div>
+        </div>
+        <div class="turn-card t2">
+          <div class="t-label">T2 · Tarde</div>
+          <div class="t-time">14:00 – 22:00</div>
+          <div class="t-note">8 horas vespertinas</div>
+        </div>
+        <div class="turn-card t3">
+          <div class="t-label">T3 · Noche</div>
+          <div class="t-time">22:00 – 06:00</div>
+          <div class="t-note">8 horas nocturnas</div>
+        </div>
+      </div>
+
+      <hr class="sep" />
+
+      <!-- ROTACIÓN -->
+      <p><b>¿Cómo funciona la rotación?</b></p>
+      <p class="mt8" style="font-size:.88rem;">Cada semana (empezando el lunes), el turno de cada grupo avanza en este ciclo:</p>
+      <div class="flow mt14">
+        <div class="flow-item">T3 · Noche</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item">T2 · Tarde</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item">T1 · Mañana</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item">T3 · Noche</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item">…</div>
+      </div>
+      <div class="callout info mt8">
+        <span class="ci">ℹ️</span>
+        <div>El sistema calcula automáticamente en qué turno está cada grupo cada semana, usando la <b>fecha de inicio de rotación</b> que configuraste al crear el grupo. Tú no tienes que calcular nada.</div>
+      </div>
+
+      <hr class="sep" />
+
+      <!-- GRUPOS -->
+      <p><b>¿Qué es un "Grupo"?</b></p>
+      <p class="mt8" style="font-size:.88rem;">Un grupo es un conjunto de colaboradores que rotan juntos. Todos los del mismo grupo siempre están en el mismo turno la misma semana. Cada grupo tiene su propio punto de inicio en el ciclo de rotación (su <b>fecha de inicio</b>).</p>
+      <p class="mt8" style="font-size:.88rem;">Ejemplo: el Grupo A puede estar en T1 esta semana mientras el Grupo B está en T3. Son independientes.</p>
+
+      <hr class="sep" />
+
+      <!-- MODALIDADES -->
+      <p><b>Modalidades de colaborador</b> — muy importante:</p>
+      <div class="tbl-wrap mt8">
+        <table>
+          <thead>
+            <tr>
+              <th>Modalidad</th>
+              <th>Nombre</th>
+              <th>¿Qué hace?</th>
+              <th>Turnos en los que trabaja</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="pill pill-blue">FULL</span></td>
+              <td>Turno mixto</td>
+              <td>Rota en los 3 turnos junto con su grupo</td>
+              <td>T1 + T2 + T3</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-amber">MT</span></td>
+              <td>Turno doble</td>
+              <td>Rota solo entre Mañana y Tarde. Cuando el grupo va a Noche, él se queda en Tarde.</td>
+              <td>T1 + T2 (nunca T3)</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-green">FIJO T1</span></td>
+              <td>Fijo mañana</td>
+              <td>Siempre trabaja de 06:00 a 14:00, sin importar en qué turno esté su grupo</td>
+              <td>Solo T1</td>
+            </tr>
+            <tr>
+              <td><span class="pill pill-green">FIJO T2</span></td>
+              <td>Fijo tarde</td>
+              <td>Siempre trabaja de 14:00 a 22:00, sin importar en qué turno esté su grupo</td>
+              <td>Solo T2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn mt14">
+        <span class="ci">⚠️</span>
+        <div>Si configuras mal la modalidad de un colaborador, el sistema mostrará el turno equivocado. <b>Asegúrate de saber qué modalidad tiene cada oficial antes de crearlo.</b></div>
+      </div>
+
+      <hr class="sep" />
+
+      <!-- EXCEPCIONES -->
+      <p><b>Excepciones de la semana</b></p>
+      <p class="mt8" style="font-size:.88rem;">Cuando un colaborador no va a trabajar esa semana (vacaciones, permiso, ausencia), se registra como excepción. Aparecerá en la Vista de Hoy con su nombre tachado para que sepas que no está disponible.</p>
+      <div class="tbl-wrap mt8">
+        <table>
+          <thead><tr><th>Tipo de excepción</th><th>Cuándo usarla</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill pill-blue">Vacaciones</span></td><td>El colaborador está en sus días de descanso programados</td></tr>
+            <tr><td><span class="pill pill-amber">Permiso</span></td><td>Tiene autorización para ausentarse (permiso con goce, cita médica, etc.)</td></tr>
+            <tr><td><span class="pill pill-red">Ausencia</span></td><td>No se presentó sin justificación previa</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       4 · ORDEN DE CONFIGURACIÓN
+  ════════════════════════════════════════════ -->
+  <section class="section indigo" id="orden">
+    <div class="section-header">
+      <div class="icon">🔢</div>
+      <div>
+        <h2>Orden correcto de configuración</h2>
+        <p>Sigue estos pasos exactamente en este orden la primera vez</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout error">
+        <span class="ci">🚫</span>
+        <div><b>No saltes pasos.</b> Si creas colaboradores antes de tener grupos, no podrás asignarlos correctamente. Si creas usuarios del sistema antes de tener colaboradores, la Vista de Hoy quedará vacía y confundirá a los oficiales.</div>
+      </div>
+
+      <ol class="steps mt18">
+
+        <!-- PASO 1 -->
+        <li>
+          <div>
+            <div class="step-title">Crear los Grupos de rotación</div>
+            <div class="step-desc">
+              Ve a <b>Grupos</b> en el menú. Crea un grupo por cada equipo que rota independientemente.<br><br>
+              <b>Datos que necesitas por cada grupo:</b>
+              <ul style="margin-top:6px; padding-left:18px; font-size:.85rem; line-height:1.8;">
+                <li><b>Nombre del grupo</b> — p.ej. "Grupo A", "Grupo Norte"</li>
+                <li><b>Turno inicial</b> — en qué turno estaba ese grupo en la semana de inicio (T1, T2 o T3)</li>
+                <li><b>Fecha de inicio de rotación</b> — cualquier lunes donde sepas con certeza en qué turno estaba el grupo ese día</li>
+              </ul>
+              <div class="callout warn mt8">
+                <span class="ci">⚠️</span>
+                <div>La <b>fecha de inicio de rotación</b> es el dato más crítico del sistema. Si la pones mal, <b>todos los turnos de ese grupo estarán mal calculados</b>. Verifica con los registros históricos o con el coordinador antes de ingresarla.</div>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- PASO 2 -->
+        <li>
+          <div>
+            <div class="step-title">Crear los Colaboradores</div>
+            <div class="step-desc">
+              Ve a <b>Colaboradores</b> en el menú. Crea uno por cada oficial activo.<br><br>
+              <b>Datos que necesitas por cada colaborador:</b>
+              <ul style="margin-top:6px; padding-left:18px; font-size:.85rem; line-height:1.8;">
+                <li><b>Nombre completo</b></li>
+                <li><b>Puesto</b> — cargo o posición (p.ej. "Oficial de seguridad", "Supervisor")</li>
+                <li><b>Grupo al que pertenece</b> — el que creaste en el Paso 1</li>
+                <li><b>Modalidad</b> — FULL / MT / FIJO T1 / FIJO T2 (ver tabla de conceptos arriba)</li>
+                <li>Si la modalidad es FIJO, ya no hay nada más que configurar para él</li>
+              </ul>
+              <div class="callout info mt8">
+                <span class="ci">ℹ️</span>
+                <div>Puedes crear todos los colaboradores de golpe antes de continuar. No hay un límite de cuántos puedes tener, pero el sistema está pensado para <b>máximo ~20 colaboradores activos</b>.</div>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- PASO 3 -->
+        <li>
+          <div>
+            <div class="step-title">Verificar la Vista de Hoy</div>
+            <div class="step-desc">
+              Cuando termines de crear grupos y colaboradores, ve a la pantalla <b>Hoy</b> (es la primera que aparece al entrar como admin).<br><br>
+              Deberías ver los nombres de los colaboradores distribuidos en las tres tarjetas de turno (Mañana / Tarde / Noche).<br><br>
+              <b>¿Qué verificar?</b>
+              <ul style="margin-top:6px; padding-left:18px; font-size:.85rem; line-height:1.8;">
+                <li>¿Aparecen todos los colaboradores activos?</li>
+                <li>¿Están en el turno correcto para esta semana?</li>
+                <li>¿Los colaboradores MT no aparecen en Noche?</li>
+                <li>¿Los colaboradores FIJO están siempre en su turno fijo?</li>
+              </ul>
+              Si algo está mal, regresa al Paso 1 y corrige la fecha de inicio del grupo afectado.
+            </div>
+          </div>
+        </li>
+
+        <!-- PASO 4 -->
+        <li>
+          <div>
+            <div class="step-title">Crear los usuarios del sistema</div>
+            <div class="step-desc">
+              Ve a <b>Usuarios</b> en el menú. Crea una cuenta por cada persona que necesite acceder al sistema.<br><br>
+              <b>Tipos de cuenta:</b>
+              <ul style="margin-top:6px; padding-left:18px; font-size:.85rem; line-height:1.8;">
+                <li><span class="pill pill-red">admin</span> — Para el administrador principal. Tiene control total.</li>
+                <li><span class="pill pill-sky">coordinador</span> — Para quien supervisa y registra asistencia pero no administra el sistema.</li>
+                <li><span class="pill pill-green">oficial</span> — Para cada oficial que quiere ver su propio turno desde su celular.</li>
+              </ul>
+              <div class="callout info mt8">
+                <span class="ci">ℹ️</span>
+                <div>El correo y contraseña que ingresas aquí son los que cada persona usa para iniciar sesión en <code>https://roll-manager.ezekl.com/login</code>.</div>
+              </div>
+              <div class="callout warn mt8">
+                <span class="ci">⚠️</span>
+                <div>Avisa a cada oficial que <b>su cuenta no se conecta automáticamente a su nombre de colaborador</b>. El sistema usa el rol "oficial" para restringir la vista, pero el nombre del colaborador y la cuenta de usuario son entidades separadas. El oficial simplemente verá su turno calculado por el grupo al que pertenece.</div>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- PASO 5 -->
+        <li>
+          <div>
+            <div class="step-title">El sistema ya está listo para uso diario</div>
+            <div class="step-desc">
+              A partir de aquí no necesitas reconfigurar nada salvo que:
+              <ul style="margin-top:6px; padding-left:18px; font-size:.85rem; line-height:1.8;">
+                <li>Se integre un colaborador nuevo → agrégalo en <b>Colaboradores</b></li>
+                <li>Un colaborador se inactiva → márcalo como inactivo en <b>Colaboradores</b> (no lo borres)</li>
+                <li>Se crea un nuevo grupo → agrégalo en <b>Grupos</b></li>
+              </ul>
+              Los turnos se calculan automáticamente cada semana. No tienes que hacer nada los lunes.
+            </div>
+          </div>
+        </li>
+
+      </ol>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       5 · USO DIARIO
+  ════════════════════════════════════════════ -->
+  <section class="section green" id="flujos">
+    <div class="section-header">
+      <div class="icon">📆</div>
+      <div>
+        <h2>Uso diario del sistema</h2>
+        <p>Lo que hay que hacer cada día</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- RUTINA DIARIA -->
+      <p><b>Rutina del administrador/coordinador cada día:</b></p>
+
+      <ol class="steps mt14">
+
+        <li>
+          <div>
+            <div class="step-title">Ver la Vista de Hoy</div>
+            <div class="step-desc">
+              Entra a la app → pantalla <b>Hoy</b>. Verás inmediatamente quién está en cada turno hoy.<br>
+              <span class="pill pill-sky">T1 Mañana</span> · <span class="pill pill-amber">T2 Tarde</span> · <span class="pill pill-indigo">T3 Noche</span><br><br>
+              Si algún colaborador tiene excepción activa esta semana, su nombre aparece tachado.
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <div class="step-title">Registrar asistencia (sección Asistencia)</div>
+            <div class="step-desc">
+              Ve a <b>Asistencia</b>. El sistema muestra automáticamente los colaboradores del día con su turno.<br><br>
+              Por cada colaborador marca su estado:
+              <ul style="margin-top:6px; padding-left:18px; font-size:.85rem; line-height:1.8;">
+                <li><span class="pill pill-green">Presente</span> — llegó y está trabajando</li>
+                <li><span class="pill pill-red">Ausente</span> — no se presentó</li>
+                <li><span class="pill pill-amber">Permiso</span> — tiene autorización de ausencia</li>
+              </ul>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <div class="step-title">Marcar excepciones de la semana (si aplica)</div>
+            <div class="step-desc">
+              Si esta semana un colaborador tiene vacaciones o permiso, ve a <b>Roll</b>, selecciona el grupo y la semana, y marca la excepción al lado de su nombre.<br><br>
+              Esto hará que aparezca tachado en la Vista de Hoy durante toda esa semana.
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <div class="step-title">Generar el informe diario (si se requiere)</div>
+            <div class="step-desc">
+              Ve a <b>Informes</b>.<br><br>
+              <b>Para crear un informe nuevo:</b>
+              <ol style="margin-top:6px; padding-left:18px; font-size:.85rem; line-height:1.9;">
+                <li>Clic en <b>"+ Nuevo informe"</b></li>
+                <li>Escribe el borrador con las novedades del día (en lenguaje normal, sin formalidades)</li>
+                <li>Clic en <b>"✦ Formalizar con IA"</b> → la IA reescribe el texto en tono oficial e institucional</li>
+                <li>Revisa y edita el resultado si algo no quedó bien</li>
+                <li>Clic en <b>"↓ Exportar PDF"</b> → se descarga el archivo</li>
+                <li>Abre WhatsApp y comparte el PDF manualmente con quien corresponda</li>
+              </ol>
+            </div>
+          </div>
+        </li>
+
+      </ol>
+
+      <hr class="sep" />
+
+      <!-- ROLL SEMANAL -->
+      <p><b>¿Cuándo usar la sección "Roll"?</b></p>
+      <p class="mt8" style="font-size:.88rem;">La sección Roll te permite ver el horario completo de un grupo para cualquier semana (pasada o futura). También es donde se gestionan las excepciones por colaborador.</p>
+      <div class="tbl-wrap mt8">
+        <table>
+          <thead>
+            <tr>
+              <th>Cuándo entrar al Roll</th>
+              <th>Para qué</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Un colaborador va a tomar vacaciones</td><td>Marcar excepción "Vacaciones" para esa semana</td></tr>
+            <tr><td>Necesitas saber qué turno tendrá X grupo en 3 semanas</td><td>Seleccionar el grupo y la semana futura</td></tr>
+            <tr><td>Quieres revisar el historial de un grupo</td><td>Seleccionar el grupo y una semana pasada</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       6 · ERRORES COMUNES
+  ════════════════════════════════════════════ -->
+  <section class="section red" id="errores">
+    <div class="section-header">
+      <div class="icon">🚨</div>
+      <div>
+        <h2>Errores comunes y cómo evitarlos</h2>
+        <p>Lee esto antes de empezar a configurar</p>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Error</th>
+              <th>Por qué pasa</th>
+              <th>Cómo evitarlo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Los turnos de todos están mal</b></td>
+              <td>La fecha de inicio de rotación del grupo está mal configurada</td>
+              <td>Antes de crear el grupo, confirma con un registro histórico en qué turno estaba ese grupo en una semana concreta (un lunes específico)</td>
+            </tr>
+            <tr>
+              <td><b>Un colaborador MT aparece en Noche</b></td>
+              <td>Se creó con modalidad FULL en vez de MT</td>
+              <td>Al crear/editar el colaborador, seleccionar correctamente la modalidad</td>
+            </tr>
+            <tr>
+              <td><b>Un fijo aparece en el turno del grupo</b></td>
+              <td>Se creó con modalidad FULL en vez de FIJO T1/T2</td>
+              <td>Verificar la modalidad al crear el colaborador</td>
+            </tr>
+            <tr>
+              <td><b>La Vista de Hoy está vacía</b></td>
+              <td>No hay grupos o colaboradores activos, o la fecha de inicio es muy futura</td>
+              <td>Verificar que haya al menos un grupo y un colaborador activos, y que la fecha de inicio ya haya pasado</td>
+            </tr>
+            <tr>
+              <td><b>Un colaborador no aparece en la Vista de Hoy</b></td>
+              <td>Está marcado como inactivo, o tiene una excepción para esta semana</td>
+              <td>Revisar en <b>Colaboradores</b> que esté activo; revisar en <b>Roll</b> que no tenga excepción</td>
+            </tr>
+            <tr>
+              <td><b>El informe no se formaliza con IA</b></td>
+              <td>El borrador está vacío, o hay un problema temporal con la conexión</td>
+              <td>Escribir al menos 2–3 líneas antes de presionar "Formalizar". Intentar de nuevo si falla</td>
+            </tr>
+            <tr>
+              <td><b>Un oficial ve los turnos de otros</b></td>
+              <td>Se le asignó el rol <code>admin</code> o <code>coordinador</code> por error</td>
+              <td>Revisar en <b>Usuarios</b> y cambiar el rol a <code>oficial</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr class="sep" />
+
+      <p><b>Regla de oro para no romper los turnos:</b></p>
+      <div class="callout ok mt8">
+        <span class="ci">✅</span>
+        <div>
+          <b>Siempre verifica la Vista de Hoy después de cualquier cambio.</b><br>
+          Si los turnos se ven correctos en la Vista de Hoy, el sistema está bien configurado. Si algo se ve raro, el problema casi siempre está en la fecha de inicio del grupo o en la modalidad del colaborador.
+        </div>
+      </div>
+
+      <hr class="sep" />
+
+      <p><b>Resumen visual del orden correcto:</b></p>
+      <div class="flow mt14" style="flex-wrap:wrap; gap:8px;">
+        <div class="flow-item" style="background:#6d28d9;">1. Grupos</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item" style="background:#1d4ed8;">2. Colaboradores</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item" style="background:#0369a1;">3. Verificar Vista de Hoy</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item" style="background:#15803d;">4. Usuarios/Cuentas</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item" style="background:#b45309;">5. Uso diario</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer style="text-align:center; margin-top:40px; font-size:.78rem; color:#9ca3af; padding-bottom:20px;">
+    Roll Manager · An Allied Universal Company · Versión 1.0 · 2026
+  </footer>
+
+</div>
+</body>
+</html>

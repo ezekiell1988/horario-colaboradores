@@ -183,9 +183,16 @@
 
 - 0 errores TypeScript en todos los archivos modificados
 
-## ⏳ Pendiente — Fase 5 (resto)
+### PC-15: Despliegue en producción ✅
+- **Plataforma:** VM Azure `demo-itqs` (172.191.128.24) + Docker + nginx + Certbot SSL
+- **URL:** https://roll-manager.ezekl.com
+- **Imagen:** `roll-manager-green-image:latest` — build `--platform linux/amd64` desde macOS
+- **Fixes aplicados durante el deploy:**
+  - `lib/auth.ts` — `trustHost: true` agregado (NextAuth v5 requería esto para no lanzar `UntrustedHost`)
+  - `src/middleware.ts` — **eliminado** (conflicto con `proxy.ts`; Next.js 16 usa solo `proxy.ts`)
+  - `src/Dockerfile` — healthcheck corregido: `localhost` → `127.0.0.1` (Alpine IPv6 bug)
+- **Verificación Playwright:** login funciona, redirige a `/admin`, dashboard carga correctamente
+- **Container health:** `healthy` ✅
+- Ver `ia/07_issues.md` → ISSUE-08, ISSUE-09, ISSUE-10
 
-| Tarea | Descripción |
-|-------|-------------|
-| Despliegue | Azure App Service o Vercel — vars de entorno en producción |
-| Testing básico | Flujos críticos: login → roll → asistencia → informe → PDF |
+## ✅ Fase 5 completa

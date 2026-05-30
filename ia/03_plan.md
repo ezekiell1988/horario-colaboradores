@@ -45,7 +45,7 @@ Fases 1–4 y Fase 5 completadas en su totalidad. Pendiente: despliegue en produ
 | Generación de PDF | ✅ |
 | Historial de informes guardados | ✅ |
 
-### Fase 5 — Pulido y Despliegue 🔄 En curso
+### Fase 5 — Pulido y Despliegue ✅ Completada
 | Componente | Estado |
 |------------|--------|
 | UI mobile-first completa y consistente | ✅ |
@@ -54,5 +54,5 @@ Fases 1–4 y Fase 5 completadas en su totalidad. Pendiente: despliegue en produ
 | Rol `coordinador` — gestión de asistencia multi-grupo | ✅ |
 | Gestión de usuarios (CRUD desde panel admin) | ✅ |
 | Tours guiados en todas las pantallas (driver.js) | ✅ |
-| Despliegue en Azure App Service / Vercel | ⏳ |
-| Pruebas básicas de flujos críticos | ⏳ |
+| Despliegue en VM Azure (Docker + nginx + Certbot) | ✅ |
+| Pruebas básicas de flujos críticos (Playwright) | ✅ |
