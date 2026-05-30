@@ -1,5 +1,27 @@
 # Instrucciones del proyecto — Roll Manager
 
+## Documentación del proyecto (fuente de verdad)
+
+La carpeta `ia/` contiene la documentación estructurada del proyecto. **Todo agente o sesión de Copilot debe seguir este protocolo:**
+
+1. **Al comenzar cualquier actividad**, leer los archivos relevantes de `ia/` — como mínimo `ia/00_context.md`, `ia/03_plan.md` y `ia/04_tasks.md`.
+2. **Leer `ia/README.md`** para entender el esquema y propósito de cada archivo antes de modificarlos.
+3. **Al terminar cada tarea**, actualizar `ia/03_plan.md`, `ia/04_tasks.md` y `ia/05_progress.md` reflejando el nuevo estado (completado / en curso / pendiente).
+
+Referencia rápida de archivos:
+| Archivo | Cuándo leerlo |
+|---------|---------------|
+| `ia/00_context.md` | Siempre — punto de entrada |
+| `ia/01_requirements.md` | Al diseñar features o flujos |
+| `ia/02_architecture.md` | Al agregar servicios o cambiar infra |
+| `ia/03_plan.md` | Al evaluar alcance o planificar |
+| `ia/04_tasks.md` | Al iniciar cualquier tarea de código |
+| `ia/05_progress.md` | Al verificar qué está hecho |
+| `ia/06_decisions.md` | Al cuestionar un patrón arquitectónico |
+| `ia/07_issues.md` | Al investigar comportamientos inesperados |
+
+---
+
 ## Stack
 
 - **Framework:** Next.js 16 (App Router, TypeScript, Tailwind CSS)

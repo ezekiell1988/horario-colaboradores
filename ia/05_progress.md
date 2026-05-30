@@ -35,9 +35,19 @@
 
 ## 🔄 En curso — Fase 2: Módulo Roll de Turnos
 
-### PC-04: CRUD Colaboradores y Grupos ⏳
-- Falta: API Routes + páginas de administración
+### PC-04: CRUD Colaboradores y Grupos ✅
+- `app/api/colaboradores/route.ts` + `[id]/route.ts` — GET/POST/PUT/DELETE, sesión validada
+- `app/api/grupos/route.ts` + `[id]/route.ts` — GET/POST/PUT/DELETE, guarda con conteo, bloquea borrado si tiene colaboradores
+- `app/(admin)/admin/colaboradores/page.tsx` — lista + modal (activar/desactivar, editar, cambiar grupo)
+- `app/(admin)/admin/grupos/page.tsx` — lista + modal (turnoInicioIndex, fechaInicioRotacion)
+- `components/AdminNav.tsx` — nav admin con links a secciones
+- `app/(admin)/admin/layout.tsx` — layout con nav, redirect `/admin` → `/admin/colaboradores`
+- Build limpio ✓
 - Ver TASK-ROLL-01
+
+### PC-05: RollEngine ⏳
+- Falta: `lib/roll-engine.ts` + tests + vista del roll semanal
+- Ver TASK-ROLL-02
 
 ## ⏳ Pendiente — Fases siguientes
 

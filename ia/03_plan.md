@@ -21,8 +21,8 @@ Fase 1 completada. Iniciando Fase 2 — CRUD de colaboradores, grupos y motor de
 ### Fase 2 — Módulo Roll de Turnos 🔄 En curso
 | Componente | Estado |
 |------------|--------|
-| CRUD Colaboradores | ⏳ |
-| CRUD Grupos | ⏳ |
+| CRUD Colaboradores | ✅ |
+| CRUD Grupos | ✅ |
 | Implementar `RollEngine` (lógica de rotación) | ⏳ |
 | Vista del roll semanal por grupo | ⏳ |
 | Manejo de excepciones por colaborador | ⏳ |

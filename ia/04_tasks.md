@@ -77,7 +77,7 @@ Dependencies: TASK-SETUP-02
 ---
 
 ## TASK-ROLL-01: CRUD Colaboradores y Grupos
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — API Routes + páginas admin con modal, validación de sesión, build limpio
 
 Title: Pantallas de administración para crear y editar colaboradores y grupos de rotación
 
