@@ -89,3 +89,14 @@ Fases 1–7 completadas en su totalidad. Proyecto en producción en https://roll
 | Test golden master: 30 días de Junio 2026 cubriendo ciclo A+B completo | ✅ |
 | `ia/00_context.md` actualizado con contacto Eli Daniel | ✅ |
 | Suite total: 78/78 tests ✓ | ✅ |
+
+### Fase 9 — Filtro por área/puesto en asistencia ✅ Completada
+> **Fecha:** 2026-05-30 — Feedback de Eli Daniel: "Los de monitoreo no rotan de puesto"
+
+| Componente | Estado |
+|------------|--------|
+| `api/asistencia` GET: pre-llenar `Asistencia.puesto` desde `Colaborador.puesto` al crear | ✅ |
+| `api/asistencia` GET: exponer campo `area` (= `Colaborador.puesto`) en la respuesta JSON | ✅ |
+| `AttendanceTable`: campo `area` en tipo `AsistenciaRow` + badge de área bajo el nombre | ✅ |
+| `asistencia/page.tsx`: chips de filtro dinámicos "Todos / Área1 / Área2..." | ✅ |
+| `colaboradores/page.tsx`: label renombrada a "Área / Puesto fijo" con placeholder actualizado | ✅ |

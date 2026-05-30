@@ -21,6 +21,7 @@ export type AsistenciaRow = {
   grupo: string;
   turno: string;
   puesto: string;
+  area: string;
   estado: EstadoAsistencia;
 };
 
@@ -56,7 +57,12 @@ export default function AttendanceTable({ rows, onEstadoChange, onPuestoChange, 
           {rows.map((row) => (
             <tr key={row.id} className={saving[row.id] ? "opacity-60" : ""}>
               {/* Nombre */}
-              <td className="px-4 py-3 font-medium text-gray-800">{row.nombre}</td>
+              <td className="px-4 py-3">
+                <p className="font-medium text-gray-800">{row.nombre}</p>
+                {row.area && (
+                  <span className="inline-block mt-0.5 text-xs bg-gray-100 text-gray-500 rounded px-1.5 py-0.5">{row.area}</span>
+                )}
+              </td>
 
               {/* Grupo */}
               <td className="px-4 py-3 text-gray-500">{row.grupo}</td>

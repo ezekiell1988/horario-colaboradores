@@ -255,12 +255,12 @@ export default function ColaboradoresPage() {
                   htmlFor="col-puesto"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Puesto <span className="text-gray-400 font-normal">(opcional)</span>
+                  Área / Puesto fijo <span className="text-gray-400 font-normal">(opcional)</span>
                 </label>
                 <input
                   id="col-puesto"
                   type="text"
-                  placeholder="Charlie 1, Coordinador..."
+                  placeholder="Monitoreo, Campo, Garita 1..."
                   value={form.puesto}
                   onChange={(e) => setForm({ ...form, puesto: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

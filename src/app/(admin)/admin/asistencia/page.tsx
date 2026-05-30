@@ -65,6 +65,7 @@ export default function AsistenciaPage() {
   const [rows, setRows] = useState<AsistenciaRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState<Record<string, boolean>>({});
+  const [filtroArea, setFiltroArea] = useState<string>("");
 
   // debounce timers para el campo puesto
   const puestoTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
@@ -120,6 +121,9 @@ export default function AsistenciaPage() {
     },
     [saveField],
   );
+
+  const areas = Array.from(new Set(rows.map((r) => r.area).filter(Boolean))).sort();
+  const rowsFiltrados = filtroArea ? rows.filter((r) => r.area === filtroArea) : rows;
 
   return (
     <div>
@@ -182,13 +186,42 @@ export default function AsistenciaPage() {
         </div>
       )}
 
+      {/* Filtro por área */}
+      {!loading && areas.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            onClick={() => setFiltroArea("")}
+            className={`text-xs px-3 py-1 rounded-full border font-medium transition-colors ${
+              filtroArea === ""
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            Todos
+          </button>
+          {areas.map((a) => (
+            <button
+              key={a}
+              onClick={() => setFiltroArea(a)}
+              className={`text-xs px-3 py-1 rounded-full border font-medium transition-colors ${
+                filtroArea === a
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              {a}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Tabla */}
       {loading ? (
         <p className="text-center text-gray-400 py-10">Cargando asistencia...</p>
       ) : (
         <div id="asistencia-tabla">
           <AttendanceTable
-            rows={rows}
+            rows={rowsFiltrados}
             onEstadoChange={handleEstadoChange}
             onPuestoChange={handlePuestoChange}
             saving={saving}

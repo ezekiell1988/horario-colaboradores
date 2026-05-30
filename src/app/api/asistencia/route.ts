@@ -61,7 +61,7 @@ export async function GET(req: Request) {
           colaboradorId: colaborador.id,
           fecha,
           turno,
-          puesto: "",
+          puesto: colaborador.puesto ?? "",
           estado: "presente",
         },
         update: {},
@@ -84,6 +84,7 @@ export async function GET(req: Request) {
       grupo: r.colaborador.grupo.nombre,
       turno: r.turno,
       puesto: r.puesto,
+      area: r.colaborador.puesto ?? "",
       estado: r.estado,
     })),
   );

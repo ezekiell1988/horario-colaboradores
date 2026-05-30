@@ -5,6 +5,23 @@
 
 ---
 
+## TASK-PUESTO-01: Filtro por área/puesto en asistencia
+**Estado:** ✅ Completado
+
+Title: Exponer área permanente del colaborador en la vista de asistencia y agregar filtro por área
+
+Context:
+Eli Daniel indicó que ciertos colaboradores (ej. Monitoreo) no rotan de puesto aunque sí de turno.
+Se necesita poder filtrar la tabla de asistencia por área para gestionar grupos de puestos fijos.
+
+Changes:
+- `api/asistencia/route.ts`: pre-llenar `puesto` en el upsert create con `colaborador.puesto`; exponer `area: r.colaborador.puesto ?? ""` en el map de respuesta.
+- `AttendanceTable.tsx`: agregar `area: string` a `AsistenciaRow`; mostrar badge gris bajo el nombre.
+- `asistencia/page.tsx`: estado `filtroArea`, chips de filtro dinámicos encima de la tabla, pasar `rowsFiltrados` a `AttendanceTable`.
+- `colaboradores/page.tsx`: renombrar label de "Puesto" a "Área / Puesto fijo", placeholder actualizado.
+
+---
+
 ## TASK-MT_ALTERNO-01: Migración schema — campo `fechaInicioPersonal`
 **Estado:** ✅ Completado
 

@@ -28,6 +28,14 @@
 - Verificación completa: M=T1(Mañana), T=T2(Tarde), Miércoles=Libre — implementación 100% correcta
 - Test golden master agregado en `roll-engine.test.ts`: 30 días de Junio 2026 con `it.each`
 - `ia/00_context.md` actualizado: contacto directo = Eli Daniel (primo del desarrollador)
+
+### PC-F9: Filtro por área/puesto en asistencia ✅
+- Origen: Eli Daniel indicó "Los de monitoreo no rotan de puesto, pero sí de turno"
+- `api/asistencia/route.ts`: pre-llena `Asistencia.puesto` con `Colaborador.puesto` al crear el registro; expone `area` en el JSON de respuesta
+- `AttendanceTable.tsx`: campo `area` en `AsistenciaRow`; badge gris bajo el nombre del colaborador
+- `asistencia/page.tsx`: chips dinámicos "Todos | Área1 | Área2..." filtran `rows` antes de pasarlos a la tabla
+- `colaboradores/page.tsx`: label renombrada a "Área / Puesto fijo" con placeholder "Monitoreo, Campo, Garita 1..."
+- Build limpio ✓
 - Suite total: **78/78 tests ✓**
 
 ---
