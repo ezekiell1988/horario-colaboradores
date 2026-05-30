@@ -115,3 +115,14 @@ Fases 1–7 completadas en su totalidad. Proyecto en producción en https://roll
 | `AttendanceTable`: campo `area` en tipo `AsistenciaRow` + badge de área bajo el nombre | ✅ |
 | `asistencia/page.tsx`: chips de filtro dinámicos "Todos / Área1 / Área2..." | ✅ |
 | `colaboradores/page.tsx`: label renombrada a "Área / Puesto fijo" con placeholder actualizado | ✅ |
+
+### Fase 10 — Guía de usuario en-app ✅ Completada
+> **Fecha:** 2026-05-30 — "quiero que la guía de usuario sea una URL en la app"
+
+| Componente | Estado |
+|------------|--------|
+| `ia/01_requirements.md`: nueva sección REQ-GUIA-01 | ✅ |
+| `src/app/guia/page.tsx`: página pública en `/guia` con guía completa | ✅ |
+| Botón "Guía de usuario" en nav y footer del landing page | ✅ |
+| Contenido: todos los conceptos, MT_ALTERNO, días libres, FAQ, errores comunes | ✅ |
+

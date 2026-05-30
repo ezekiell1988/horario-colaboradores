@@ -56,6 +56,9 @@ export default function Home() {
           <a href="#pricing" className="text-sm text-gray-600 hover:text-blue-700 hidden sm:block">
             Pricing
           </a>
+          <Link href="/guia" className="text-sm text-gray-600 hover:text-blue-700 hidden sm:block">
+            Guía de usuario
+          </Link>
           <Link
             href="/login"
             className="bg-blue-700 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
@@ -92,6 +95,12 @@ export default function Home() {
           >
             Ver funciones ↓
           </a>
+          <Link
+            href="/guia"
+            className="border border-blue-200 text-blue-700 px-6 py-3 rounded-xl font-semibold hover:border-blue-400 hover:bg-blue-50 transition-colors"
+          >
+            📖 Guía de usuario
+          </Link>
         </div>
       </section>
 
@@ -182,9 +191,12 @@ export default function Home() {
       <footer className="border-t border-gray-100 px-6 py-8 text-center text-xs text-gray-400">
         <p className="font-semibold text-gray-600 mb-1">Roll Manager</p>
         <p>Workforce management for security companies · Gestión de personal para empresas de seguridad</p>
-        <p className="mt-2">
+        <p className="mt-2 flex justify-center gap-4">
           <Link href="/login" className="text-blue-600 hover:underline">
             Admin Login
+          </Link>
+          <Link href="/guia" className="text-blue-600 hover:underline">
+            Guía de usuario
           </Link>
         </p>
       </footer>

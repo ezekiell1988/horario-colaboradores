@@ -1,7 +1,7 @@
 # 01 — Requisitos del Sistema
 
 > **Última actualización:** 2026-05-30
-> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29 y 2026-05-30, audio8 + imagen calendario Junio 2026 (2026-05-30), mensaje WhatsApp Eli Daniel 2026-05-30 (días libres configurables + alta individual)
+> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29 y 2026-05-30, audio8 + imagen calendario Junio 2026 (2026-05-30), mensaje WhatsApp Eli Daniel 2026-05-30 (días libres configurables + alta individual), sesión 2026-05-30 tarde (guía de usuario como URL en la app)
 
 ## Propósito del sistema
 Roll Manager gestiona el roll automático de turnos rotativos semanales de colaboradores de seguridad, registra su asistencia diaria y permite generar, editar con IA y exportar informes formales en PDF.
@@ -189,3 +189,36 @@ El sistema calcula el turno de cada grupo para la semana de la fecha actual y li
 4. Agrupa a todos los colaboradores por turno (T1 / T2 / T3).
 5. Consulta excepciones de esa semana para resaltarlas.
 6. Muestra las tarjetas de turno con los nombres. Sin paginación, sin filtros.
+
+---
+
+## Guía de usuario en-app — Requisito REQ-GUIA-01
+
+> **Origen:** sesión 2026-05-30 tarde.
+
+### Descripción
+La aplicación debe exponer una guía de usuario completa y detallada como una **URL pública** dentro del dominio del sistema, sin requerir autenticación.
+
+### Requisitos funcionales
+- **URL:** `/guia` — accesible sin login, desde cualquier dispositivo.
+- **Acceso desde el landing page** — el landing (`/`) debe incluir un enlace/botón visible hacia `/guia`.
+- **Contenido mínimo obligatorio:**
+  - Descripción del sistema y para qué sirve
+  - Roles y accesos (admin, coordinador, oficial) con detalle de cada uno
+  - Conceptos clave: turnos, rotación, grupos
+  - Todas las modalidades de colaborador, incluyendo `MT_ALTERNO` con su patrón A/B
+  - Días libres configurables (`diaLibre` / `diaLibreExtra`)
+  - Orden de configuración paso a paso
+  - Uso diario (asistencia, roll, informes)
+  - Vista del oficial (qué ve cada rol)
+  - Errores comunes y cómo evitarlos
+  - Preguntas frecuentes (FAQ)
+- **Diseño:** consistente con el resto de la app (Tailwind CSS), responsive, optimizado para celular.
+- **Navegación interna:** tabla de contenidos con anclas a cada sección.
+- **Sin autenticación:** accesible públicamente — no requiere sesión activa.
+
+### Requisitos no funcionales
+- Server Component de Next.js (sin `"use client"` innecesario).
+- Sin estilos inline — solo clases Tailwind o `<style>` global embebido si el volumen de CSS lo justifica.
+- Incluir enlace de regreso al landing page.
+- El contenido debe mantenerse actualizado si cambia el negocio.

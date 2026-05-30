@@ -81,6 +81,21 @@ Changes:
 
 ---
 
+## TASK-GUIA-01: Guía de usuario en-app
+**Estado:** ✅ Completado
+
+Title: Crear página pública `/guia` con guía de usuario completa y botón en landing page
+
+Context:
+El cliente pidió que la guía de usuario sea una URL accesible dentro de la app (no un HTML standalone), que esté enlazada desde el landing page, y que incluya toda la documentación del sistema: MT_ALTERNO, días libres, roles, conceptos, errores frecuentes y FAQ.
+
+Changes:
+- `ia/01_requirements.md`: nueva sección `REQ-GUIA-01` — guía de usuario en-app.
+- `src/app/guia/page.tsx`: página Server Component en `/guia` (pública, sin auth). Contiene ~8 secciones con conceptos, flujos, MT_ALTERNO detallado, días libres, orden de configuración, vista del oficial, errores comunes y FAQ de 9 preguntas.
+- `src/app/page.tsx`: enlace "Guía de usuario" en el nav (entre Pricing y Login), botón secundario en Hero y enlace en el footer.
+
+---
+
 ## TASK-MT_ALTERNO-01: Migración schema — campo `fechaInicioPersonal`
 **Estado:** ✅ Completado
 

@@ -1,9 +1,16 @@
 # 05 — Progreso del Proyecto
 
 > **Última actualización:** 2026-05-30 (sesión tarde)
-> **Estado:** Proyecto en producción — Fase 8 en curso (días libres configurables)
+> **Estado:** Proyecto en producción — Fase 8 en curso (días libres configurables) · Fase 10 completada (guía de usuario en-app)
 
 ## ✅ Completado
+
+### PC-F10: Guía de usuario en-app ✅
+- Origen: cliente pidió guía como URL en la app, enlazada desde el landing
+- `ia/01_requirements.md`: sección REQ-GUIA-01 agregada
+- `src/app/guia/page.tsx`: página Server Component pública en `/guia`, ~980 líneas. Cubre: conceptos, roles, turnos, rotación, modalidades (con MT_ALTERNO detallado), días libres, excepciones, orden de configuración, uso diario, vista del oficial, errores comunes y FAQ (9 preguntas)
+- `src/app/page.tsx`: enlace "Guía de usuario" en nav del landing, botón en Hero, enlace en footer
+- Sin errores TypeScript ni ESLint ✓
 
 ### PC-F8a: Días libres configurables — capa de datos y UI ✅
 - Origen: Eli Daniel 2026-05-30: "debes dejarme la opción de escoger el día libre"
