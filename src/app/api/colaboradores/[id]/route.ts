@@ -12,14 +12,18 @@ export async function PUT(
   }
 
   const { id } = await params;
-  const { nombre, grupoId, activo, puesto, modalidad, turnoFijo, fechaInicioPersonal } = await req.json();
+  const { nombre, grupoId, activo, puesto, modalidad, turnoFijo, fechaInicioPersonal, diaLibre, diaLibreExtra } = await req.json();
 
+  const DIAS_SEMANA = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"];
   const modalidadValida = ["FULL", "MT", "FIJO", "MT_ALTERNO"].includes(modalidad) ? modalidad : undefined;
   const turnoFijoValido = modalidadValida === "FIJO" && ["T1", "T2"].includes(turnoFijo) ? turnoFijo : (modalidadValida && modalidadValida !== "FIJO" ? null : undefined);
 
   const fechaInicioPersonalValida = modalidadValida === "MT_ALTERNO" && fechaInicioPersonal
     ? new Date(fechaInicioPersonal)
     : (modalidadValida && modalidadValida !== "MT_ALTERNO" ? null : undefined);
+
+  const diaLibreValido = diaLibre !== undefined ? (DIAS_SEMANA.includes(diaLibre) ? diaLibre : null) : undefined;
+  const diaLibreExtraValido = diaLibreExtra !== undefined ? (DIAS_SEMANA.includes(diaLibreExtra) ? diaLibreExtra : null) : undefined;
 
   const colaborador = await prisma.colaborador.update({
     where: { id },
@@ -31,6 +35,8 @@ export async function PUT(
       ...(modalidadValida !== undefined && { modalidad: modalidadValida }),
       ...(turnoFijoValido !== undefined && { turnoFijo: turnoFijoValido }),
       ...(fechaInicioPersonalValida !== undefined && { fechaInicioPersonal: fechaInicioPersonalValida }),
+      ...(diaLibreValido !== undefined && { diaLibre: diaLibreValido }),
+      ...(diaLibreExtraValido !== undefined && { diaLibreExtra: diaLibreExtraValido }),
     },
     include: { grupo: { select: { id: true, nombre: true } } },
   });

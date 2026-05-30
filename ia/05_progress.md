@@ -1,9 +1,30 @@
 # 05 — Progreso del Proyecto
 
-> **Última actualización:** 2026-05-30
-> **Estado:** Proyecto completo — en producción
+> **Última actualización:** 2026-05-30 (sesión tarde)
+> **Estado:** Proyecto en producción — Fase 8 en curso (días libres configurables)
 
 ## ✅ Completado
+
+### PC-F8a: Días libres configurables — capa de datos y UI ✅
+- Origen: Eli Daniel 2026-05-30: "debes dejarme la opción de escoger el día libre"
+- `ia/01_requirements.md`: Flujo 0 (alta individual uno a uno), nota de días libres configurables, campos `diaLibre`/`diaLibreExtra` documentados
+- `prisma/schema.prisma`: `diaLibre NVarChar(10)?` y `diaLibreExtra NVarChar(10)?` en modelo `Colaborador`
+- `prisma/migrations/pending_add_dia_libre_colaborador.sql`: SQL listo para aplicar cuando BD esté accesible
+- `api/colaboradores/route.ts` (POST): valida enum `DiaSemana` y persiste ambos campos
+- `api/colaboradores/[id]/route.ts` (PUT): ídem para edición
+- `colaboradores/page.tsx`: tipos extendidos + constante `DIAS_SEMANA` + selectores "Día libre" y "Segundo día libre"
+- Build sin errores TypeScript ✓
+- **Bloqueante:** `db push` pendiente (BD `172.191.128.24:1433` no accesible desde red local)
+
+## 🔄 En curso
+
+### Fase 8 — Días libres configurables
+- ✅ TASK-DIA-LIBRE-01: schema + API + UI
+- ⏳ Aplicar `db push` en producción cuando la BD esté accesible
+- ⏳ TASK-DIA-LIBRE-02: adaptar `roll-engine.ts` para leer `diaLibre`/`diaLibreExtra`
+- ⏳ TASK-DIA-LIBRE-03: adaptar vista Asistencia para omitir días libres configurados
+
+---
 
 ### PC-F6: Modalidad MT_ALTERNO ✅
 - Schema: `fechaInicioPersonal DateTime?` + `modalidad @db.NVarChar(15)` — `db push` + `generate` ✓

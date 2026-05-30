@@ -1,12 +1,71 @@
 # 04 — Tareas Accionables
 
-> **Última actualización:** 2026-05-30
-> **Prioridad actual:** Ninguna — proyecto al día
+> **Última actualización:** 2026-05-30 (sesión tarde)
+> **Prioridad actual:** Aplicar migración BD cuando esté accesible → adaptar roll-engine y asistencia
 
 ---
 
-## TASK-PUESTO-01: Filtro por área/puesto en asistencia
+---
+
+## TASK-DIA-LIBRE-01: Schema + CRUD — campos diaLibre / diaLibreExtra
 **Estado:** ✅ Completado
+
+Title: Agregar campos `diaLibre` y `diaLibreExtra` al modelo `Colaborador` y exponerlos en el formulario
+
+Context:
+Eli Daniel (2026-05-30): "debes dejarme la opción de escoger el día libre".
+Los días libres no se derivan automáticamente de la modalidad — el coordinador los elige manualmente al crear o editar un colaborador. Ver requisitos en `ia/01_requirements.md` sección "Modalidad de colaborador" y "Flujo 0".
+
+Changes:
+- `prisma/schema.prisma`: `diaLibre String? @db.NVarChar(10)` y `diaLibreExtra String? @db.NVarChar(10)` en modelo `Colaborador`.
+- `prisma/migrations/pending_add_dia_libre_colaborador.sql`: SQL listo para aplicar con `db push` o directo en Azure SQL.
+- `api/colaboradores/route.ts` (POST): extrae, valida (enum `DiaSemana`) y persiste ambos campos.
+- `api/colaboradores/[id]/route.ts` (PUT): ídem para edición.
+- `colaboradores/page.tsx`: tipos `Colaborador` y `FormState` extendidos; `DIAS_SEMANA` constante; selectores "Día libre" (obligatorio, puede ser "Sin día libre") y "Segundo día libre" (opcional) en el formulario.
+
+Pending:
+- Ejecutar `npx prisma db push` desde `src/` cuando la BD esté accesible.
+- Ejecutar `npx prisma generate` tras el push.
+
+---
+
+## TASK-DIA-LIBRE-02: Adaptar roll-engine — respetar diaLibre / diaLibreExtra
+**Estado:** ⏳ Pendiente
+
+Title: Hacer que `roll-engine.ts` marque como `"LIBRE"` los días configurados en `diaLibre` y `diaLibreExtra`
+
+Context:
+Actualmente `getDiasLibres()` retorna valores hardcodeados por modalidad. Debe leer los campos `diaLibre` y `diaLibreExtra` del colaborador (mapeando nombre de día a índice 0-6) y combinarlos con los libres estructurales de `MT_ALTERNO` (miércoles=3).
+
+Steps:
+1. Crear helper `diaLibreToIndex(dia: string): number` en `roll-engine.ts` mapeando `LUNES→1 … DOMINGO→0`.
+2. Actualizar `getDiasLibres(colaborador)` para incluir `diaLibre` y `diaLibreExtra` en el array resultante.
+3. En `getTurnoPorDia()` y cualquier punto que marque días libres, usar `getDiasLibres()` en lugar de valores hardcodeados.
+4. Actualizar tests de `roll-engine.test.ts` para verificar que el día libre configurado se respeta.
+5. `npm test` — todos los tests pasan.
+
+Dependencies: TASK-DIA-LIBRE-01 completado y migración BD aplicada.
+
+---
+
+## TASK-DIA-LIBRE-03: Adaptar vista Asistencia — omitir días libres configurados
+**Estado:** ⏳ Pendiente
+
+Title: La vista de asistencia no debe generar registro para el día libre del colaborador
+
+Context:
+`api/asistencia/route.ts` ya omite miércoles para `MT_ALTERNO`. Debe generalizarse para omitir cualquier día en `diaLibre` / `diaLibreExtra` del colaborador.
+
+Steps:
+1. En `api/asistencia/route.ts` (GET/POST): obtener `diaLibre` y `diaLibreExtra` del colaborador.
+2. Si la fecha consultada coincide con alguno de esos días, excluir el colaborador del recuadro (o marcarlo como "Libre" sin registro editable).
+3. Verificar que `MT_ALTERNO` sigue funcionando igual (no regresión).
+
+Dependencies: TASK-DIA-LIBRE-01 completado y migración BD aplicada.
+
+---
+
+## TASK-PUESTO-01: Filtro por área/puesto en asistencia**Estado:** ✅ Completado
 
 Title: Exponer área permanente del colaborador en la vista de asistencia y agregar filtro por área
 

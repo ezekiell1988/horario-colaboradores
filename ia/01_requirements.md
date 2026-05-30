@@ -1,7 +1,7 @@
 # 01 — Requisitos del Sistema
 
 > **Última actualización:** 2026-05-30
-> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29 y 2026-05-30, audio8 + imagen calendario Junio 2026 (2026-05-30)
+> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29 y 2026-05-30, audio8 + imagen calendario Junio 2026 (2026-05-30), mensaje WhatsApp Eli Daniel 2026-05-30 (días libres configurables + alta individual)
 
 ## Propósito del sistema
 Roll Manager gestiona el roll automático de turnos rotativos semanales de colaboradores de seguridad, registra su asistencia diaria y permite generar, editar con IA y exportar informes formales en PDF.
@@ -19,19 +19,21 @@ Roll Manager gestiona el roll automático de turnos rotativos semanales de colab
 
 Existen 3 tipos de colaborador según su patrón de rotación:
 
-| Modalidad | Nombre oficial | Turnos que rota | Ciclo | Días libres |
-|-----------|---------------|-----------------|-------|-------------|
+| Modalidad | Nombre oficial | Turnos que rota | Ciclo | Días libres (referencia) |
+|-----------|---------------|-----------------|-------|--------------------------|
 | `FULL` | Turno mixto | Mañana + Tarde + Noche | 21 días (3 semanas) | T3=Vie+Sáb, T2=Sáb, T1=ninguno |
 | `MT` | Turno doble | Solo Mañana + Tarde | 14 días (2 semanas) | T2=Sáb, T1=ninguno |
 | `FIJO_T1` | Fijo mañana | Solo Mañana (06:00–14:00) | Sin ciclo | ninguno |
 | `FIJO_T2` | Fijo tarde | Solo Tarde (14:00–22:00) | Sin ciclo | ninguno |
 | `MT_ALTERNO` | Alterno M/T | Mañana + Tarde, bloques de 2 días | 2 semanas (propio) | **Miércoles fijo** |
 
+> **Confirmado Eli Daniel 2026-05-30:** Los días libres **no son fijos por modalidad**. El coordinador debe poder **elegir el día libre** de cada colaborador al crearlo o editarlo. Los valores de la tabla anterior son solo orientativos. Los campos `diaLibre` y `diaLibreExtra` en la BD son la fuente de verdad. `MT_ALTERNO` es la única excepción donde el miércoles es estructuralmente libre por el patrón de alternancia, aunque el admin puede configurar un día libre adicional.
+
 **Reglas de negocio por modalidad:**
 - `FULL` y `MT` usan la misma `fechaInicioRotacion` del grupo — el cálculo es idéntico, solo cambia qué turnos participan.
 - `MT`: cuando el ciclo del grupo cae en T3 (Noche), el colaborador MT simplemente continúa en T2 (Tarde) — **no trabaja de noche**.
 - `FIJO_T1` / `FIJO_T2`: no participan del ciclo; siempre ocupan el mismo turno. Solo necesitan 1 puesto en la Vista de Hoy.
-- Los fijos trabajan 6×1 igual que los rotativos (mismo patrón de días libres: no definido aún).
+- Los días libres de **todos los colaboradores** (incluso fijos) se configuran manualmente al crear/editar el colaborador — no se derivan automáticamente de la modalidad.
 - `MT_ALTERNO`: ver sección completa a continuación.
 
 ---
@@ -77,8 +79,10 @@ si esSemanasImpar (Semana B):
 
 | Campo | Tabla | Tipo | Propósito |
 |-------|-------|------|-----------|
-| `fechaInicioPersonal` | `Colaborador` | `DateTime?` | Lunes de referencia del ciclo propio (solo `MT_ALTERNO`) |
+| `fechaInicioPersonal` | `Colaborador` | `DateTime?` | Lunes de referencia del ciclo propio (solo `MT_ALTERNO`) || `diaLibre` | `Colaborador` | `DiaSemana?` | Día libre principal elegido por el coordinador (aplica a todos) |
+| `diaLibreExtra` | `Colaborador` | `DiaSemana?` | Segundo día libre opcional (ej. FULL en T3 que libra Vie+Sáb) |
 
+Donde `DiaSemana` es enum: `LUNES | MARTES | MIERCOLES | JUEVES | VIERNES | SABADO | DOMINGO`.
 La nueva modalidad se agrega al enum `Modalidad` en `roll-engine.ts`: `"FULL" | "MT" | "FIJO" | "MT_ALTERNO"`.
 
 ### Impacto en vistas existentes
@@ -88,6 +92,31 @@ La nueva modalidad se agrega al enum `Modalidad` en `roll-engine.ts`: `"FULL" | 
 - **Vista Oficial:** el oficial con esta modalidad ve su turno día por día (no el turno de la semana completa).
 
 ## Flujos principales
+
+### Flujo 0 — Alta de Colaborador (uno a uno)
+> **Confirmado Eli Daniel 2026-05-30:** el proceso de incorporación es individual; no se admite carga masiva.
+
+**Estado de entrada:** Admin autenticado, grupos existentes.
+**Estado de salida:** Colaborador creado y asignado a un grupo.
+
+1. El admin abre `/admin/colaboradores/nuevo`.
+2. Completa el formulario con:
+   - Nombre completo
+   - Modalidad (`FULL` / `MT` / `FIJO_T1` / `FIJO_T2` / `MT_ALTERNO`)
+   - Grupo al que pertenece
+   - **Día libre principal** (selector: Lunes … Domingo / Sin día libre) ← obligatorio
+   - **Día libre extra** — opcional, para casos con 2 días libres (ej. FULL en T3)
+   - `fechaInicioPersonal` — visible y obligatorio solo si modalidad es `MT_ALTERNO`
+3. El sistema valida y crea el registro.
+4. El colaborador queda activo de inmediato y aparece en la Vista de Hoy.
+
+**Reglas:**
+- No hay importación CSV ni alta masiva — cada colaborador se agrega individualmente.
+- El campo "Día libre" es obligatorio; el coordinador elige "Sin día libre" si corresponde.
+- El sistema muestra los 7 días de la semana como opciones; no los deriva de la modalidad.
+- La misma selección de días libres aplica al editar un colaborador existente.
+
+---
 
 ### Flujo 1 — Generación del Roll Semanal
 **Estado de entrada:** Colaboradores y grupos configurados; semana objetivo definida.

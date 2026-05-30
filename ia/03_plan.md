@@ -1,6 +1,6 @@
 # 03 — Plan de Desarrollo
 
-> **Última actualización:** 2026-05-30
+> **Última actualización:** 2026-05-30 (sesión tarde)
 
 ## Visión general
 Fases 1–7 completadas en su totalidad. Proyecto en producción en https://roll-manager.ezekl.com con login funcional.
@@ -78,6 +78,21 @@ Fases 1–7 completadas en su totalidad. Proyecto en producción en https://roll
 | Fix `DATABASE_URL`: `172.191.128.24` → `localhost` en VM | ✅ |
 | Secret `DATABASE_URL` actualizado en GitHub Actions | ✅ |
 | Login `admin@rollmanager.com` verificado en producción | ✅ |
+
+### Fase 8 — Días libres configurables por colaborador 🔄 En curso
+> **Origen:** mensaje WhatsApp Eli Daniel 2026-05-30 — "debes dejarme la opción de escoger el día libre"
+
+| Componente | Estado |
+|------------|--------|
+| `ia/01_requirements.md` actualizado (Flujo 0, campos `diaLibre`/`diaLibreExtra`) | ✅ |
+| Schema Prisma: campos `diaLibre` y `diaLibreExtra` en `Colaborador` | ✅ |
+| `api/colaboradores/route.ts` (POST): acepta y valida `diaLibre`/`diaLibreExtra` | ✅ |
+| `api/colaboradores/[id]/route.ts` (PUT): persiste `diaLibre`/`diaLibreExtra` | ✅ |
+| `colaboradores/page.tsx`: selectores "Día libre" y "Segundo día libre" en el form | ✅ |
+| SQL de migración pendiente: `pending_add_dia_libre_colaborador.sql` | ✅ |
+| `db push` en producción (requiere BD accesible) | ⏳ |
+| Adaptar `roll-engine.ts` para leer `diaLibre`/`diaLibreExtra` al calcular el roll | ⏳ |
+| Adaptar vista Asistencia para omitir día libre configurado | ⏳ |
 
 ### Fase 8 — Validación con calendario real del cliente ✅ Completada
 > **Fecha:** 2026-05-30 — Fuente: imagen calendario Junio 2026 enviada por Eli Daniel

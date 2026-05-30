@@ -38,13 +38,25 @@ type Colaborador = {
   modalidad: string;
   turnoFijo: string | null;
   fechaInicioPersonal: string | null;
+  diaLibre: string | null;
+  diaLibreExtra: string | null;
   activo: boolean;
   grupoId: string;
   grupo: Grupo;
 };
-type FormState = { nombre: string; grupoId: string; activo: boolean; puesto: string; modalidad: string; turnoFijo: string; fechaInicioPersonal: string };
+type FormState = { nombre: string; grupoId: string; activo: boolean; puesto: string; modalidad: string; turnoFijo: string; fechaInicioPersonal: string; diaLibre: string; diaLibreExtra: string };
 
-const EMPTY_FORM: FormState = { nombre: "", grupoId: "", activo: true, puesto: "", modalidad: "FULL", turnoFijo: "", fechaInicioPersonal: "" };
+const EMPTY_FORM: FormState = { nombre: "", grupoId: "", activo: true, puesto: "", modalidad: "FULL", turnoFijo: "", fechaInicioPersonal: "", diaLibre: "", diaLibreExtra: "" };
+
+const DIAS_SEMANA = [
+  { value: "LUNES", label: "Lunes" },
+  { value: "MARTES", label: "Martes" },
+  { value: "MIERCOLES", label: "Miércoles" },
+  { value: "JUEVES", label: "Jueves" },
+  { value: "VIERNES", label: "Viernes" },
+  { value: "SABADO", label: "Sábado" },
+  { value: "DOMINGO", label: "Domingo" },
+];
 
 export default function ColaboradoresPage() {
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
@@ -86,7 +98,7 @@ export default function ColaboradoresPage() {
 
   function openEdit(c: Colaborador) {
     setEditId(c.id);
-    setForm({ nombre: c.nombre, grupoId: c.grupoId, activo: c.activo, puesto: c.puesto ?? "", modalidad: c.modalidad ?? "FULL", turnoFijo: c.turnoFijo ?? "", fechaInicioPersonal: c.fechaInicioPersonal ? c.fechaInicioPersonal.split("T")[0] : "" });
+    setForm({ nombre: c.nombre, grupoId: c.grupoId, activo: c.activo, puesto: c.puesto ?? "", modalidad: c.modalidad ?? "FULL", turnoFijo: c.turnoFijo ?? "", fechaInicioPersonal: c.fechaInicioPersonal ? c.fechaInicioPersonal.split("T")[0] : "", diaLibre: c.diaLibre ?? "", diaLibreExtra: c.diaLibreExtra ?? "" });
     setError("");
     setShowModal(true);
   }
@@ -104,6 +116,8 @@ export default function ColaboradoresPage() {
       body: JSON.stringify({
         ...form,
         fechaInicioPersonal: form.modalidad === "MT_ALTERNO" ? form.fechaInicioPersonal || null : null,
+        diaLibre: form.diaLibre || null,
+        diaLibreExtra: form.diaLibreExtra || null,
       }),
     });
 
@@ -123,7 +137,7 @@ export default function ColaboradoresPage() {
       const res = await fetch(`/api/colaboradores/${c.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo, puesto: c.puesto, modalidad: c.modalidad, turnoFijo: c.turnoFijo, fechaInicioPersonal: c.fechaInicioPersonal ? c.fechaInicioPersonal.split("T")[0] : null }),
+        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo, puesto: c.puesto, modalidad: c.modalidad, turnoFijo: c.turnoFijo, fechaInicioPersonal: c.fechaInicioPersonal ? c.fechaInicioPersonal.split("T")[0] : null, diaLibre: c.diaLibre ?? null, diaLibreExtra: c.diaLibreExtra ?? null }),
       });
       if (!res.ok) throw new Error();
       await loadData();
@@ -326,6 +340,44 @@ export default function ColaboradoresPage() {
                   <p className="text-xs text-teal-700 mt-1">Semana A: Lun/Mar/Sáb/Dom=Tarde, Jue/Vie=Mañana.</p>
                 </div>
               )}
+              <div>
+                <label
+                  htmlFor="col-diaLibre"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Día libre
+                </label>
+                <select
+                  id="col-diaLibre"
+                  value={form.diaLibre}
+                  onChange={(e) => setForm({ ...form, diaLibre: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Sin día libre</option>
+                  {DIAS_SEMANA.map((d) => (
+                    <option key={d.value} value={d.value}>{d.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="col-diaLibreExtra"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Segundo día libre <span className="text-gray-400 font-normal">(opcional)</span>
+                </label>
+                <select
+                  id="col-diaLibreExtra"
+                  value={form.diaLibreExtra}
+                  onChange={(e) => setForm({ ...form, diaLibreExtra: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Ninguno</option>
+                  {DIAS_SEMANA.map((d) => (
+                    <option key={d.value} value={d.value}>{d.label}</option>
+                  ))}
+                </select>
+              </div>
               {editId && (
                 <div className="flex items-center gap-2">
                   <input

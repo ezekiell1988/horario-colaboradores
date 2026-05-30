@@ -25,6 +25,8 @@ model Colaborador {
   modalidad            String          @default("FULL") @db.NVarChar(15) // "FULL" | "MT" | "FIJO" | "MT_ALTERNO"
   turnoFijo            String?         @db.NVarChar(2)
   fechaInicioPersonal  DateTime?       // solo MT_ALTERNO: lunes de referencia del ciclo propio
+  diaLibre             String?         @db.NVarChar(10) // "LUNES"|"MARTES"|"MIERCOLES"|"JUEVES"|"VIERNES"|"SABADO"|"DOMINGO"
+  diaLibreExtra        String?         @db.NVarChar(10) // segundo día libre opcional (ej. FULL en T3)
   activo               Boolean         @default(true)
   grupoId              String
   grupo                Grupo           @relation(fields: [grupoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
