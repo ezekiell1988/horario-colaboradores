@@ -22,13 +22,21 @@ export default auth((req) => {
     }
   }
 
+  // Proteger /coordinador — solo rol coordinador
+  if (pathname.startsWith("/coordinador")) {
+    if (!isLoggedIn || rol !== "coordinador") {
+      return NextResponse.redirect(new URL("/login", req.nextUrl));
+    }
+  }
+
   // Login — si ya tiene sesión, redirigir al panel
   if (pathname.startsWith("/login") && isLoggedIn) {
-    const destino = rol === "admin" ? "/admin" : "/oficial";
+    const destino =
+      rol === "admin" ? "/admin" : rol === "coordinador" ? "/coordinador" : "/oficial";
     return NextResponse.redirect(new URL(destino, req.nextUrl));
   }
 });
 
 export const config = {
-  matcher: ["/admin/:path*", "/oficial/:path*", "/login"],
+  matcher: ["/admin/:path*", "/oficial/:path*", "/coordinador/:path*", "/login"],
 };

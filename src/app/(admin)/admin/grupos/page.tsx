@@ -2,6 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { showToast } from "@/lib/toast";
+import TourButton from "@/components/TourButton";
+import type { DriveStep } from "driver.js";
+
+const TOUR_STEPS: DriveStep[] = [
+  {
+    popover: {
+      title: "Grupos de rotación",
+      description: "Los grupos agrupan colaboradores que comparten el mismo ciclo de turnos. Cada grupo tiene su propio punto de inicio de rotación.",
+    },
+  },
+  {
+    element: "#grp-btn-nuevo",
+    popover: {
+      title: "Nuevo grupo",
+      description: "Crea un grupo asignando un nombre, el turno con el que comienza y la fecha de inicio de la rotación.",
+      side: "bottom",
+    },
+  },
+  {
+    element: "#grp-lista",
+    popover: {
+      title: "Lista de grupos",
+      description: "Cada grupo muestra cuántos colaboradores tiene y desde qué turno inicia su rotación. Solo se pueden eliminar grupos sin colaboradores.",
+      side: "top",
+    },
+  },
+];
 
 const TURNOS = ["T1 — 06:00–14:00", "T2 — 14:00–22:00", "T3 — 22:00–06:00"];
 
@@ -107,18 +134,22 @@ export default function GruposPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-gray-800">Grupos de rotación</h1>
-        <button
-          onClick={openNew}
-          className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          + Nuevo
-        </button>
+        <div className="flex items-center gap-2">
+          <TourButton steps={TOUR_STEPS} label="Tour de esta pantalla" />
+          <button
+            id="grp-btn-nuevo"
+            onClick={openNew}
+            className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            + Nuevo
+          </button>
+        </div>
       </div>
 
       {grupos.length === 0 ? (
         <p className="text-center text-gray-400 py-12">No hay grupos registrados.</p>
       ) : (
-        <ul className="space-y-2">
+        <ul id="grp-lista" className="space-y-2">
           {grupos.map((g) => (
             <li key={g.id} className="bg-white rounded-xl p-4 shadow-sm">
               <div className="flex items-start justify-between gap-3">

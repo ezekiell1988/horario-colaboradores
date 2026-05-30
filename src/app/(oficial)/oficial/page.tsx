@@ -1,6 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import TourButton from "@/components/TourButton";
+import type { DriveStep } from "driver.js";
+
+const TOUR_STEPS: DriveStep[] = [
+  {
+    popover: {
+      title: "Tu panel de turnos",
+      description: "Aquí puedes ver el turno asignado para esta semana y el de la próxima. Solo lectura — sin acciones requeridas.",
+    },
+  },
+  {
+    element: "#oficial-turno-actual",
+    popover: {
+      title: "Turno de esta semana",
+      description: "Muestra el turno en curso con el nombre, horario y fechas de la semana.",
+      side: "bottom",
+    },
+  },
+  {
+    element: "#oficial-turno-proximo",
+    popover: {
+      title: "Próxima semana",
+      description: "Anticipa el turno que te corresponde la semana siguiente para que puedas planificar.",
+      side: "top",
+    },
+  },
+];
 
 const TURNO_LABELS: Record<string, { nombre: string; horario: string }> = {
   T1: { nombre: "Mañana", horario: "06:00 – 14:00" },
@@ -66,26 +93,29 @@ export default function OficialPage() {
   return (
     <div>
       {/* Saludo */}
-      <div className="mb-6">
-        <p className="text-gray-500 text-sm">Bienvenido,</p>
-        <h1 className="text-2xl font-bold text-gray-900">{data.nombre}</h1>
-        <p className="text-gray-500 text-sm mt-0.5">
-          Grupo: {data.grupo}
-          {data.modalidad === "FIJO" && (
-            <span className="ml-2 inline-block rounded-full bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-0.5">
-              Turno fijo
-            </span>
-          )}
-          {data.modalidad === "MT" && (
-            <span className="ml-2 inline-block rounded-full bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5">
-              Turno doble
-            </span>
-          )}
-        </p>
+      <div className="mb-6 flex items-start justify-between">
+        <div>
+          <p className="text-gray-500 text-sm">Bienvenido,</p>
+          <h1 className="text-2xl font-bold text-gray-900">{data.nombre}</h1>
+          <p className="text-gray-500 text-sm mt-0.5">
+            Grupo: {data.grupo}
+            {data.modalidad === "FIJO" && (
+              <span className="ml-2 inline-block rounded-full bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-0.5">
+                Turno fijo
+              </span>
+            )}
+            {data.modalidad === "MT" && (
+              <span className="ml-2 inline-block rounded-full bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5">
+                Turno doble
+              </span>
+            )}
+          </p>
+        </div>
+        <TourButton steps={TOUR_STEPS} label="Tour de esta pantalla" />
       </div>
 
       {/* Turno actual */}
-      <div className="mb-4">
+      <div id="oficial-turno-actual" className="mb-4">
         <p className="text-xs font-semibold uppercase text-gray-400 mb-2">Esta semana</p>
         <div
           className={`rounded-2xl border-2 px-5 py-5 ${TURNO_COLORS[data.turnoActual] ?? "bg-gray-50 border-gray-200"}`}
@@ -101,7 +131,7 @@ export default function OficialPage() {
       </div>
 
       {/* Turno próximo */}
-      <div>
+      <div id="oficial-turno-proximo">
         <p className="text-xs font-semibold uppercase text-gray-400 mb-2">Próxima semana</p>
         <div
           className={`rounded-2xl border px-5 py-4 opacity-75 ${TURNO_COLORS[data.turnoProximo] ?? "bg-gray-50 border-gray-200"}`}

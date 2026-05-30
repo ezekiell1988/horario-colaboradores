@@ -10,30 +10,30 @@ const TOUR_STEPS: DriveStep[] = [
   {
     popover: {
       title: "Asistencia diaria",
-      description: "Registra la asistencia de todos los colaboradores día a día. Los cambios se guardan automáticamente.",
+      description: "Registra y consulta la asistencia de todos los colaboradores para cualquier día.",
     },
   },
   {
-    element: "#asistencia-nav",
+    element: "#coord-asist-nav",
     popover: {
       title: "Navegación de fechas",
-      description: "Usa las flechas para moverte entre días o el botón \"Ir a hoy\" para volver rápido al día actual.",
+      description: "Usa las flechas para moverte entre días o toca \"Ir a hoy\" para volver al día actual.",
       side: "bottom",
     },
   },
   {
-    element: "#asistencia-resumen",
+    element: "#coord-asist-resumen",
     popover: {
       title: "Resumen del día",
-      description: "Conteo de presentes, ausentes y con permiso del día seleccionado.",
+      description: "Total de colaboradores presentes, ausentes y con permiso.",
       side: "bottom",
     },
   },
   {
-    element: "#asistencia-tabla",
+    element: "#coord-asist-tabla",
     popover: {
-      title: "Tabla de asistencia",
-      description: "Toca el estado (presente / ausente / permiso) para cambiarlo al instante. El campo \"puesto\" se guarda automáticamente al dejar de escribir.",
+      title: "Registro de asistencia",
+      description: "Marca el estado de cada colaborador y ajusta el puesto físico asignado. Los cambios se guardan automáticamente.",
       side: "top",
     },
   },
@@ -60,13 +60,12 @@ function formatFecha(fecha: string): string {
   });
 }
 
-export default function AsistenciaPage() {
+export default function CoordinadorAsistenciaPage() {
   const [fecha, setFecha] = useState(getTodayISO());
   const [rows, setRows] = useState<AsistenciaRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState<Record<string, boolean>>({});
 
-  // debounce timers para el campo puesto
   const puestoTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const fetchAsistencia = useCallback((f: string) => {
@@ -112,7 +111,6 @@ export default function AsistenciaPage() {
   const handlePuestoChange = useCallback(
     (id: string, puesto: string) => {
       setRows((prev) => prev.map((r) => (r.id === id ? { ...r, puesto } : r)));
-      // debounce 800 ms
       clearTimeout(puestoTimers.current[id]);
       puestoTimers.current[id] = setTimeout(() => {
         saveField(id, { puesto });
@@ -129,7 +127,7 @@ export default function AsistenciaPage() {
       </div>
 
       {/* Selector de fecha */}
-      <div id="asistencia-nav" className="bg-white rounded-xl p-4 shadow-sm mb-4">
+      <div id="coord-asist-nav" className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setFecha((f) => shiftDay(f, -1))}
@@ -152,7 +150,7 @@ export default function AsistenciaPage() {
         <div className="text-center mt-1">
           <button
             onClick={() => setFecha(getTodayISO())}
-            className="text-xs text-blue-600 hover:underline"
+            className="text-xs text-teal-600 hover:underline"
           >
             Ir a hoy
           </button>
@@ -161,7 +159,7 @@ export default function AsistenciaPage() {
 
       {/* Resumen */}
       {!loading && rows.length > 0 && (
-        <div id="asistencia-resumen" className="flex gap-3 mb-4 text-sm">
+        <div id="coord-asist-resumen" className="flex gap-3 mb-4 text-sm">
           {(["presente", "ausente", "permiso"] as const).map((e) => {
             const count = rows.filter((r) => r.estado === e).length;
             const colors = {
@@ -170,10 +168,7 @@ export default function AsistenciaPage() {
               permiso: "bg-amber-50 text-amber-700 border-amber-200",
             };
             return (
-              <div
-                key={e}
-                className={`flex-1 rounded-xl border px-3 py-2 text-center ${colors[e]}`}
-              >
+              <div key={e} className={`flex-1 rounded-xl border px-3 py-2 text-center ${colors[e]}`}>
                 <p className="text-xl font-bold">{count}</p>
                 <p className="text-xs capitalize">{e}</p>
               </div>
@@ -182,17 +177,18 @@ export default function AsistenciaPage() {
         </div>
       )}
 
-      {/* Tabla */}
       {loading ? (
         <p className="text-center text-gray-400 py-10">Cargando asistencia...</p>
+      ) : rows.length === 0 ? (
+        <p className="text-center text-gray-400 py-10">No hay registros para este día.</p>
       ) : (
-        <div id="asistencia-tabla">
-          <AttendanceTable
-            rows={rows}
-            onEstadoChange={handleEstadoChange}
-            onPuestoChange={handlePuestoChange}
-            saving={saving}
-          />
+        <div id="coord-asist-tabla">
+        <AttendanceTable
+          rows={rows}
+          onEstadoChange={handleEstadoChange}
+          onPuestoChange={handlePuestoChange}
+          saving={saving}
+        />
         </div>
       )}
     </div>

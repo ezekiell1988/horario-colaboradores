@@ -2,6 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { showToast } from "@/lib/toast";
+import TourButton from "@/components/TourButton";
+import type { DriveStep } from "driver.js";
+
+const TOUR_STEPS: DriveStep[] = [
+  {
+    popover: {
+      title: "Colaboradores",
+      description: "Aquí gestionas todos los colaboradores: crear, editar, activar o desactivar.",
+    },
+  },
+  {
+    element: "#col-btn-nuevo",
+    popover: {
+      title: "Nuevo colaborador",
+      description: "Toca \"+ Nuevo\" para agregar un colaborador. Define su nombre, grupo, puesto y modalidad de rotación.",
+      side: "bottom",
+    },
+  },
+  {
+    element: "#col-lista",
+    popover: {
+      title: "Lista de colaboradores",
+      description: "Cada tarjeta muestra nombre, grupo, puesto y modalidad. Toca \"Editar\" para modificar o el badge \"Activo/Inactivo\" para cambiar el estado.",
+      side: "top",
+    },
+  },
+];
 
 type Grupo = { id: string; nombre: string };
 type Colaborador = {
@@ -109,12 +136,16 @@ export default function ColaboradoresPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-gray-800">Colaboradores</h1>
-        <button
-          onClick={openNew}
-          className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          + Nuevo
-        </button>
+        <div className="flex items-center gap-2">
+          <TourButton steps={TOUR_STEPS} label="Tour de esta pantalla" />
+          <button
+            id="col-btn-nuevo"
+            onClick={openNew}
+            className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            + Nuevo
+          </button>
+        </div>
       </div>
 
       {colaboradores.length === 0 ? (
@@ -122,7 +153,7 @@ export default function ColaboradoresPage() {
           No hay colaboradores registrados.
         </p>
       ) : (
-        <ul className="space-y-2">
+        <ul id="col-lista" className="space-y-2">
           {colaboradores.map((c) => (
             <li
               key={c.id}

@@ -3,6 +3,33 @@
 import { useCallback, useEffect, useState } from "react";
 import ReportEditor from "@/components/ReportEditor";
 import { showToast } from "@/lib/toast";
+import TourButton from "@/components/TourButton";
+import type { DriveStep } from "driver.js";
+
+const TOUR_STEPS: DriveStep[] = [
+  {
+    popover: {
+      title: "Módulo de Informes",
+      description: "Aquí creas, editas y exportas los informes diarios de turno. La IA puede formalizar el texto automáticamente.",
+    },
+  },
+  {
+    element: "#informes-sidebar",
+    popover: {
+      title: "Historial y nuevo informe",
+      description: "Navega por mes, selecciona un informe existente o crea uno nuevo eligiendo la fecha y tocando \"+ Nuevo\".",
+      side: "right",
+    },
+  },
+  {
+    element: "#informes-editor",
+    popover: {
+      title: "Editor del informe",
+      description: "Escribe el borrador del informe. Usa el botón \"Formalizar con IA\" para que Azure OpenAI lo redacte de forma profesional y luego exporta el PDF.",
+      side: "left",
+    },
+  },
+];
 
 interface InformeListItem {
   id: string;
@@ -94,9 +121,14 @@ export default function InformesPage() {
   });
 
   return (
-    <div className="flex flex-col gap-4 md:flex-row md:gap-6 min-h-[calc(100vh-8rem)]">
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold text-gray-800">Informes</h1>
+        <TourButton steps={TOUR_STEPS} label="Tour de esta pantalla" />
+      </div>
+      <div className="flex flex-col gap-4 md:flex-row md:gap-6 min-h-[calc(100vh-8rem)]">
       {/* Sidebar — historial del mes */}
-      <aside className="w-full md:w-64 md:shrink-0 space-y-4">
+      <aside id="informes-sidebar" className="w-full md:w-64 md:shrink-0 space-y-4">
         {/* Navegación de mes */}
         <div className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-3 py-2">
           <button
@@ -177,7 +209,7 @@ export default function InformesPage() {
       </aside>
 
       {/* Editor */}
-      <main className="flex-1">
+      <main id="informes-editor" className="flex-1">
         {activo ? (
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <ReportEditor
@@ -195,6 +227,7 @@ export default function InformesPage() {
           </div>
         )}
       </main>
+      </div>
     </div>
   );
 }

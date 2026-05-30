@@ -1,7 +1,7 @@
 # 05 — Progreso del Proyecto
 
 > **Última actualización:** 2026-05-30
-> **Fase activa:** Fase 2 — Módulo Roll de Turnos
+> **Fase activa:** Fase 5 — Pulido y Despliegue
 
 ## ✅ Completado
 
@@ -33,9 +33,9 @@
 - Build limpio ✓
 - Ver TASK-SETUP-03
 
-## 🔄 En curso — Fase 2: Módulo Roll de Turnos
+## 🔄 En curso — Fase 5: Pulido y Despliegue
 
-### PC-04: CRUD Colaboradores y Grupos ✅
+### UI mobile-first ✅
 - `app/api/colaboradores/route.ts` + `[id]/route.ts` — GET/POST/PUT/DELETE, sesión validada
 - `app/api/grupos/route.ts` + `[id]/route.ts` — GET/POST/PUT/DELETE, guarda con conteo, bloquea borrado si tiene colaboradores
 - `app/(admin)/admin/colaboradores/page.tsx` — lista + modal (activar/desactivar, editar, cambiar grupo)
@@ -150,11 +150,42 @@
 
 - **Origen:** audios WhatsApp + imagen programación Eli Daniel 2026-05-29
 
+### PC-13: Rol Coordinador ✅
+- `proxy.ts` — ruta `/coordinador/**` protegida (rol `coordinador`); login redirige al panel correspondiente
+- `app/api/usuarios/route.ts` + `[id]/route.ts` — GET lista / POST crear (hash bcrypt cost-12) / PATCH / DELETE (solo admin; auto-borrado bloqueado)
+- `app/(admin)/admin/usuarios/page.tsx` — lista de usuarios con badges de rol + formulario crear usuario
+- `components/AdminNav.tsx` — enlace "Usuarios" agregado
+- `components/CoordinadorNav.tsx` — nav teal con links Hoy + Asistencia
+- `app/(coordinador)/layout.tsx` — layout con CoordinadorNav
+- `app/(coordinador)/coordinador/hoy/page.tsx` — vista de hoy (todos los grupos) para el coordinador
+- `app/(coordinador)/coordinador/asistencia/page.tsx` — asistencia diaria completa para el coordinador
+- `types/next-auth.d.ts` — `rol` actualizado para incluir `"coordinador"`
+- Build limpio ✓ / 0 errores TS
+
+### PC-14: Tours Guiados (driver.js) ✅
+- `npm install driver.js` — instalado en `src/`
+- `app/globals.css` — `@import "driver.js/dist/driver.css"` agregado
+- `components/TourButton.tsx` — botón `?` azul circular reutilizable; props `steps: DriveStep[]` + `label`; ejecuta `driver({ showProgress, showButtons, ... }).drive()`
+- Tours implementados en 10 pantallas (botón `?` en esquina superior derecha de cada una):
+
+  | Pantalla | Pasos | IDs instrumentados |
+  |---|---|---|
+  | `admin/hoy` | 3 | `hoy-cards`, `hoy-libre` |
+  | `admin/asistencia` | 4 | `asistencia-nav`, `asistencia-resumen`, `asistencia-tabla` |
+  | `admin/colaboradores` | 3 | `col-btn-nuevo`, `col-lista` |
+  | `admin/grupos` | 3 | `grp-btn-nuevo`, `grp-lista` |
+  | `admin/roll` | 3 | `roll-filtros`, `roll-resultado` |
+  | `admin/informes` | 3 | `informes-sidebar`, `informes-editor` |
+  | `admin/usuarios` | 3 | `usuarios-btn-nuevo`, `usuarios-lista` |
+  | `coordinador/hoy` | 2 | `coord-hoy-cards` |
+  | `coordinador/asistencia` | 4 | `coord-asist-nav`, `coord-asist-resumen`, `coord-asist-tabla` |
+  | `oficial` | 3 | `oficial-turno-actual`, `oficial-turno-proximo` |
+
+- 0 errores TypeScript en todos los archivos modificados
+
 ## ⏳ Pendiente — Fase 5 (resto)
 
 | Tarea | Descripción |
 |-------|-------------|
-| ISSUE-02 | Días libres por turno no modelados en Vista de Hoy (medium) |
-| ISSUE-03 | Días de transición Sáb/Dom asignados al turno incorrecto (low, diferido) |
 | Despliegue | Azure App Service o Vercel — vars de entorno en producción |
 | Testing básico | Flujos críticos: login → roll → asistencia → informe → PDF |

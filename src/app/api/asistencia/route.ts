@@ -5,7 +5,7 @@ import { getTurnoForWeek, getWeekStart } from "@/lib/roll-engine";
 
 export async function GET(req: Request) {
   const session = await auth();
-  if (!session || session.user.rol !== "admin") {
+  if (!session || !["admin", "coordinador"].includes(session.user.rol)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 

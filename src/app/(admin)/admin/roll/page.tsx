@@ -3,6 +3,33 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { showToast } from "@/lib/toast";
+import TourButton from "@/components/TourButton";
+import type { DriveStep } from "driver.js";
+
+const TOUR_STEPS: DriveStep[] = [
+  {
+    popover: {
+      title: "Roll semanal",
+      description: "Visualiza el turno asignado a un grupo para cualquier semana y marca excepciones individuales (vacaciones, permiso, ausencia).",
+    },
+  },
+  {
+    element: "#roll-filtros",
+    popover: {
+      title: "Filtros",
+      description: "Selecciona el grupo y navega entre semanas con las flechas o el botón \"Ir a esta semana\".",
+      side: "bottom",
+    },
+  },
+  {
+    element: "#roll-resultado",
+    popover: {
+      title: "Colaboradores del turno",
+      description: "Cada colaborador muestra el turno que le corresponde. Usa el selector \"Excepción\" para marcar vacaciones, permiso o ausencia sin afectar la rotación base.",
+      side: "top",
+    },
+  },
+];
 
 const TURNO_LABELS: Record<string, string> = {
   T1: "T1 — 06:00–14:00",
@@ -143,10 +170,13 @@ export default function RollPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-gray-800 mb-4">Roll semanal</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-xl font-bold text-gray-800">Roll semanal</h1>
+        <TourButton steps={TOUR_STEPS} label="Tour de esta pantalla" />
+      </div>
 
       {/* Filtros */}
-      <div className="bg-white rounded-xl p-4 shadow-sm mb-4 flex flex-col gap-3">
+      <div id="roll-filtros" className="bg-white rounded-xl p-4 shadow-sm mb-4 flex flex-col gap-3">
         <div>
           <label htmlFor="roll-grupo" className="block text-sm font-medium text-gray-700 mb-1">
             Grupo
@@ -218,7 +248,7 @@ export default function RollPage() {
       )}
 
       {!loading && roll && (
-        <div>
+        <div id="roll-resultado">
           <div
             className={`rounded-xl px-4 py-3 mb-4 font-semibold text-center text-base ${TURNO_COLORS[roll.turno] ?? "bg-gray-100 text-gray-700"}`}
           >

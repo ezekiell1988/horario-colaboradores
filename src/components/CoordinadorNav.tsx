@@ -5,21 +5,15 @@ import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/admin/hoy", label: "Hoy" },
-  { href: "/admin/colaboradores", label: "Colaboradores" },
-  { href: "/admin/grupos", label: "Grupos" },
-  { href: "/admin/roll", label: "Roll" },
-  { href: "/admin/asistencia", label: "Asistencia" },
-  { href: "/admin/informes", label: "Informes" },
-  { href: "/admin/usuarios", label: "Usuarios" },
+  { href: "/coordinador/hoy", label: "Hoy" },
+  { href: "/coordinador/asistencia", label: "Asistencia" },
 ];
 
-export default function AdminNav() {
+export default function CoordinadorNav() {
   const pathname = usePathname();
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      {/* Fila superior: logo + salir */}
       <div className="px-4 py-3 flex items-center justify-between">
         <span className="font-bold text-gray-800 text-base">Roll Manager</span>
         <button
@@ -29,10 +23,9 @@ export default function AdminNav() {
           Salir
         </button>
       </div>
-      {/* Fila inferior: tabs scrollables */}
       <nav
         className="flex overflow-x-auto scrollbar-none border-t border-gray-100"
-        aria-label="Navegación principal"
+        aria-label="Navegación coordinador"
       >
         {links.map((link) => {
           const active = pathname.startsWith(link.href);
@@ -42,7 +35,7 @@ export default function AdminNav() {
               href={link.href}
               className={`shrink-0 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
                 active
-                  ? "border-blue-600 text-blue-700 bg-blue-50/50"
+                  ? "border-teal-600 text-teal-700 bg-teal-50/50"
                   : "border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-800"
               }`}
             >

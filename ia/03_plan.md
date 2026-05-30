@@ -3,7 +3,7 @@
 > **Última actualización:** 2026-05-30
 
 ## Visión general
-Fases 1, 2, 3, 4 y buena parte de la 5 completadas. Pendiente: Vista Oficial para FIJO, despliegue y pruebas finales.
+Fases 1–4 y Fase 5 completadas en su totalidad. Pendiente: despliegue en producción y pruebas finales.
 
 ## Fases del proyecto
 
@@ -51,5 +51,8 @@ Fases 1, 2, 3, 4 y buena parte de la 5 completadas. Pendiente: Vista Oficial par
 | UI mobile-first completa y consistente | ✅ |
 | Manejo de errores y estados de carga | ✅ |
 | Vista oficial adaptada a modalidad FIJO | ✅ |
+| Rol `coordinador` — gestión de asistencia multi-grupo | ✅ |
+| Gestión de usuarios (CRUD desde panel admin) | ✅ |
+| Tours guiados en todas las pantallas (driver.js) | ✅ |
 | Despliegue en Azure App Service / Vercel | ⏳ |
 | Pruebas básicas de flujos críticos | ⏳ |
