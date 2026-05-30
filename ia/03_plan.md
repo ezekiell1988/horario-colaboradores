@@ -7,16 +7,16 @@ Proyecto en fase de inicialización. Stack definido; código aún no iniciado.
 
 ## Fases del proyecto
 
-### Fase 1 — Setup & Infraestructura Base ⏳ Pendiente
+### Fase 1 — Setup & Infraestructura Base 🔄 En curso
 | Componente | Estado |
 |------------|--------|
-| Inicializar proyecto Next.js 15 + TypeScript | ⏳ |
-| Configurar Tailwind CSS | ⏳ |
-| Definir schema Prisma + Azure SQL | ⏳ |
-| Correr primera migración | ⏳ |
+| Inicializar proyecto Next.js 15 + TypeScript | ✅ |
+| Configurar Tailwind CSS | ✅ |
+| Definir schema Prisma + Azure SQL | ✅ |
+| Correr primera migración (`db push`) | ✅ |
+| Variables de entorno + `.env.example` | ✅ |
 | Configurar NextAuth.js (roles admin/oficial) | ⏳ |
 | Pantalla de login | ⏳ |
-| Variables de entorno + `.env.example` | ⏳ |
 
 ### Fase 2 — Módulo Roll de Turnos ⏳ Pendiente
 | Componente | Estado |

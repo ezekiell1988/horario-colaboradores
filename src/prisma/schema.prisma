@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  schemas  = ["rm"]
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  passwordHash  String
+  rol           String       // "admin" | "oficial"
+  colaboradorId String?      @unique
+  colaborador   Colaborador? @relation(fields: [colaboradorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  informes      Informe[]
+
+  @@map("User")
+  @@schema("rm")
+}
+
+model Colaborador {
+  id          String       @id @default(cuid())
+  nombre      String
+  activo      Boolean      @default(true)
+  grupoId     String
+  grupo       Grupo        @relation(fields: [grupoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  asistencias Asistencia[]
+  user        User?
+
+  @@map("Colaborador")
+  @@schema("rm")
+}
+
+model Grupo {
+  id                  String        @id @default(cuid())
+  nombre              String
+  turnoInicioIndex    Int           // 0=T1, 1=T2, 2=T3
+  fechaInicioRotacion DateTime
+  colaboradores       Colaborador[]
+
+  @@map("Grupo")
+  @@schema("rm")
+}
+
+model Asistencia {
+  id            String      @id @default(cuid())
+  colaboradorId String
+  colaborador   Colaborador @relation(fields: [colaboradorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  fecha         DateTime
+  turno         String      // "T1" | "T2" | "T3"
+  puesto        String
+  estado        String      // "presente" | "ausente" | "permiso"
+
+  @@unique([colaboradorId, fecha])
+  @@map("Asistencia")
+  @@schema("rm")
+}
+
+model Informe {
+  id         String   @id @default(cuid())
+  fecha      DateTime
+  titulo     String
+  contenido  String   @db.NVarChar(Max)
+  pdfUrl     String?
+  creadoPor  String
+  creadoBy   User     @relation(fields: [creadoPor], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  creadoAt   DateTime @default(now())
+
+  @@map("Informe")
+  @@schema("rm")
+}
