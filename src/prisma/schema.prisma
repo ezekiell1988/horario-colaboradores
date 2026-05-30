@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "sqlserver"
-  schemas  = ["rm"]
 }
 
 model User {
@@ -17,7 +16,6 @@ model User {
   informes      Informe[]
 
   @@map("User")
-  @@schema("rm")
 }
 
 model Colaborador {
@@ -34,7 +32,6 @@ model Colaborador {
   user        User?
 
   @@map("Colaborador")
-  @@schema("rm")
 }
 
 model Grupo {
@@ -45,7 +42,6 @@ model Grupo {
   colaboradores       Colaborador[]
 
   @@map("Grupo")
-  @@schema("rm")
 }
 
 model Asistencia {
@@ -59,7 +55,6 @@ model Asistencia {
 
   @@unique([colaboradorId, fecha])
   @@map("Asistencia")
-  @@schema("rm")
 }
 
 model Informe {
@@ -74,7 +69,6 @@ model Informe {
   creadoAt     DateTime @default(now())
 
   @@map("Informe")
-  @@schema("rm")
 }
 
 model ExcepcionRoll {
@@ -87,5 +81,4 @@ model ExcepcionRoll {
 
   @@unique([colaboradorId, semana])
   @@map("ExcepcionRoll")
-  @@schema("rm")
 }
