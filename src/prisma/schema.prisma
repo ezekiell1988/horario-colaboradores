@@ -24,6 +24,8 @@ model Colaborador {
   id          String          @id @default(cuid())
   nombre      String
   puesto      String?         @db.NVarChar(50)
+  modalidad   String          @default("FULL") @db.NVarChar(10)
+  turnoFijo   String?         @db.NVarChar(2)
   activo      Boolean         @default(true)
   grupoId     String
   grupo       Grupo           @relation(fields: [grupoId], references: [id], onDelete: NoAction, onUpdate: NoAction)

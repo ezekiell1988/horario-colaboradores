@@ -1,9 +1,9 @@
 # 03 — Plan de Desarrollo
 
-> **Última actualización:** 2026-05-29
+> **Última actualización:** 2026-05-30
 
 ## Visión general
-Fase 1 completada. Iniciando Fase 2 — CRUD de colaboradores, grupos y motor de rotación.
+Fases 1, 2, 3, 4 y buena parte de la 5 completadas. Pendiente: Vista Oficial para FIJO, despliegue y pruebas finales.
 
 ## Fases del proyecto
 
@@ -18,7 +18,7 @@ Fase 1 completada. Iniciando Fase 2 — CRUD de colaboradores, grupos y motor de
 | Configurar NextAuth.js (roles admin/oficial) | ✅ |
 | Pantalla de login | ✅ |
 
-### Fase 2 — Módulo Roll de Turnos 🔄 En curso
+### Fase 2 — Módulo Roll de Turnos ✅ Completada
 | Componente | Estado |
 |------------|--------|
 | CRUD Colaboradores | ✅ |
@@ -27,27 +27,29 @@ Fase 1 completada. Iniciando Fase 2 — CRUD de colaboradores, grupos y motor de
 | Vista del roll semanal por grupo | ✅ |
 | Manejo de excepciones por colaborador | ✅ |
 | Vista oficial (su turno actual / próximo) | ✅ |
+| Modalidades de colaborador (FULL / MT / FIJO) | ✅ |
 
-### Fase 3 — Módulo Asistencia ⏳ Pendiente
+### Fase 3 — Módulo Asistencia ✅ Completada
 | Componente | Estado |
 |------------|--------|
-| Vista diaria de asistencia (recuadro) | ⏳ |
-| Actualizar estado por colaborador | ⏳ |
-| Guardar asistencia en BD | ⏳ |
-| Historial de asistencia por colaborador | ⏳ |
+| Vista diaria de asistencia (recuadro) | ✅ |
+| Actualizar estado por colaborador | ✅ |
+| Guardar asistencia en BD | ✅ |
+| Historial de asistencia por colaborador | ✅ |
 
-### Fase 4 — Módulo Informes + IA + PDF ⏳ Pendiente
+### Fase 4 — Módulo Informes + IA + PDF ✅ Completada
 | Componente | Estado |
 |------------|--------|
-| Editor de texto (borrador) | ⏳ |
-| Integración Azure AI (formalizar texto) | ⏳ |
+| Editor de texto (borrador) | ✅ |
+| Integración Azure AI (formalizar texto) | ✅ |
 | Generación de PDF | ✅ |
-| Historial de informes guardados | ⏳ |
+| Historial de informes guardados | ✅ |
 
-### Fase 5 — Pulido y Despliegue ⏳ Pendiente
+### Fase 5 — Pulido y Despliegue 🔄 En curso
 | Componente | Estado |
 |------------|--------|
-| UI mobile-first completa y consistente | ⏳ |
-| Manejo de errores y estados de carga | ⏳ |
+| UI mobile-first completa y consistente | ✅ |
+| Manejo de errores y estados de carga | ✅ |
+| Vista oficial adaptada a modalidad FIJO | ⏳ |
 | Despliegue en Azure App Service / Vercel | ⏳ |
 | Pruebas básicas de flujos críticos | ⏳ |

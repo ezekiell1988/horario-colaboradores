@@ -1,4 +1,4 @@
-import { getTurnoForWeek, getDiasLibres, getWeekStart, GrupoRotacion } from "../roll-engine";
+import { getTurnoForWeek, getDiasLibres, getWeekStart, getTurnoEfectivo, GrupoRotacion } from "../roll-engine";
 
 // Grupo de referencia: inicia en T1 el lunes 2026-01-05
 const grupoT1: GrupoRotacion = {
@@ -128,5 +128,56 @@ describe("getDiasLibres", () => {
     expect(getDiasLibres("T2").includes(6)).toBe(true);
     expect(getDiasLibres("T3").includes(6)).toBe(true);
     expect(getDiasLibres("T1").includes(6)).toBe(false);
+  });
+});
+
+describe("getTurnoEfectivo — modalidad FULL", () => {
+  it("FULL en semana T1 → T1", () => {
+    expect(getTurnoEfectivo("FULL", null, "T1")).toBe("T1");
+  });
+
+  it("FULL en semana T3 → T3 (sí hace noche)", () => {
+    expect(getTurnoEfectivo("FULL", null, "T3")).toBe("T3");
+  });
+});
+
+describe("getTurnoEfectivo — modalidad MT (turno doble)", () => {
+  it("MT en semana T1 → T1", () => {
+    expect(getTurnoEfectivo("MT", null, "T1")).toBe("T1");
+  });
+
+  it("MT en semana T2 → T2", () => {
+    expect(getTurnoEfectivo("MT", null, "T2")).toBe("T2");
+  });
+
+  it("MT en semana T3 → T2 (no trabaja de noche)", () => {
+    expect(getTurnoEfectivo("MT", null, "T3")).toBe("T2");
+  });
+
+  it("MT nunca retorna T3 independientemente del turno de semana", () => {
+    const resultado = getTurnoEfectivo("MT", null, "T3");
+    expect(resultado).not.toBe("T3");
+  });
+});
+
+describe("getTurnoEfectivo — modalidad FIJO", () => {
+  it("FIJO T1 en semana T1 → T1", () => {
+    expect(getTurnoEfectivo("FIJO", "T1", "T1")).toBe("T1");
+  });
+
+  it("FIJO T1 en semana T2 → T1 (ignora ciclo del grupo)", () => {
+    expect(getTurnoEfectivo("FIJO", "T1", "T2")).toBe("T1");
+  });
+
+  it("FIJO T1 en semana T3 → T1 (nunca hace noche)", () => {
+    expect(getTurnoEfectivo("FIJO", "T1", "T3")).toBe("T1");
+  });
+
+  it("FIJO T2 en semana T1 → T2", () => {
+    expect(getTurnoEfectivo("FIJO", "T2", "T1")).toBe("T2");
+  });
+
+  it("FIJO T2 en semana T3 → T2", () => {
+    expect(getTurnoEfectivo("FIJO", "T2", "T3")).toBe("T2");
   });
 });

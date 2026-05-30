@@ -118,6 +118,18 @@
 
 ### ISSUE-01: Dirección de rotación corregida ✅
 - `lib/roll-engine.ts` — fórmula `+ weeksElapsed` → `- weeksElapsed` (rotación descendente T3→T2→T1→T3)
+- Tests actualizados (22/22 ✓)
+
+### ISSUE-07: Modalidades de colaborador (FULL / MT / FIJO) ✅
+- `prisma/schema.prisma` — campos `modalidad String @default("FULL")` y `turnoFijo String?` en `Colaborador` + `db push` + `generate`
+- `lib/roll-engine.ts` — tipo `Modalidad` + función `getTurnoEfectivo(modalidad, turnoFijo, turnoSemana)`
+- `lib/__tests__/roll-engine.test.ts` — 11 nuevos tests FULL/MT/FIJO → 33/33 ✓
+- `app/api/roll/hoy/route.ts` — calcula `turnoEfectivo` por colaborador; MT nunca cae en T3
+- `app/api/roll/route.ts` — expone `turnoEfectivo` por colaborador en la respuesta
+- `app/api/colaboradores/route.ts` + `[id]/route.ts` — aceptan y validan `modalidad` y `turnoFijo`
+- `app/(admin)/admin/colaboradores/page.tsx` — select Modalidad + select condicional Turno Fijo + badge en lista
+- Build limpio ✓ / 33 tests ✓
+
 - `lib/__tests__/roll-engine.test.ts` — tests actualizados + 6 tests nuevos de validación contra PDF Eli Daniel
 - 17/17 tests en verde ✓, build limpio ✓ (23 rutas)
 - `ia/07_issues.md` — documentados ISSUE-01 (resuelto), ISSUE-02 y ISSUE-03 (abiertos)

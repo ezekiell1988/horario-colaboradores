@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getTurnoForWeek, getDiasLibres, getWeekStart } from "@/lib/roll-engine";
-import type { Turno } from "@/lib/roll-engine";
+import { getTurnoForWeek, getDiasLibres, getWeekStart, getTurnoEfectivo } from "@/lib/roll-engine";
+import type { Turno, Modalidad } from "@/lib/roll-engine";
 
 export async function GET() {
   const session = await auth();
@@ -46,10 +46,16 @@ export async function GET() {
 
   for (const grupo of grupos) {
     const turno = getTurnoForWeek(grupo, hoy);
-    const diasLibres = getDiasLibres(turno);
-    const esLibreHoy = diasLibres.includes(diaHoy);
 
     for (const col of grupo.colaboradores) {
+      const turnoEfectivo = getTurnoEfectivo(
+        (col.modalidad as Modalidad) ?? "FULL",
+        col.turnoFijo ?? null,
+        turno,
+      );
+      const diasLibresEfectivos = getDiasLibres(turnoEfectivo);
+      const esLibreEfectivo = diasLibresEfectivos.includes(diaHoy);
+
       const entry: ColaboradorHoy = {
         id: col.id,
         nombre: col.nombre,
@@ -57,10 +63,10 @@ export async function GET() {
         grupoNombre: grupo.nombre,
         excepcion: excepcionMap.get(col.id) ?? null,
       };
-      if (esLibreHoy && !entry.excepcion) {
+      if (esLibreEfectivo && !entry.excepcion) {
         libre.push(entry);
       } else {
-        turnos[turno].push(entry);
+        turnos[turnoEfectivo].push(entry);
       }
     }
   }

@@ -12,11 +12,14 @@ export async function PUT(
   }
 
   const { id } = await params;
-  const { nombre, grupoId, activo, puesto } = await req.json();
+  const { nombre, grupoId, activo, puesto, modalidad, turnoFijo } = await req.json();
+
+  const modalidadValida = ["FULL", "MT", "FIJO"].includes(modalidad) ? modalidad : undefined;
+  const turnoFijoValido = modalidadValida === "FIJO" && ["T1", "T2"].includes(turnoFijo) ? turnoFijo : (modalidadValida && modalidadValida !== "FIJO" ? null : undefined);
 
   const colaborador = await prisma.colaborador.update({
     where: { id },
-    data: { nombre, grupoId, activo, puesto: puesto ?? undefined },
+    data: { nombre, grupoId, activo, puesto: puesto ?? undefined, ...(modalidadValida !== undefined && { modalidad: modalidadValida }), ...(turnoFijoValido !== undefined && { turnoFijo: turnoFijoValido }) },
     include: { grupo: { select: { id: true, nombre: true } } },
   });
 

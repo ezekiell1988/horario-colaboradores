@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getTurnoForWeek } from "@/lib/roll-engine";
+import { getTurnoForWeek, getTurnoEfectivo } from "@/lib/roll-engine";
+import type { Modalidad } from "@/lib/roll-engine";
 
 export async function GET(req: Request) {
   const session = await auth();
@@ -41,6 +42,9 @@ export async function GET(req: Request) {
     colaboradores: grupo.colaboradores.map((c) => ({
       id: c.id,
       nombre: c.nombre,
+      modalidad: c.modalidad,
+      turnoFijo: c.turnoFijo,
+      turnoEfectivo: getTurnoEfectivo((c.modalidad as Modalidad) ?? "FULL", c.turnoFijo ?? null, turno),
     })),
   });
 }

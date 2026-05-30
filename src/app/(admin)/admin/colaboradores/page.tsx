@@ -8,13 +8,15 @@ type Colaborador = {
   id: string;
   nombre: string;
   puesto: string | null;
+  modalidad: string;
+  turnoFijo: string | null;
   activo: boolean;
   grupoId: string;
   grupo: Grupo;
 };
-type FormState = { nombre: string; grupoId: string; activo: boolean; puesto: string };
+type FormState = { nombre: string; grupoId: string; activo: boolean; puesto: string; modalidad: string; turnoFijo: string };
 
-const EMPTY_FORM: FormState = { nombre: "", grupoId: "", activo: true, puesto: "" };
+const EMPTY_FORM: FormState = { nombre: "", grupoId: "", activo: true, puesto: "", modalidad: "FULL", turnoFijo: "" };
 
 export default function ColaboradoresPage() {
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
@@ -56,7 +58,7 @@ export default function ColaboradoresPage() {
 
   function openEdit(c: Colaborador) {
     setEditId(c.id);
-    setForm({ nombre: c.nombre, grupoId: c.grupoId, activo: c.activo, puesto: c.puesto ?? "" });
+    setForm({ nombre: c.nombre, grupoId: c.grupoId, activo: c.activo, puesto: c.puesto ?? "", modalidad: c.modalidad ?? "FULL", turnoFijo: c.turnoFijo ?? "" });
     setError("");
     setShowModal(true);
   }
@@ -90,7 +92,7 @@ export default function ColaboradoresPage() {
       const res = await fetch(`/api/colaboradores/${c.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo, puesto: c.puesto }),
+        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo, puesto: c.puesto, modalidad: c.modalidad, turnoFijo: c.turnoFijo }),
       });
       if (!res.ok) throw new Error();
       await loadData();
@@ -134,6 +136,14 @@ export default function ColaboradoresPage() {
                 </p>
                 <p className="text-xs text-gray-500 truncate">
                   {c.grupo?.nombre ?? "—"}{c.puesto ? ` · ${c.puesto}` : ""}
+                  {" · "}
+                  <span className={`font-medium ${
+                    c.modalidad === "FIJO" ? "text-purple-600" :
+                    c.modalidad === "MT" ? "text-orange-600" :
+                    "text-blue-600"
+                  }`}>
+                    {c.modalidad === "FULL" ? "Mixto" : c.modalidad === "MT" ? "Doble" : `Fijo ${c.turnoFijo ?? ""}`}
+                  </span>
                 </p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
@@ -220,6 +230,45 @@ export default function ColaboradoresPage() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+              <div>
+                <label
+                  htmlFor="col-modalidad"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Modalidad
+                </label>
+                <select
+                  id="col-modalidad"
+                  value={form.modalidad}
+                  onChange={(e) => setForm({ ...form, modalidad: e.target.value, turnoFijo: "" })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="FULL">Turno mixto (Mañana + Tarde + Noche)</option>
+                  <option value="MT">Turno doble (Mañana + Tarde)</option>
+                  <option value="FIJO">Turno fijo</option>
+                </select>
+              </div>
+              {form.modalidad === "FIJO" && (
+                <div>
+                  <label
+                    htmlFor="col-turnoFijo"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Turno fijo
+                  </label>
+                  <select
+                    id="col-turnoFijo"
+                    required
+                    value={form.turnoFijo}
+                    onChange={(e) => setForm({ ...form, turnoFijo: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Seleccionar turno...</option>
+                    <option value="T1">Mañana (06:00–14:00)</option>
+                    <option value="T2">Tarde (14:00–22:00)</option>
+                  </select>
+                </div>
+              )}
               {editId && (
                 <div className="flex items-center gap-2">
                   <input

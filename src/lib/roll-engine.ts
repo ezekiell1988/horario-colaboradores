@@ -51,6 +51,26 @@ export function getTurnoForWeek(grupo: GrupoRotacion, fecha: Date): Turno {
   return TURNOS[index];
 }
 
+export type Modalidad = "FULL" | "MT" | "FIJO";
+
+/**
+ * Calcula el turno efectivo de un colaborador dado su modalidad, turnoFijo y
+ * el turno del grupo en la semana actual.
+ *
+ * - FULL: usa el turno del grupo sin cambios.
+ * - MT:   si el grupo está en T3 (Noche), el colaborador permanece en T2 (Tarde).
+ * - FIJO: siempre el turno indicado en `turnoFijo`, sin importar el ciclo.
+ */
+export function getTurnoEfectivo(
+  modalidad: Modalidad,
+  turnoFijo: string | null,
+  turnoSemana: Turno,
+): Turno {
+  if (modalidad === "FIJO" && turnoFijo) return turnoFijo as Turno;
+  if (modalidad === "MT" && turnoSemana === "T3") return "T2";
+  return turnoSemana;
+}
+
 /**
  * Devuelve los días de la semana (UTC getDay: 0=Dom … 5=Vie, 6=Sáb) en que
  * un colaborador con el turno dado tiene día libre.

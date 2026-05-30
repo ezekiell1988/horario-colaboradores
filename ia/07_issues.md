@@ -109,7 +109,7 @@ En ~2 días de cada ciclo de 21 días (el sábado/domingo de cambio de turno), e
 
 ## ISSUE-07: El modelo no soporta las 3 modalidades de colaborador
 **Severidad:** high
-**Estado:** abierto — pendiente implementación
+**Estado:** resuelto — fix aplicado 2026-05-30
 
 **Descripción:**
 Confirmado por Eli Daniel (audios 2026-05-30 + mensaje WhatsApp 2026-05-30 12:26):
@@ -128,10 +128,14 @@ El modelo actual trata a **todos los colaboradores** como `FULL` (ciclo T3→T2�
 - Vista oficial: muestra turno incorrecto para MT y FIJO.
 - Roll semanal: asigna turno incorrecto.
 
-**Fix requerido:**
-1. Agregar `modalidad String @default("FULL")` y `turnoFijo String?` a `Colaborador` en Prisma.
-2. Actualizar `getDiasLibres()` y la lógica del API `/api/roll/hoy` para respetar la modalidad.
-3. Actualizar UI de colaboradores para seleccionar modalidad.
-4. Actualizar vista oficial para colaboradores FIJO.
+**Fix aplicado:**
+1. `prisma/schema.prisma` — campos `modalidad` y `turnoFijo` en `Colaborador` + `db push` + `generate`
+2. `lib/roll-engine.ts` — tipo `Modalidad` + `getTurnoEfectivo()`: MT redirige T3→T2, FIJO ignora ciclo
+3. `app/api/roll/hoy/route.ts` — turno efectivo por colaborador; MT nunca aparece en Noche
+4. `app/api/colaboradores` — validación whitelist de `modalidad` y `turnoFijo`
+5. UI admin — select Modalidad + select condicional Turno Fijo + badge en lista
+6. 33/33 tests pasando (11 nuevos para getTurnoEfectivo)
 
-**Ver:** TASK-ROLL-MODALIDAD (pendiente crear)
+**Pendiente:** Vista oficial (`/oficial`) aún no distingue colaboradores FIJO — muestra el turno del grupo.
+
+**Ver:** TASK-ROLL-MODALIDAD (completado)
