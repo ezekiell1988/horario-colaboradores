@@ -96,19 +96,29 @@
 - `app/(admin)/admin/roll/page.tsx` — selector de excepción inline por colaborador, badge coloreado (vacaciones/permiso/ausencia), tachado del nombre
 - Build limpio ✓
 
+### PC-12: Vista "Hoy" (Dashboard Diario) ✅
+- `ia/01_requirements.md` — Flujo 4 "Vista de Hoy" documentado (origen: audios WhatsApp Eli Daniel 2026-05-29)
+- `app/api/roll/hoy/route.ts` — GET sin parámetros → todos los grupos + colaboradores activos agrupados por turno del día actual + excepciones de la semana
+- `app/(admin)/admin/hoy/page.tsx` — 3 tarjetas por turno (T1 sky, T2 amber, T3 indigo); colaboradores con excepción aparecen tachados con badge
+- `components/AdminNav.tsx` — "Hoy" agregado como primer tab
+- `app/(admin)/admin/page.tsx` — redirect actualizado a `/admin/hoy`
+- Build limpio ✓ (22 rutas)
+
 ## 🔄 En curso — Fase 5: Pulido y Despliegue
 
-### UI mobile-first (parcial ✅)
+### UI mobile-first ✅
 - `components/AdminNav.tsx` — reestructurado: fila superior logo+Salir, fila inferior tabs scrollables con indicador activo de borde inferior. Sin desbordamiento en pantallas de 375px.
 - `app/(admin)/admin/layout.tsx` — padding reducido en móvil (`px-3 py-4`) y mayor en sm+.
 - `app/(admin)/admin/informes/page.tsx` — sidebar cambia a columna en mobile (`flex-col md:flex-row`).
 - `app/globals.css` — clase `.scrollbar-none` agregada (scrollbar-width: none + webkit).
-- Build limpio ✓
+
+### Error handling ✅
+- `lib/toast.ts` + `components/Toast.tsx` — sistema de toasts global DOM-event-based
+- Todos los `fetch` en páginas admin protegidos con try/catch + `showToast()`
 
 ## ⏳ Pendiente — Fase 5 (resto)
 
 | Tarea | Descripción |
 |-------|-------------|
-| Manejo de errores | Toasts/alerts globales para fetch fallidos |
 | Despliegue | Azure App Service o Vercel — vars de entorno en producción |
 | Testing básico | Flujos críticos: login → roll → asistencia → informe → PDF |

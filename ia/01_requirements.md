@@ -1,7 +1,7 @@
 # 01 — Requisitos del Sistema
 
 > **Última actualización:** 2026-05-29
-> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29
+> **Fuentes:** `ia/assets/nota.txt`, sesión de levantamiento 2026-05-29, audios WhatsApp Eli Daniel 2026-05-29
 
 ## Propósito del sistema
 Roll Manager gestiona el roll automático de turnos rotativos semanales de colaboradores de seguridad, registra su asistencia diaria y permite generar, editar con IA y exportar informes formales en PDF.
@@ -56,3 +56,35 @@ Roll Manager gestiona el roll automático de turnos rotativos semanales de colab
 | Turno asignado | Enum (T1 / T2 / T3) |
 | Puesto / lugar asignado | Texto |
 | Estado | Enum (presente / ausente / permiso) |
+
+---
+
+## Flujo 4 — Vista "Hoy" (Dashboard Diario) ⬅ nuevo
+> **Origen:** Audios WhatsApp de Eli Daniel (2026-05-29). Requisito central del sistema.
+
+**Estado de entrada:** Al menos un grupo configurado con fechaInicioRotacion.
+**Estado de salida:** Pantalla única que muestra, para el día actual, qué colaboradores de **todos los grupos** están en cada turno.
+
+**Descripción:**
+El usuario abre la app y ve de inmediato — sin seleccionar nada — una tabla o tarjetas organizadas por turno:
+
+| T1 · 06:00–14:00 | T2 · 14:00–22:00 | T3 · 22:00–06:00 |
+|------------------|------------------|------------------|
+| Juan, María…     | Rosa, Pedro…     | Ana, Luis…       |
+
+El sistema calcula el turno de cada grupo para la semana de la fecha actual y lista a todos los colaboradores activos (sin excepción ese día) bajo el turno correspondiente.
+
+**Reglas:**
+- La fecha de referencia es **hoy** (fecha del servidor, UTC-6 Costa Rica).
+- Colaboradores con excepción activa (`vacaciones` / `permiso` / `ausencia`) para esa semana aparecen en su turno pero marcados visualmente como "fuera".
+- No se requiere selección de grupo ni semana — la vista es 100% automática.
+- Accesible desde el menú principal del admin como primera pantalla tras el login.
+- El oficial ve la misma vista pero solo ve su propio nombre (no todos los grupos).
+
+**Pasos del flujo:**
+1. Al entrar al panel admin, la ruta `/admin` carga la vista "Hoy".
+2. El sistema obtiene todos los grupos activos con sus colaboradores activos.
+3. Para cada grupo, calcula el turno de la semana actual con `getTurnoForWeek()`.
+4. Agrupa a todos los colaboradores por turno (T1 / T2 / T3).
+5. Consulta excepciones de esa semana para resaltarlas.
+6. Muestra las tarjetas de turno con los nombres. Sin paginación, sin filtros.

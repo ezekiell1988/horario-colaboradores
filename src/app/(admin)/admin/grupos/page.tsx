@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { showToast } from "@/lib/toast";
 
 const TURNOS = ["T1 — 06:00–14:00", "T2 — 14:00–22:00", "T3 — 22:00–06:00"];
 
@@ -29,9 +30,15 @@ export default function GruposPage() {
   const [error, setError] = useState("");
 
   async function loadData() {
-    const res = await fetch("/api/grupos");
-    setGrupos(await res.json());
-    setLoading(false);
+    try {
+      const res = await fetch("/api/grupos");
+      if (!res.ok) throw new Error();
+      setGrupos(await res.json());
+    } catch {
+      showToast("Error al cargar los grupos");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {

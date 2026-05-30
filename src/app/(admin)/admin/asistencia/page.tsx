@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import AttendanceTable, { AsistenciaRow } from "@/components/AttendanceTable";
+import { showToast } from "@/lib/toast";
 
 function getTodayISO(): string {
   const d = new Date();
@@ -36,8 +37,12 @@ export default function AsistenciaPage() {
   const fetchAsistencia = useCallback((f: string) => {
     setLoading(true);
     fetch(`/api/asistencia?fecha=${f}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
       .then((data: AsistenciaRow[]) => setRows(data))
+      .catch(() => showToast("Error al cargar la asistencia"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -47,12 +52,18 @@ export default function AsistenciaPage() {
 
   const saveField = useCallback(async (id: string, patch: { estado?: string; puesto?: string }) => {
     setSaving((s) => ({ ...s, [id]: true }));
-    await fetch(`/api/asistencia/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(patch),
-    });
-    setSaving((s) => ({ ...s, [id]: false }));
+    try {
+      const res = await fetch(`/api/asistencia/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+      if (!res.ok) showToast("Error al guardar el cambio");
+    } catch {
+      showToast("Sin conexión — cambio no guardado");
+    } finally {
+      setSaving((s) => ({ ...s, [id]: false }));
+    }
   }, []);
 
   const handleEstadoChange = useCallback(

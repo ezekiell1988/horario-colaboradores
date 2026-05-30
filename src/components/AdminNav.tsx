@@ -5,6 +5,7 @@ import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
 const links = [
+  { href: "/admin/hoy", label: "Hoy" },
   { href: "/admin/colaboradores", label: "Colaboradores" },
   { href: "/admin/grupos", label: "Grupos" },
   { href: "/admin/roll", label: "Roll" },

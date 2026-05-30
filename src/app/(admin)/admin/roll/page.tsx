@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { showToast } from "@/lib/toast";
 
 const TURNO_LABELS: Record<string, string> = {
   T1: "T1 — 06:00–14:00",
@@ -83,26 +84,38 @@ export default function RollPage() {
 
   useEffect(() => {
     fetch("/api/grupos")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
       .then((g: Grupo[]) => {
         setGrupos(g);
         if (g.length > 0) setGrupoId(g[0].id);
       })
+      .catch(() => showToast("Error al cargar los grupos"))
       .finally(() => setLoadingGrupos(false));
   }, []);
 
   const fetchExcepciones = useCallback((gId: string, s: string) => {
     fetch(`/api/roll/excepciones?grupoId=${gId}&semana=${s}`)
-      .then((r) => r.json())
-      .then((data: ExcepcionRoll[]) => setExcepciones(Array.isArray(data) ? data : []));
+      .then((r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
+      .then((data: ExcepcionRoll[]) => setExcepciones(Array.isArray(data) ? data : []))
+      .catch(() => showToast("Error al cargar excepciones"));
   }, []);
 
   useEffect(() => {
     if (!grupoId) return;
     setLoading(true);
     fetch(`/api/roll?grupoId=${grupoId}&fecha=${semana}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
       .then(setRoll)
+      .catch(() => showToast("Error al cargar el roll"))
       .finally(() => setLoading(false));
     fetchExcepciones(grupoId, semana);
   }, [grupoId, semana, fetchExcepciones]);
@@ -110,12 +123,15 @@ export default function RollPage() {
   async function handleExcepcion(colaboradorId: string, tipo: string) {
     setSavingExc((s) => ({ ...s, [colaboradorId]: true }));
     try {
-      await fetch("/api/roll/excepciones", {
+      const res = await fetch("/api/roll/excepciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ colaboradorId, semana, tipo }),
       });
+      if (!res.ok) throw new Error();
       fetchExcepciones(grupoId, semana);
+    } catch {
+      showToast("Error al guardar la excepción");
     } finally {
       setSavingExc((s) => ({ ...s, [colaboradorId]: false }));
     }

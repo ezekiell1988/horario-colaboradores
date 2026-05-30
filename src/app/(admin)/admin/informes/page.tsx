@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import ReportEditor from "@/components/ReportEditor";
+import { showToast } from "@/lib/toast";
 
 interface InformeListItem {
   id: string;
@@ -36,8 +37,11 @@ export default function InformesPage() {
     setLoadingLista(true);
     try {
       const res = await fetch(`/api/informes?mes=${mes}`);
+      if (!res.ok) throw new Error();
       const data = (await res.json()) as InformeListItem[];
       setLista(Array.isArray(data) ? data : []);
+    } catch {
+      showToast("Error al cargar los informes");
     } finally {
       setLoadingLista(false);
     }
@@ -48,9 +52,14 @@ export default function InformesPage() {
   }, [cargarLista]);
 
   async function abrirInforme(id: string) {
-    const res = await fetch(`/api/informes/${id}`);
-    const data = (await res.json()) as InformeDetalle;
-    setActivo(data);
+    try {
+      const res = await fetch(`/api/informes/${id}`);
+      if (!res.ok) throw new Error();
+      const data = (await res.json()) as InformeDetalle;
+      setActivo(data);
+    } catch {
+      showToast("Error al abrir el informe");
+    }
   }
 
   async function crearInforme() {
@@ -61,9 +70,12 @@ export default function InformesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fecha }),
       });
+      if (!res.ok) throw new Error();
       const data = (await res.json()) as InformeDetalle & { contenido: string };
       await cargarLista();
       setActivo({ ...data, contenido: data.contenido ?? "" });
+    } catch {
+      showToast("Error al crear el informe");
     } finally {
       setCreando(false);
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { showToast } from "@/lib/toast";
 
 type Grupo = { id: string; nombre: string };
 type Colaborador = {
@@ -25,14 +26,20 @@ export default function ColaboradoresPage() {
   const [error, setError] = useState("");
 
   async function loadData() {
-    const [colRes, grpRes] = await Promise.all([
-      fetch("/api/colaboradores"),
-      fetch("/api/grupos"),
-    ]);
-    const [cols, grps] = await Promise.all([colRes.json(), grpRes.json()]);
-    setColaboradores(cols);
-    setGrupos(grps);
-    setLoading(false);
+    try {
+      const [colRes, grpRes] = await Promise.all([
+        fetch("/api/colaboradores"),
+        fetch("/api/grupos"),
+      ]);
+      if (!colRes.ok || !grpRes.ok) throw new Error();
+      const [cols, grps] = await Promise.all([colRes.json(), grpRes.json()]);
+      setColaboradores(cols);
+      setGrupos(grps);
+    } catch {
+      showToast("Error al cargar los datos");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -78,12 +85,17 @@ export default function ColaboradoresPage() {
   }
 
   async function toggleActivo(c: Colaborador) {
-    await fetch(`/api/colaboradores/${c.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo }),
-    });
-    await loadData();
+    try {
+      const res = await fetch(`/api/colaboradores/${c.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo }),
+      });
+      if (!res.ok) throw new Error();
+      await loadData();
+    } catch {
+      showToast("Error al actualizar el colaborador");
+    }
   }
 
   if (loading) {
