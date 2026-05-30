@@ -30,7 +30,7 @@ export async function GET(req: Request) {
   });
 
   // Para cada colaborador activo, obtener o crear su registro de asistencia para ese día
-  const colaboradoresConTurno = grupos.flatMap((grupo) => {
+  const colaboradoresConTurno = grupos.flatMap((grupo: (typeof grupos)[number]) => {
     const turno = getTurnoForWeek(grupo, lunes);
     return grupo.colaboradores.map((c) => ({ colaborador: c, grupoNombre: grupo.nombre, turno }));
   });
