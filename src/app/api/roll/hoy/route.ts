@@ -33,7 +33,7 @@ export async function GET() {
   // Agrupar colaboradores por turno
   const turnos: Record<
     Turno,
-    { id: string; nombre: string; grupoNombre: string; excepcion: string | null }[]
+    { id: string; nombre: string; puesto: string | null; grupoNombre: string; excepcion: string | null }[]
   > = { T1: [], T2: [], T3: [] };
 
   for (const grupo of grupos) {
@@ -42,6 +42,7 @@ export async function GET() {
       turnos[turno].push({
         id: col.id,
         nombre: col.nombre,
+        puesto: col.puesto ?? null,
         grupoNombre: grupo.nombre,
         excepcion: excepcionMap.get(col.id) ?? null,
       });

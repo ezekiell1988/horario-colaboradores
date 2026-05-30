@@ -23,6 +23,7 @@ model User {
 model Colaborador {
   id          String          @id @default(cuid())
   nombre      String
+  puesto      String?         @db.NVarChar(50)
   activo      Boolean         @default(true)
   grupoId     String
   grupo       Grupo           @relation(fields: [grupoId], references: [id], onDelete: NoAction, onUpdate: NoAction)

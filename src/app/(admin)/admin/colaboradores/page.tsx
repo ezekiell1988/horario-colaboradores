@@ -7,13 +7,14 @@ type Grupo = { id: string; nombre: string };
 type Colaborador = {
   id: string;
   nombre: string;
+  puesto: string | null;
   activo: boolean;
   grupoId: string;
   grupo: Grupo;
 };
-type FormState = { nombre: string; grupoId: string; activo: boolean };
+type FormState = { nombre: string; grupoId: string; activo: boolean; puesto: string };
 
-const EMPTY_FORM: FormState = { nombre: "", grupoId: "", activo: true };
+const EMPTY_FORM: FormState = { nombre: "", grupoId: "", activo: true, puesto: "" };
 
 export default function ColaboradoresPage() {
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
@@ -55,7 +56,7 @@ export default function ColaboradoresPage() {
 
   function openEdit(c: Colaborador) {
     setEditId(c.id);
-    setForm({ nombre: c.nombre, grupoId: c.grupoId, activo: c.activo });
+    setForm({ nombre: c.nombre, grupoId: c.grupoId, activo: c.activo, puesto: c.puesto ?? "" });
     setError("");
     setShowModal(true);
   }
@@ -89,7 +90,7 @@ export default function ColaboradoresPage() {
       const res = await fetch(`/api/colaboradores/${c.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo }),
+        body: JSON.stringify({ nombre: c.nombre, grupoId: c.grupoId, activo: !c.activo, puesto: c.puesto }),
       });
       if (!res.ok) throw new Error();
       await loadData();
@@ -132,7 +133,7 @@ export default function ColaboradoresPage() {
                   {c.nombre}
                 </p>
                 <p className="text-xs text-gray-500 truncate">
-                  {c.grupo?.nombre ?? "—"}
+                  {c.grupo?.nombre ?? "—"}{c.puesto ? ` · ${c.puesto}` : ""}
                 </p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
@@ -202,6 +203,22 @@ export default function ColaboradoresPage() {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="col-puesto"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Puesto <span className="text-gray-400 font-normal">(opcional)</span>
+                </label>
+                <input
+                  id="col-puesto"
+                  type="text"
+                  placeholder="Charlie 1, Coordinador..."
+                  value={form.puesto}
+                  onChange={(e) => setForm({ ...form, puesto: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
               {editId && (
                 <div className="flex items-center gap-2">

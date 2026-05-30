@@ -122,6 +122,20 @@
 - 17/17 tests en verde ✓, build limpio ✓ (23 rutas)
 - `ia/07_issues.md` — documentados ISSUE-01 (resuelto), ISSUE-02 y ISSUE-03 (abiertos)
 
+### ISSUE-04: Etiquetas Mañana/Tarde/Noche en Vista de Hoy ✅
+- `admin/hoy/page.tsx` — `TURNO_CONFIG` actualizado: T1=Mañana, T2=Tarde, T3=Noche con sus horarios en el header de cada tarjeta
+
+### ISSUE-05: Campo `puesto` en Colaboradores ✅
+- `prisma/schema.prisma` — `puesto String? @db.NVarChar(50)` agregado + `db push` + `generate`
+- `api/colaboradores/route.ts` — POST incluye `puesto`
+- `api/colaboradores/[id]/route.ts` — PUT incluye `puesto`
+- `api/roll/hoy/route.ts` — respuesta incluye `puesto`
+- `admin/hoy/page.tsx` — puesto visible bajo el nombre en cada tarjeta de turno
+- `admin/colaboradores/page.tsx` — campo "Puesto" en formulario crear/editar; lista muestra `Grupo · Puesto`
+- Build limpio ✓ (23 rutas)
+
+- **Origen:** audios WhatsApp + imagen programación Eli Daniel 2026-05-29
+
 ## ⏳ Pendiente — Fase 5 (resto)
 
 | Tarea | Descripción |

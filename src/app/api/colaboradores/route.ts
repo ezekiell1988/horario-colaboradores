@@ -22,14 +22,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
-  const { nombre, grupoId } = await req.json();
+  const { nombre, grupoId, puesto } = await req.json();
 
   if (!nombre || !grupoId) {
     return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
   }
 
   const colaborador = await prisma.colaborador.create({
-    data: { nombre, grupoId },
+    data: { nombre, grupoId, puesto: puesto || null },
     include: { grupo: { select: { id: true, nombre: true } } },
   });
 

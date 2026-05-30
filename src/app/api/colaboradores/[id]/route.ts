@@ -12,11 +12,11 @@ export async function PUT(
   }
 
   const { id } = await params;
-  const { nombre, grupoId, activo } = await req.json();
+  const { nombre, grupoId, activo, puesto } = await req.json();
 
   const colaborador = await prisma.colaborador.update({
     where: { id },
-    data: { nombre, grupoId, activo },
+    data: { nombre, grupoId, activo, puesto: puesto ?? undefined },
     include: { grupo: { select: { id: true, nombre: true } } },
   });
 

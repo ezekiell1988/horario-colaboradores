@@ -6,6 +6,7 @@ import { showToast } from "@/lib/toast";
 type Colaborador = {
   id: string;
   nombre: string;
+  puesto: string | null;
   grupoNombre: string;
   excepcion: string | null;
 };
@@ -23,9 +24,9 @@ type HoyData = {
 };
 
 const TURNO_CONFIG = {
-  T1: { label: "06:00 – 14:00", bg: "bg-sky-50", border: "border-sky-200", header: "bg-sky-100 text-sky-800" },
-  T2: { label: "14:00 – 22:00", bg: "bg-amber-50", border: "border-amber-200", header: "bg-amber-100 text-amber-800" },
-  T3: { label: "22:00 – 06:00", bg: "bg-indigo-50", border: "border-indigo-200", header: "bg-indigo-100 text-indigo-800" },
+  T1: { nombre: "Mañana", label: "06:00 – 14:00", bg: "bg-sky-50", border: "border-sky-200", header: "bg-sky-100 text-sky-800" },
+  T2: { nombre: "Tarde",  label: "14:00 – 22:00", bg: "bg-amber-50", border: "border-amber-200", header: "bg-amber-100 text-amber-800" },
+  T3: { nombre: "Noche",  label: "22:00 – 06:00", bg: "bg-indigo-50", border: "border-indigo-200", header: "bg-indigo-100 text-indigo-800" },
 } as const;
 
 const EXCEPCION_LABEL: Record<string, string> = {
@@ -97,7 +98,7 @@ export default function HoyPage() {
             >
               {/* Header de la tarjeta */}
               <div className={`px-4 py-3 ${cfg.header}`}>
-                <div className="font-bold text-base">{turno}</div>
+                <div className="font-bold text-base">{cfg.nombre}</div>
                 <div className="text-xs font-medium opacity-80">{cfg.label}</div>
                 <div className="text-xs mt-0.5 opacity-70">
                   {activos.length} en turno{fuera.length > 0 ? ` · ${fuera.length} fuera` : ""}
@@ -111,13 +112,19 @@ export default function HoyPage() {
                 )}
                 {activos.map((c) => (
                   <li key={c.id} className="py-2 flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-gray-800">{c.nombre}</span>
+                    <div className="min-w-0">
+                      <span className="text-sm font-medium text-gray-800 block truncate">{c.nombre}</span>
+                      {c.puesto && <span className="text-xs text-gray-400">{c.puesto}</span>}
+                    </div>
                     <span className="text-xs text-gray-400 shrink-0">{c.grupoNombre}</span>
                   </li>
                 ))}
                 {fuera.map((c) => (
                   <li key={c.id} className="py-2 flex items-center justify-between gap-2 opacity-50">
-                    <span className="text-sm font-medium text-gray-500 line-through">{c.nombre}</span>
+                    <div className="min-w-0">
+                      <span className="text-sm font-medium text-gray-500 line-through block truncate">{c.nombre}</span>
+                      {c.puesto && <span className="text-xs text-gray-400">{c.puesto}</span>}
+                    </div>
                     <span className="text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded shrink-0">
                       {EXCEPCION_LABEL[c.excepcion!] ?? c.excepcion}
                     </span>

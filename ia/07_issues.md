@@ -43,6 +43,52 @@ Un colaborador que está en T2 esta semana tiene libre el sábado, pero la Vista
 
 ---
 
+## ISSUE-04: Vista de Hoy muestra "T1/T2/T3" en vez de "Mañana/Tarde/Noche" con horarios
+**Severidad:** medium (UX)
+**Estado:** resuelto — fix aplicado 2026-05-29
+
+**Descripción:**
+La Vista de Hoy muestra los turnos como "T1", "T2", "T3" en el header de cada tarjeta. La imagen de programación real de Eli Daniel (2026-05-29) muestra las secciones como **Mañana**, **Tarde**, **Noche** con el horario correspondiente. El mapeo es fijo para todos los grupos:
+
+| Código | Nombre | Horario |
+|--------|--------|---------|
+| T1 | Mañana | 06:00 – 14:00 |
+| T2 | Tarde | 14:00 – 22:00 |
+| T3 | Noche | 22:00 – 06:00 |
+
+**Fix aplicado:** Actualizar `TURNO_CONFIG` en `admin/hoy/page.tsx` para mostrar el nombre del turno en el header de cada tarjeta.
+
+---
+
+## ISSUE-05: Colaboradores no tienen campo "puesto"
+**Severidad:** high
+**Estado:** resuelto — fix aplicado 2026-05-29
+
+**Descripción:**
+La imagen de programación muestra que cada colaborador tiene un puesto dentro de su turno: Charlie 1, Charlie 2, Charlie 3, Charlie 4, Charlie 5, Coordinador. El modelo `Colaborador` en Prisma no tiene campo `puesto`. Esto impide mostrar el puesto en Vista de Hoy, Asistencia y Roll.
+
+**Fix aplicado:**
+- `prisma/schema.prisma` — campo `puesto String? @db.NVarChar(50)` agregado
+- `api/colaboradores/route.ts` y `[id]/route.ts` — campo `puesto` incluido en GET/POST/PUT
+- `admin/colaboradores/page.tsx` — campo "Puesto" en formulario de crear/editar
+- `api/roll/hoy/route.ts` — campo `puesto` en la respuesta
+- `admin/hoy/page.tsx` — puesto visible junto al nombre del colaborador
+
+---
+
+## ISSUE-06: Vista de Hoy no tiene sección "Libre"
+**Severidad:** medium
+**Estado:** abierto — requiere ISSUE-02
+
+**Descripción:**
+La imagen de programación muestra una sección **Libre** al final del día con los colaboradores que tienen su día de descanso en el ciclo (Viernes 29: Matee D, HANZEL F, ALLAN W). Actualmente la Vista de Hoy solo muestra a los colaboradores en su turno asignado para la semana; no distingue si hoy es uno de sus días libres dentro del ciclo.
+
+**Bloqueado por:** ISSUE-02 (modelar qué días de la semana son libres por turno). Una vez resuelto ISSUE-02, agregar la sección "Libre" es trivial: filtrar colaboradores cuyo turno sea el de esta semana pero cuyo día actual coincida con el día libre del patrón.
+
+**Fix propuesto:** Diferido hasta resolver ISSUE-02.
+
+---
+
 ## ISSUE-03: Días de transición de turno calculados incorrectamente (sábado/domingo)
 **Severidad:** low
 **Estado:** abierto — comportamiento conocido y aceptado
