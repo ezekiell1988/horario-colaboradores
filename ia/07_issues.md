@@ -1,6 +1,6 @@
 # 07 — Issues Conocidos
 
-> **Última actualización:** 2026-05-29
+> **Última actualización:** 2026-05-30
 > **Fuente de descubrimiento:** Cruce PDF programación Eli Daniel + audios WhatsApp 2026-05-29
 
 ---
@@ -24,7 +24,7 @@ getTurnoForWeek(grupo, new Date("2026-04-13")) // devuelve "T1" — incorrecto, 
 
 ## ISSUE-02: Vista de Hoy no diferencia días libres dentro de la semana
 **Severidad:** medium
-**Estado:** abierto — no implementado (requiere diseño)
+**Estado:** resuelto — fix aplicado 2026-05-30
 
 **Descripción:**
 La Vista de Hoy (`/admin/hoy`) muestra a todos los colaboradores de un grupo bajo el turno de su semana, pero el roll real tiene **días libres específicos dentro de cada semana**:
@@ -39,7 +39,10 @@ Un colaborador que está en T2 esta semana tiene libre el sábado, pero la Vista
 
 **Workaround:** El sistema de excepciones (`ExcepcionRoll`) puede usarse para marcar días libres manualmente.
 
-**Fix propuesto:** Agregar función `getDiaLibreEnSemana(turnoActual, turnoSiguiente): number[]` que devuelva los días de la semana (0–6) donde el colaborador está libre, y usarla en el API `/api/roll/hoy` para filtrar si `hoy` es uno de esos días.
+**Fix aplicado:**
+- `lib/roll-engine.ts` — función `getDiasLibres(turno): number[]` con patrón confirmado por imagen 2026-05-30: T3=[5,6], T2=[6], T1=[]
+- `api/roll/hoy/route.ts` — colaboradores cuyo `diaHoy` está en `getDiasLibres(turno)` se mueven al array `libre` (separado de `turnos`)
+- 5 tests nuevos agregados en `roll-engine.test.ts` → 22/22 passing
 
 ---
 

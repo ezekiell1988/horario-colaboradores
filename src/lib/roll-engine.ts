@@ -50,3 +50,21 @@ export function getTurnoForWeek(grupo: GrupoRotacion, fecha: Date): Turno {
     ((grupo.turnoInicioIndex - weeksElapsed) % 3 + 3) % 3; // rotación descendente: T3→T2→T1→T3
   return TURNOS[index];
 }
+
+/**
+ * Devuelve los días de la semana (UTC getDay: 0=Dom … 5=Vie, 6=Sáb) en que
+ * un colaborador con el turno dado tiene día libre.
+ *
+ * Patrón confirmado:
+ *   T3 (Noche → T2 la próxima): libre Viernes(5) + Sábado(6)
+ *   T2 (Tarde → T1 la próxima): libre Sábado(6)
+ *   T1 (Mañana → T3 la próxima): 0 libres (el sábado empieza T3 a las 22:00)
+ */
+export function getDiasLibres(turno: Turno): number[] {
+  const diasPorTurno: Record<Turno, number[]> = {
+    T3: [5, 6], // Viernes + Sábado
+    T2: [6],    // Sábado
+    T1: [],     // sin días libres (transición a T3)
+  };
+  return diasPorTurno[turno];
+}

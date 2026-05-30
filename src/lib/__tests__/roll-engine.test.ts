@@ -1,4 +1,4 @@
-import { getTurnoForWeek, getWeekStart, GrupoRotacion } from "../roll-engine";
+import { getTurnoForWeek, getDiasLibres, getWeekStart, GrupoRotacion } from "../roll-engine";
 
 // Grupo de referencia: inicia en T1 el lunes 2026-01-05
 const grupoT1: GrupoRotacion = {
@@ -103,5 +103,30 @@ describe("getTurnoForWeek — validación contra programación real (PDF Eli Dan
 
   it("semana 2026-05-11 → T1", () => {
     expect(getTurnoForWeek(grupoEli, new Date("2026-05-11T00:00:00Z"))).toBe("T1");
+  });
+});
+
+describe("getDiasLibres", () => {
+  it("T3 → libre Viernes(5) y Sábado(6)", () => {
+    expect(getDiasLibres("T3")).toEqual([5, 6]);
+  });
+
+  it("T2 → libre solo Sábado(6)", () => {
+    expect(getDiasLibres("T2")).toEqual([6]);
+  });
+
+  it("T1 → sin días libres (transición a T3 el sábado 22:00)", () => {
+    expect(getDiasLibres("T1")).toEqual([]);
+  });
+
+  it("T3 incluye viernes pero T2 no", () => {
+    expect(getDiasLibres("T3").includes(5)).toBe(true);
+    expect(getDiasLibres("T2").includes(5)).toBe(false);
+  });
+
+  it("sábado(6) es libre para T2 y T3, pero no para T1", () => {
+    expect(getDiasLibres("T2").includes(6)).toBe(true);
+    expect(getDiasLibres("T3").includes(6)).toBe(true);
+    expect(getDiasLibres("T1").includes(6)).toBe(false);
   });
 });

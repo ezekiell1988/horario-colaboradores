@@ -21,6 +21,7 @@ type HoyData = {
   fecha: string;
   semana: string;
   turnos: Turnos;
+  libre: Colaborador[];
 };
 
 const TURNO_CONFIG = {
@@ -71,7 +72,7 @@ export default function HoyPage() {
   if (!data) return null;
 
   const fecha = formatFecha(data.fecha);
-  const totalColabs = Object.values(data.turnos).flat().length;
+  const totalColabs = Object.values(data.turnos).flat().length + data.libre.length;
 
   return (
     <div className="space-y-4">
@@ -83,7 +84,7 @@ export default function HoyPage() {
         </p>
       </div>
 
-      {/* Tarjetas por turno */}
+      {/* Tarjetas por turno + Libre */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {(["T1", "T2", "T3"] as const).map((turno) => {
           const cfg = TURNO_CONFIG[turno];
@@ -134,6 +135,28 @@ export default function HoyPage() {
             </div>
           );
         })}
+
+        {/* Tarjeta Libre — solo si hay colaboradores libres hoy */}
+        {data.libre.length > 0 && (
+          <div className="rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
+            <div className="px-4 py-3 bg-gray-100 text-gray-700">
+              <div className="font-bold text-base">Libre</div>
+              <div className="text-xs font-medium opacity-70">Día libre</div>
+              <div className="text-xs mt-0.5 opacity-60">{data.libre.length} colaborador{data.libre.length !== 1 ? "es" : ""}</div>
+            </div>
+            <ul className="divide-y divide-white/60 px-4 py-2">
+              {data.libre.map((c) => (
+                <li key={c.id} className="py-2 flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <span className="text-sm font-medium text-gray-700 block truncate">{c.nombre}</span>
+                    {c.puesto && <span className="text-xs text-gray-400">{c.puesto}</span>}
+                  </div>
+                  <span className="text-xs text-gray-400 shrink-0">{c.grupoNombre}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
