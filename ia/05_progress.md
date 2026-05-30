@@ -4,12 +4,11 @@
 > **Fase activa:** Fase 1 — Setup & Infraestructura Base
 
 ## ✅ Completado
-_(ningún componente completado aún — proyecto en fase de inicialización)_
-
-## 🔄 Pendiente — Fase 1: Setup & Infraestructura Base
 
 ### PC-01: Scaffolding del proyecto
-Next.js 15 + TypeScript + Tailwind no está inicializado. Ver TASK-SETUP-01.
+Next.js 15 + TypeScript + Tailwind inicializado en `src/`. Build ✓. Ver TASK-SETUP-01.
+
+## 🔄 Pendiente — Fase 1: Setup & Infraestructura Base
 
 ### PC-02: Prisma + Azure SQL
 Schema definido en `02_architecture.md`. Falta crear el proyecto y correr `prisma migrate`. Ver TASK-SETUP-02.
