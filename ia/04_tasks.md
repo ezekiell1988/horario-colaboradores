@@ -99,7 +99,7 @@ Dependencies: TASK-SETUP-03
 ---
 
 ## TASK-ROLL-02: Implementar RollEngine
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — `lib/roll-engine.ts` + `jest.config.ts` + 11 tests pasan (`npm test`)
 
 Title: Lógica pura que calcula el turno de un grupo para cualquier semana dada
 
@@ -121,7 +121,7 @@ Dependencies: TASK-SETUP-02
 ---
 
 ## TASK-ROLL-03: Vista del Roll Semanal
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado — `api/roll/route.ts` + `admin/roll/page.tsx` + link en AdminNav
 
 Title: Pantalla que muestra el roll de la semana seleccionada para un grupo
 

@@ -1,6 +1,6 @@
 # 05 — Progreso del Proyecto
 
-> **Última actualización:** 2026-05-29
+> **Última actualización:** 2026-05-30
 > **Fase activa:** Fase 2 — Módulo Roll de Turnos
 
 ## ✅ Completado
@@ -45,9 +45,19 @@
 - Build limpio ✓
 - Ver TASK-ROLL-01
 
-### PC-05: RollEngine ⏳
-- Falta: `lib/roll-engine.ts` + tests + vista del roll semanal
+### PC-05: RollEngine ✅
+- `lib/roll-engine.ts` — `getWeekStart()` + `getTurnoForWeek()`, lógica de módulo seguro (semanas negativas)
+- `jest.config.ts` — preset ts-jest, env node, moduleNameMapper
+- `lib/__tests__/roll-engine.test.ts` — 11 tests: semana 0, +1, +2, +3 (ciclo), T2 inicio, fechas pasadas, cruce año nuevo, mid-week
+- `npm test` — 11/11 ✓
 - Ver TASK-ROLL-02
+
+### PC-06: Vista del Roll Semanal ✅
+- `app/api/roll/route.ts` — GET grupoId + fecha → turno + colaboradores activos
+- `app/(admin)/admin/roll/page.tsx` — selector de grupo, navegación semanal, colores por turno
+- `components/AdminNav.tsx` — enlace "Roll" agregado
+- Build limpio ✓
+- Ver TASK-ROLL-03
 
 ## ⏳ Pendiente — Fases siguientes
 
