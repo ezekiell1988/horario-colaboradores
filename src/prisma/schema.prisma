@@ -21,7 +21,7 @@ model User {
 model Colaborador {
   id                   String          @id @default(cuid())
   nombre               String
-  puesto               String?         @db.NVarChar(50)
+  puesto               String?         @db.NVarChar(100)
   modalidad            String          @default("FULL") @db.NVarChar(15) // "FULL" | "MT" | "FIJO" | "MT_ALTERNO"
   turnoFijo            String?         @db.NVarChar(10)
   fechaInicioPersonal  DateTime?       // solo MT_ALTERNO: lunes de referencia del ciclo propio

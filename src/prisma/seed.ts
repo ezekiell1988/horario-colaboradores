@@ -68,6 +68,48 @@ const MT_FIJO_EXTRA: Record<string, { grupoNombre: string; modalidad: string; tu
   "020027": { grupoNombre: "Grupo T1", modalidad: "FIJO", turnoFijo: "T_ADMIN" },
 };
 
+// Puesto de trabajo por código de colaborador (extraído del PDF de programación)
+const PUESTO_POR_CODIGO: Record<string, string> = {
+  "018265": "Puesto 4 Entrada Anexo Hospital L - D 24 hrs",       // ALEMAN CORTEZ
+  "019550": "Parqueo bajo techo Torre Médica L-D 06:00-22:00",    // SALGADO COTO
+  "019997": "Puesto 6 Torre Parqueo 2 L - D 06:00 A LAS 22:00",  // VARGAS LEON
+  "020000": "Puesto 2 Recorridos Hospital L-D 06:00 A LAS 22:00", // ARAYA MORA
+  "020001": "Puesto 6 Torre Parqueo 2 L - D 06:00 A LAS 22:00",  // BADILLA CASCANTE
+  "020003": "Puesto 9 Monitoreo Torre Médica L - D 24 HRS",       // OCAMPO TENORIO
+  "020006": "Puesto 9 Monitoreo Torre Médica L - D 24 HRS",       // GUTIERREZ MENDOZA
+  "020007": "Puesto 7 Entrada Emergencias Hospital L - D 24 HRS", // CALVO ARCE
+  "020011": "Puesto 3 Monitoreo Hospital L-D 24 hrs",             // BONILLA CAMPOS
+  "020012": "Puesto 4 Entrada Anexo Hospital L - D 24 hrs",       // WEPOL FERNANDEZ
+  "020015": "Puesto 7 Entrada Emergencias Hospital L - D 24 HRS", // CASTILLO BERMUDEZ
+  "020016": "Puesto 1 Entrada Principal Hospital L- D 24 HRS",    // CASTRO BALTODANO FRANCIS
+  "020019": "Puesto 8 Edificio Centauro L - D DE LAS 06:00 A LAS 22:00", // UREÑA MAYORGA
+  "020024": "Acceso Edificio Geriátrico Torre médica L-D 06:00-22:00",   // MATTEY VASQUEZ
+  "020025": "Puesto 7 Entrada Emergencias Hospital L - D 24 HRS", // JIRON CASTRO
+  "020027": "Puesto Disponible",                                  // VEGA CORDERO
+  "020028": "Puesto 5 Torre Parqueo 1 L - D 24 HRS",             // CHACON SOSA
+  "020029": "Recorrido Torre Médica L-D 24 horas",               // UMAÑA BORBON
+  "020058": "Puesto 2 Recorridos Hospital L-D 06:00 A LAS 22:00", // BETANCOURT
+  "020088": "Puesto 9 Monitoreo Torre Médica L - D 24 HRS",       // RETANA ROJAS
+  "020105": "Puesto 3 Monitoreo Hospital L-D 24 hrs",             // MENA SUAZO
+  "020107": "Puesto 1 Entrada Principal Hospital L- D 24 HRS",    // PEÑA RAMIREZ
+  "020108": "Puesto 8 Edificio Centauro L - D DE LAS 06:00 A LAS 22:00", // JIMENEZ UGALDE
+  "020112": "Puesto 3 Monitoreo Hospital L-D 24 hrs",             // HURTADO PEREZ
+  "020117": "Puente Torre Médica L-D 06:00-22:00",               // MORALES MORALES
+  "020118": "Puente Torre Médica L-D 06:00-22:00",               // MENDIETA GONZALEZ
+  "020143": "Acceso Edificio Geriátrico Torre médica L-D 06:00-22:00",   // MARTINEZ BARRANTES
+  "020144": "Recorrido Torre Médica L-D 24 horas",               // GOMEZ CUBILLO
+  "020161": "Puesto 7 Entrada Emergencias Hospital L - D 24 HRS", // SEGURA GUEVARA
+  "020162": "Puesto 7 Entrada Emergencias Hospital L - D 24 HRS", // CHAVARRIA REYES
+  "020163": "Puesto 8 Edificio Centauro L - D DE LAS 06:00 A LAS 22:00", // GOMEZ VETTE
+  "020172": "Parqueo bajo techo Torre Médica L-D 06:00-22:00",   // SUAREZ LYONS
+  "020181": "Puesto 5 Torre Parqueo 1 L - D 24 HRS",             // DURAN VARGAS
+  "020182": "Puesto 5 Torre Parqueo 1 L - D 24 HRS",             // RIVERA TORRES
+  "020189": "Puesto 4 Entrada Anexo Hospital L - D 24 hrs",       // ZUÑIGA UGARTE
+  "020191": "Recorrido Torre Médica L-D 24 horas",               // VICTOR JIRON
+  "020193": "Acceso Edificio Geriátrico Torre médica L-D 06:00-22:00",   // BRENES FERNANDEZ
+  "020199": "Puesto 1 Entrada Principal Hospital L- D 24 HRS",    // CASTRO BALTODANO RAFAEL
+};
+
 async function main() {
   // ── 0. Limpiar BD (respetar FK) ────────────────────────────────────────────
   console.log("🗑️  Limpiando BD...");
@@ -117,6 +159,7 @@ async function main() {
           nombre: m.nombre,
           modalidad: "FULL",
           turnoFijo: null,
+          puesto: PUESTO_POR_CODIGO[m.codigo] ?? null,
           activo: true,
           grupoId,
         },
@@ -143,6 +186,7 @@ async function main() {
         nombre: emp.nombre,
         modalidad: extra.modalidad,
         turnoFijo: extra.turnoFijo ?? null,
+        puesto: PUESTO_POR_CODIGO[codigo] ?? null,
         activo: true,
         grupoId,
       },

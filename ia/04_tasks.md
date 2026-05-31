@@ -1,7 +1,7 @@
 # 04 — Tareas Accionables
 
-> **Última actualización:** 2026-05-30 (sesión noche)
-> **Prioridad actual:** Aplicar migración `diaLibre`/`diaLibreExtra` en BD → adaptar roll-engine y asistencia
+> **Última actualización:** 2026-06-01 (sesión día)
+> **Prioridad actual:** Aplicar migración `diaLibre`/`diaLibreExtra` en BD → correr re-seed con puestos → verificar vista Hoy en producción
 
 ---
 
@@ -50,21 +50,19 @@ Pending:
 ---
 
 ## TASK-DIA-LIBRE-02: Adaptar roll-engine — respetar diaLibre / diaLibreExtra
-**Estado:** ⏳ Pendiente
+**Estado:** ✅ Completado (2026-06-01)
 
 Title: Hacer que `roll-engine.ts` marque como `"LIBRE"` los días configurados en `diaLibre` y `diaLibreExtra`
 
 Context:
-Actualmente `getDiasLibres()` retorna valores hardcodeados por modalidad. Debe leer los campos `diaLibre` y `diaLibreExtra` del colaborador (mapeando nombre de día a índice 0-6) y combinarlos con los libres estructurales de `MT_ALTERNO` (miércoles=3).
+`getDiasLibres()` tenía valores hardcodeados incorrectos (T2→sábado, T3→viernes+sábado). Dado que todos los `diaLibre`/`diaLibreExtra` en BD eran NULL, todos los colaboradores T2/T3 aparecían como LIBRE. El fix hace que `getDiasLibres()` retorne `[]` para T1/T2/T3 (los días libres se configuran individualmente por colaborador). `MT_ALTERNO` sigue retornando `[3]` (miércoles).
 
-Steps:
-1. Crear helper `diaLibreToIndex(dia: string): number` en `roll-engine.ts` mapeando `LUNES→1 … DOMINGO→0`.
-2. Actualizar `getDiasLibres(colaborador)` para incluir `diaLibre` y `diaLibreExtra` en el array resultante.
-3. En `getTurnoPorDia()` y cualquier punto que marque días libres, usar `getDiasLibres()` en lugar de valores hardcodeados.
-4. Actualizar tests de `roll-engine.test.ts` para verificar que el día libre configurado se respeta.
-5. `npm test` — todos los tests pasan.
+Changes:
+- `lib/roll-engine.ts`: `getDiasLibres()` retorna `[]` para T1/T2/T3; solo `MT_ALTERNO` retorna `[3]`.
+- `lib/__tests__/roll-engine.test.ts`: tests actualizados — 76/76 passing.
 
-Dependencies: TASK-DIA-LIBRE-01 completado y migración BD aplicada.
+Pending:
+- Configurar `diaLibre`/`diaLibreExtra` por colaborador en admin UI (después del `db push`).
 
 ---
 
@@ -82,6 +80,31 @@ Steps:
 3. Verificar que `MT_ALTERNO` sigue funcionando igual (no regresión).
 
 Dependencies: TASK-DIA-LIBRE-01 completado y migración BD aplicada.
+
+---
+
+## TASK-PUESTO-02: Poblar campo puesto en seed y mostrar en vista Hoy
+**Estado:** ✅ Completado (2026-06-01)
+
+Title: Agregar `puesto` de cada colaborador al seed y reemplazar `grupoNombre` por `puesto` en la vista Hoy
+
+Context:
+El campo `Colaborador.puesto String? @db.NVarChar(50)` ya existía en el schema pero todos los valores eran NULL. Del PDF de programación se extrajeron los 38 puestos únicos de trabajo. La vista `/admin/hoy` y `/coordinador/hoy` mostraban el `grupoNombre` a la derecha de cada colaborador; el cliente pidió mostrar `puesto` en su lugar.
+
+Changes:
+- `prisma/seed.ts`: nuevo mapa `PUESTO_POR_CODIGO` (38 entradas, código → nombre completo del puesto). Ambos bloques de creación de colaboradores (FULL y MT/FIJO) ahora incluyen `puesto: PUESTO_POR_CODIGO[codigo] ?? null`.
+- `app/(admin)/admin/hoy/page.tsx`: eliminado `{c.grupoNombre}` del lado derecho; `c.puesto` se muestra como sub-línea bajo el nombre (activos, fuera y libres).
+- `app/(coordinador)/coordinador/hoy/page.tsx`: mismo cambio; además se agregó sub-línea de puesto en la sección `fuera` que no la tenía.
+
+Puesto de personas con múltiples puestos (elegido por frecuencia en el PDF):
+- OCAMPO TENORIO → Puesto 9 Monitoreo Torre Médica
+- JIRON CASTRO → Puesto 7 Entrada Emergencias Hospital
+- UMAÑA BORBON → Recorrido Torre Médica
+- JIMENEZ UGALDE → Puesto 8 Edificio Centauro
+- BRENES FERNANDEZ → Acceso Edificio Geriátrico Torre médica
+
+Pending:
+- Ejecutar re-seed (`npx prisma db push` + `npx prisma db seed`) desde VM para que los puestos aparezcan en producción.
 
 ---
 

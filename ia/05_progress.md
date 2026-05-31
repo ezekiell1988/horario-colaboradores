@@ -1,9 +1,18 @@
 # 05 — Progreso del Proyecto
 
-> **Última actualización:** 2026-05-30 (sesión noche)
-> **Estado:** Proyecto en producción — Carga inicial BD completada · Fix T_ADMIN deployado · Fase 8 en curso (días libres configurables) · Fase 9 completada (timezone Costa Rica GMT-6) · Fase 10 completada (guía de usuario en-app)
+> **Última actualización:** 2026-06-01 (sesión día)
+> **Estado:** Proyecto en producción — Carga inicial BD completada · Fix T_ADMIN deployado · Fix getDiasLibres deployado · Fase 8 en curso (días libres configurables) · Fase 9 completada (timezone Costa Rica GMT-6) · Fase 10 completada (guía de usuario en-app) · TASK-PUESTO-02 completado (seed + vista Hoy)
 
 ## ✅ Completado
+
+### PC-FIX-DIAS-LIBRES: Fix getDiasLibres() + puesto en seed y vista Hoy ✅
+- **Fecha:** 2026-06-01 (sesión día)
+- **Problema raíz:** `getDiasLibres()` tenía defaults hardcodeados incorrectos (T2→sábado, T3→viernes+sábado). Como `diaLibre`/`diaLibreExtra` de todos los colaboradores eran NULL, el fallback activaba los defaults erróneos y todos los T2/T3 aparecían como LIBRE en `/admin/hoy`.
+- **Fix `lib/roll-engine.ts`:** `getDiasLibres()` ahora retorna `[]` para T1/T2/T3; solo `MT_ALTERNO` retorna `[3]` (miércoles). Los días libres son siempre por colaborador individual.
+- **Tests:** 76/76 passing en `roll-engine.test.ts`.
+- **Seed `prisma/seed.ts`:** nuevo mapa `PUESTO_POR_CODIGO` con 38 entradas (extraídas del PDF). Ambos bloques de creación de colaboradores (FULL y MT/FIJO) incluyen `puesto: PUESTO_POR_CODIGO[codigo] ?? null`.
+- **Vista Hoy (admin y coordinador):** reemplazado el badge `{c.grupoNombre}` del lado derecho por `{c.puesto}` como sub-línea bajo el nombre — más informativo operacionalmente.
+- **Pending:** re-seed en VM (`npx prisma db push` + `npx prisma db seed`) para que los puestos queden en BD de producción.
 
 ### PC-SEED: Carga inicial de BD desde PDF de programación ✅
 - **Fecha:** 2026-05-30 (sesión noche)

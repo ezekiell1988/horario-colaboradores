@@ -121,18 +121,16 @@ export default function CoordinadorHoyPage() {
                   <li className="py-3 text-sm text-gray-400 text-center">Sin asignaciones</li>
                 )}
                 {activos.map((c) => (
-                  <li key={c.id} className="py-2 flex items-center justify-between gap-2">
-                    <div className="min-w-0">
-                      <span className="text-sm font-medium text-gray-800 block truncate">{c.nombre}</span>
-                      {c.puesto && <span className="text-xs text-gray-400">{c.puesto}</span>}
-                    </div>
-                    <span className="text-xs text-gray-400 shrink-0">{c.grupoNombre}</span>
+                  <li key={c.id} className="py-2">
+                    <span className="text-sm font-medium text-gray-800 block truncate">{c.nombre}</span>
+                    {c.puesto && <span className="text-xs text-gray-400 block truncate">{c.puesto}</span>}
                   </li>
                 ))}
                 {fuera.map((c) => (
                   <li key={c.id} className="py-2 flex items-center justify-between gap-2 opacity-50">
                     <div className="min-w-0">
                       <span className="text-sm font-medium text-gray-500 line-through block truncate">{c.nombre}</span>
+                      {c.puesto && <span className="text-xs text-gray-400 block truncate">{c.puesto}</span>}
                     </div>
                     <span className="text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded shrink-0">
                       {EXCEPCION_LABEL[c.excepcion!] ?? c.excepcion}
@@ -155,12 +153,9 @@ export default function CoordinadorHoyPage() {
             </div>
             <ul className="divide-y divide-white/60 px-4 py-2">
               {data.libre.map((c) => (
-                <li key={c.id} className="py-2 flex items-center justify-between gap-2">
-                  <div className="min-w-0">
-                    <span className="text-sm font-medium text-gray-700 block truncate">{c.nombre}</span>
-                    {c.puesto && <span className="text-xs text-gray-400">{c.puesto}</span>}
-                  </div>
-                  <span className="text-xs text-gray-400 shrink-0">{c.grupoNombre}</span>
+                <li key={c.id} className="py-2">
+                  <span className="text-sm font-medium text-gray-700 block truncate">{c.nombre}</span>
+                  {c.puesto && <span className="text-xs text-gray-400 block truncate">{c.puesto}</span>}
                 </li>
               ))}
             </ul>
