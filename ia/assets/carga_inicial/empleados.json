@@ -1,0 +1,559 @@
+[
+  {
+    "codigo": "018265",
+    "nombre": "ALEMAN CORTEZ EDUWIN ANTONIO",
+    "estado": "Activo",
+    "puestos": [
+      "002"
+    ],
+    "turnosPorTipo": {
+      "T1": 6,
+      "T3": 6,
+      "T2": 6
+    },
+    "diasLibres": 2,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020000",
+    "nombre": "ARAYA MORA JASON MARTIN",
+    "estado": "Activo",
+    "puestos": [
+      "003"
+    ],
+    "turnosPorTipo": {
+      "T2": 8,
+      "T1": 9
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020001",
+    "nombre": "BADILLA CASCANTE ESTEBAN",
+    "estado": "Activo",
+    "puestos": [
+      "004"
+    ],
+    "turnosPorTipo": {
+      "T2": 17
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020058",
+    "nombre": "BETANCOURT NAVARRETE JUAN ALBERTO",
+    "estado": "Activo",
+    "puestos": [
+      "003"
+    ],
+    "turnosPorTipo": {
+      "T1": 9,
+      "T2": 8
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020011",
+    "nombre": "BONILLA CAMPOS BRAYAN EDUARDO",
+    "estado": "Activo",
+    "puestos": [
+      "001"
+    ],
+    "turnosPorTipo": {
+      "T2": 5,
+      "T1": 6,
+      "T3": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020193",
+    "nombre": "BRENES FERNANDEZ CAROLINA",
+    "estado": "Activo",
+    "puestos": [
+      "011",
+      "012",
+      "013"
+    ],
+    "turnosPorTipo": {
+      "T1": 9,
+      "T2": 8
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020007",
+    "nombre": "CALVO ARCE SANTI RANDALL",
+    "estado": "Activo",
+    "puestos": [
+      "007"
+    ],
+    "turnosPorTipo": {
+      "T1": 5,
+      "T3": 6,
+      "T2": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020015",
+    "nombre": "CASTILLO BERMUDEZ MINOR EDUARDO",
+    "estado": "Activo",
+    "puestos": [
+      "007"
+    ],
+    "turnosPorTipo": {
+      "T2": 6,
+      "T1": 6,
+      "T3": 6
+    },
+    "diasLibres": 2,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020016",
+    "nombre": "CASTRO BALTODANO FRANCIS",
+    "estado": "Activo",
+    "puestos": [
+      "008"
+    ],
+    "turnosPorTipo": {
+      "T1": 5,
+      "T3": 6,
+      "T2": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020199",
+    "nombre": "CASTRO BALTODANO RAFAEL ANTONIO",
+    "estado": "Activo",
+    "puestos": [
+      "008"
+    ],
+    "turnosPorTipo": {
+      "T3": 5,
+      "T2": 6,
+      "T1": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020028",
+    "nombre": "CHACON SOSA MARICRUZ",
+    "estado": "Activo",
+    "puestos": [
+      "006"
+    ],
+    "turnosPorTipo": {
+      "T1": 5,
+      "T3": 6,
+      "T2": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020162",
+    "nombre": "CHAVARRIA REYES ALEJANDRO",
+    "estado": "Activo",
+    "puestos": [
+      "007"
+    ],
+    "turnosPorTipo": {
+      "T_ADMIN": 17
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020181",
+    "nombre": "DURAN VARGAS JACQUELINE MARLITT",
+    "estado": "Activo",
+    "puestos": [
+      "006"
+    ],
+    "turnosPorTipo": {
+      "T2": 5,
+      "T1": 6,
+      "T3": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020144",
+    "nombre": "GOMEZ CUBILLO ELI DANIEL",
+    "estado": "Activo",
+    "puestos": [
+      "010"
+    ],
+    "turnosPorTipo": {
+      "T1": 5,
+      "T3": 6,
+      "T2": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020163",
+    "nombre": "GOMEZ VETTE ABRAHAM JOSE",
+    "estado": "Activo",
+    "puestos": [
+      "005"
+    ],
+    "turnosPorTipo": {
+      "T2": 12,
+      "T1": 6
+    },
+    "diasLibres": 2,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020006",
+    "nombre": "GUTIERREZ MENDOZA NATALIA VANESSA",
+    "estado": "Activo",
+    "puestos": [
+      "009"
+    ],
+    "turnosPorTipo": {
+      "T1": 5,
+      "T3": 6,
+      "T2": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020112",
+    "nombre": "HURTADO PEREZ MARIA JOSE",
+    "estado": "Activo",
+    "puestos": [
+      "001"
+    ],
+    "turnosPorTipo": {
+      "T1": 5,
+      "T3": 6,
+      "T2": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020108",
+    "nombre": "JIMENEZ UGALDE WENDY RAQUEL",
+    "estado": "Activo",
+    "puestos": [
+      "003",
+      "004",
+      "005"
+    ],
+    "turnosPorTipo": {
+      "T1": 9,
+      "T2": 8
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020025",
+    "nombre": "JIRON CASTRO LUIS ANTONIO",
+    "estado": "Activo",
+    "puestos": [
+      "006",
+      "007"
+    ],
+    "turnosPorTipo": {
+      "T1": 6,
+      "T3": 6,
+      "T2": 5
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020143",
+    "nombre": "MARTINEZ BARRANTES DYLAN ANDREY",
+    "estado": "Activo",
+    "puestos": [
+      "013"
+    ],
+    "turnosPorTipo": {
+      "T2": 12,
+      "T1": 6
+    },
+    "diasLibres": 2,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020024",
+    "nombre": "MATTEY VASQUEZ DOUGLAS",
+    "estado": "Activo",
+    "puestos": [
+      "013"
+    ],
+    "turnosPorTipo": {
+      "T1": 11,
+      "T2": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020105",
+    "nombre": "MENA SUAZO RIGOBERTO",
+    "estado": "Activo",
+    "puestos": [
+      "001"
+    ],
+    "turnosPorTipo": {
+      "T3": 5,
+      "T2": 6,
+      "T1": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020118",
+    "nombre": "MENDIETA GONZALEZ ANA LUISA",
+    "estado": "Activo",
+    "puestos": [
+      "011"
+    ],
+    "turnosPorTipo": {
+      "T2": 8,
+      "T1": 9
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020117",
+    "nombre": "MORALES MORALES MARIA DEL CARMEN",
+    "estado": "Activo",
+    "puestos": [
+      "011"
+    ],
+    "turnosPorTipo": {
+      "T1": 9,
+      "T2": 8
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020003",
+    "nombre": "OCAMPO TENORIO LUIS ALFONSO",
+    "estado": "Activo",
+    "puestos": [
+      "001",
+      "009"
+    ],
+    "turnosPorTipo": {
+      "T1": 6,
+      "T3": 6,
+      "T2": 5
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020107",
+    "nombre": "PEÑA RAMIREZ SAMANTHA REBECCA",
+    "estado": "Activo",
+    "puestos": [
+      "008"
+    ],
+    "turnosPorTipo": {
+      "T2": 5,
+      "T1": 6,
+      "T3": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020088",
+    "nombre": "RETANA ROJAS JOHANNA",
+    "estado": "Activo",
+    "puestos": [
+      "009"
+    ],
+    "turnosPorTipo": {
+      "T3": 4,
+      "T2": 6,
+      "T1": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 19
+  },
+  {
+    "codigo": "020182",
+    "nombre": "RIVERA TORRES MARIA JACQUELINE",
+    "estado": "Activo",
+    "puestos": [
+      "006"
+    ],
+    "turnosPorTipo": {
+      "T3": 5,
+      "T2": 6,
+      "T1": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "019550",
+    "nombre": "SALGADO COTO CARLOS ALBERTO",
+    "estado": "Activo",
+    "puestos": [
+      "012"
+    ],
+    "turnosPorTipo": {
+      "T1": 10,
+      "T2": 7
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020161",
+    "nombre": "SEGURA GUEVARA GEORGE DAVID",
+    "estado": "Activo",
+    "puestos": [
+      "007"
+    ],
+    "turnosPorTipo": {
+      "T3": 5,
+      "T2": 6,
+      "T1": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020172",
+    "nombre": "SUAREZ LYONS MARIO ALBERTO",
+    "estado": "Activo",
+    "puestos": [
+      "012"
+    ],
+    "turnosPorTipo": {
+      "T2": 11,
+      "T1": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020029",
+    "nombre": "UMAÑA BORBON BRYAN",
+    "estado": "Activo",
+    "puestos": [
+      "008",
+      "010"
+    ],
+    "turnosPorTipo": {
+      "T1": 6,
+      "T3": 6,
+      "T2": 5
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020019",
+    "nombre": "UREÑA MAYORGA MARGOTH",
+    "estado": "Activo",
+    "puestos": [
+      "005"
+    ],
+    "turnosPorTipo": {
+      "T1": 11,
+      "T2": 4
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "019997",
+    "nombre": "VARGAS LEON FRANCISCO",
+    "estado": "Activo",
+    "puestos": [
+      "004"
+    ],
+    "turnosPorTipo": {
+      "T1": 17
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020027",
+    "nombre": "VEGA CORDERO VICTOR HUGO",
+    "estado": "Activo",
+    "puestos": [
+      "968"
+    ],
+    "turnosPorTipo": {
+      "T_ADMIN": 18
+    },
+    "diasLibres": 2,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020191",
+    "nombre": "VICTOR JIRON JOSE ALBERTO",
+    "estado": "Activo",
+    "puestos": [
+      "010"
+    ],
+    "turnosPorTipo": {
+      "T3": 5,
+      "T2": 6,
+      "T1": 6
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020012",
+    "nombre": "WEPOL FERNANDEZ BENITO DE LOS ANGELES",
+    "estado": "Activo",
+    "puestos": [
+      "002"
+    ],
+    "turnosPorTipo": {
+      "T2": 6,
+      "T1": 6,
+      "T3": 5
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  },
+  {
+    "codigo": "020189",
+    "nombre": "ZUÑIGA UGARTE JUAN GERARDO",
+    "estado": "Activo",
+    "puestos": [
+      "002"
+    ],
+    "turnosPorTipo": {
+      "T3": 6,
+      "T2": 6,
+      "T1": 5
+    },
+    "diasLibres": 3,
+    "totalDias": 20
+  }
+]

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getTurnoForWeek, getDiasLibres, getWeekStart, getTurnoEfectivo } from "@/lib/roll-engine";
+import { getTurnoForWeek, getDiasLibres, getDiasLibresColaborador, getWeekStart, getTurnoEfectivo, nowCR } from "@/lib/roll-engine";
 import type { Turno, Modalidad } from "@/lib/roll-engine";
 
 export async function GET() {
@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
-  const hoy = new Date();
+  const hoy = nowCR(); // fecha actual en zona horaria Costa Rica (GMT-6)
   const semanaActual = getWeekStart(hoy);
 
   // Todos los grupos con sus colaboradores activos
@@ -53,7 +53,8 @@ export async function GET() {
         col.turnoFijo ?? null,
         turno,
       );
-      const diasLibresEfectivos = getDiasLibres(turnoEfectivo);
+      const diasLibresPersonal = getDiasLibresColaborador(col.diaLibre ?? null, col.diaLibreExtra ?? null);
+      const diasLibresEfectivos = diasLibresPersonal ?? getDiasLibres(turnoEfectivo);
       const esLibreEfectivo = diasLibresEfectivos.includes(diaHoy);
 
       const entry: ColaboradorHoy = {

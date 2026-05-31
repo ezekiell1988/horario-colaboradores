@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getTurnoEfectivo, getTurnoForWeek, getWeekStart, getTurnoPorDia, Modalidad } from "@/lib/roll-engine";
+import { getTurnoEfectivo, getTurnoForWeek, getWeekStart, getTurnoPorDia, nowCR, Modalidad } from "@/lib/roll-engine";
 
 export async function GET() {
   const session = await auth();
@@ -26,7 +26,7 @@ export async function GET() {
   }
 
   const { colaborador } = user;
-  const now = new Date();
+  const now = nowCR(); // fecha actual en zona horaria Costa Rica (GMT-6)
 
   const semanaActual = getWeekStart(now);
   const semanaProxima = new Date(semanaActual);

@@ -3,6 +3,49 @@
 > **Última actualización:** 2026-05-30
 > **Scope:** Roll Manager — Next.js 15 + Azure SQL + VM Azure + Cloudflare
 
+## Carga inicial de BD
+
+### Archivos fuente (`ia/assets/carga_inicial/`)
+
+| Archivo | Descripción |
+|---------|-------------|
+| `Sin título.pdf` | PDF original del cliente — "Detalle de la programación", 102 páginas |
+| `extract_pdf.py` | Extrae filas de cada página del PDF |
+| `parse_pdf.py` | Normaliza campos (turno, ausentismo, fechas) |
+| `analyze_grupos.py` | Clasifica empleados en FULL/MT/FIJO y genera `grupos_seed.json` |
+| `programacion.json` | 759 registros → tabla `ProgramacionPDF` |
+| `empleados.json` | 38 empleados únicos con estadísticas |
+| `grupos_seed.json` | 3 grupos FULL + clasificación de 38 empleados |
+
+### Estadísticas del PDF
+
+- **Periodo:** 12/05/2026 → 31/05/2026 (20 fechas · 102 páginas)
+- **Registros:** 759 · **Empleados:** 38 · **Grupos FULL:** 3
+- **Turnos en PDF:** T1=246 · T2=243 · T3=124 · T_ADMIN=35 · sin turno=111
+- **Ausentismo:** Normal=650 · Libre=109
+
+### Clasificación de colaboradores
+
+| Modalidad | Cantidad | Descripción |
+|-----------|----------|-------------|
+| FULL | 22 | Rotan en 3 grupos: Grupo T1 (7), Grupo T2 (8), Grupo T3 (7) |
+| MT | 11 | Medio tiempo, rotan T1↔T2, sin T3 |
+| FIJO | 5 | Turno fijo; T_ADMIN se trata como T1 en roll-engine |
+
+**Empleados FIJO:**
+- `020001` BADILLA CASCANTE ESTEBAN — T2
+- `020019` UREÑA MAYORGA MARGOTH — T1
+- `019997` VARGAS LEON FRANCISCO — T1
+- `020162` CHAVARRIA REYES ALEJANDRO — T_ADMIN → T1
+- `020027` VEGA CORDERO VICTOR HUGO — T_ADMIN → T1
+
+### Migraciones aplicadas en producción
+
+| Nombre | Descripción |
+|--------|-------------|
+| `20260531011511_init` | Schema completo inicial (todos los modelos, incl. `ProgramacionPDF`) |
+| `20260531011604_expand_turno_fijo` | `Colaborador.turnoFijo NVarChar(2) → NVarChar(10)` para soportar "T_ADMIN" |
+
 ## Infraestructura de producción
 
 ### VM Azure `demo-itqs`

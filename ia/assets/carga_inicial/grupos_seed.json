@@ -1,0 +1,557 @@
+{
+  "semanas": [
+    "2026-05-11",
+    "2026-05-18",
+    "2026-05-25"
+  ],
+  "primeraSemanaMondayISO": "2026-05-11",
+  "grupos": [
+    {
+      "nombre": "Grupo T1",
+      "turnoInicioIndex": 0,
+      "fechaInicioRotacion": "2026-05-11",
+      "miembros": [
+        {
+          "codigo": "018265",
+          "nombre": "ALEMAN CORTEZ EDUWIN ANTONIO"
+        },
+        {
+          "codigo": "020007",
+          "nombre": "CALVO ARCE SANTI RANDALL"
+        },
+        {
+          "codigo": "020144",
+          "nombre": "GOMEZ CUBILLO ELI DANIEL"
+        },
+        {
+          "codigo": "020006",
+          "nombre": "GUTIERREZ MENDOZA NATALIA VANESSA"
+        },
+        {
+          "codigo": "020025",
+          "nombre": "JIRON CASTRO LUIS ANTONIO"
+        },
+        {
+          "codigo": "020003",
+          "nombre": "OCAMPO TENORIO LUIS ALFONSO"
+        },
+        {
+          "codigo": "020029",
+          "nombre": "UMAÑA BORBON BRYAN"
+        }
+      ]
+    },
+    {
+      "nombre": "Grupo T2",
+      "turnoInicioIndex": 1,
+      "fechaInicioRotacion": "2026-05-11",
+      "miembros": [
+        {
+          "codigo": "020011",
+          "nombre": "BONILLA CAMPOS BRAYAN EDUARDO"
+        },
+        {
+          "codigo": "020015",
+          "nombre": "CASTILLO BERMUDEZ MINOR EDUARDO"
+        },
+        {
+          "codigo": "020199",
+          "nombre": "CASTRO BALTODANO RAFAEL ANTONIO"
+        },
+        {
+          "codigo": "020181",
+          "nombre": "DURAN VARGAS JACQUELINE MARLITT"
+        },
+        {
+          "codigo": "020105",
+          "nombre": "MENA SUAZO RIGOBERTO"
+        },
+        {
+          "codigo": "020107",
+          "nombre": "PEÑA RAMIREZ SAMANTHA REBECCA"
+        },
+        {
+          "codigo": "020182",
+          "nombre": "RIVERA TORRES MARIA JACQUELINE"
+        },
+        {
+          "codigo": "020012",
+          "nombre": "WEPOL FERNANDEZ BENITO DE LOS ANGELES"
+        }
+      ]
+    },
+    {
+      "nombre": "Grupo T3",
+      "turnoInicioIndex": 2,
+      "fechaInicioRotacion": "2026-05-11",
+      "miembros": [
+        {
+          "codigo": "020016",
+          "nombre": "CASTRO BALTODANO FRANCIS"
+        },
+        {
+          "codigo": "020028",
+          "nombre": "CHACON SOSA MARICRUZ"
+        },
+        {
+          "codigo": "020112",
+          "nombre": "HURTADO PEREZ MARIA JOSE"
+        },
+        {
+          "codigo": "020088",
+          "nombre": "RETANA ROJAS JOHANNA"
+        },
+        {
+          "codigo": "020161",
+          "nombre": "SEGURA GUEVARA GEORGE DAVID"
+        },
+        {
+          "codigo": "020191",
+          "nombre": "VICTOR JIRON JOSE ALBERTO"
+        },
+        {
+          "codigo": "020189",
+          "nombre": "ZUÑIGA UGARTE JUAN GERARDO"
+        }
+      ]
+    }
+  ],
+  "empleados": [
+    {
+      "codigo": "018265",
+      "nombre": "ALEMAN CORTEZ EDUWIN ANTONIO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 6,
+        "T3": 6,
+        "T2": 6
+      }
+    },
+    {
+      "codigo": "020000",
+      "nombre": "ARAYA MORA JASON MARTIN",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T2": 8,
+        "T1": 9
+      }
+    },
+    {
+      "codigo": "020001",
+      "nombre": "BADILLA CASCANTE ESTEBAN",
+      "modalidad": "FIJO",
+      "turnoFijo": "T2",
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 17
+      }
+    },
+    {
+      "codigo": "020058",
+      "nombre": "BETANCOURT NAVARRETE JUAN ALBERTO",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 9,
+        "T2": 8
+      }
+    },
+    {
+      "codigo": "020011",
+      "nombre": "BONILLA CAMPOS BRAYAN EDUARDO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 5,
+        "T1": 6,
+        "T3": 6
+      }
+    },
+    {
+      "codigo": "020193",
+      "nombre": "BRENES FERNANDEZ CAROLINA",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 9,
+        "T2": 8
+      }
+    },
+    {
+      "codigo": "020007",
+      "nombre": "CALVO ARCE SANTI RANDALL",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 5,
+        "T3": 6,
+        "T2": 6
+      }
+    },
+    {
+      "codigo": "020015",
+      "nombre": "CASTILLO BERMUDEZ MINOR EDUARDO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 6,
+        "T1": 6,
+        "T3": 6
+      }
+    },
+    {
+      "codigo": "020016",
+      "nombre": "CASTRO BALTODANO FRANCIS",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T3",
+      "turnos": {
+        "T1": 5,
+        "T3": 6,
+        "T2": 6
+      }
+    },
+    {
+      "codigo": "020199",
+      "nombre": "CASTRO BALTODANO RAFAEL ANTONIO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T3": 5,
+        "T2": 6,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "020028",
+      "nombre": "CHACON SOSA MARICRUZ",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T3",
+      "turnos": {
+        "T1": 5,
+        "T3": 6,
+        "T2": 6
+      }
+    },
+    {
+      "codigo": "020162",
+      "nombre": "CHAVARRIA REYES ALEJANDRO",
+      "modalidad": "FIJO",
+      "turnoFijo": "T_ADMIN",
+      "turnoInicioSemana1": "T_ADMIN",
+      "turnos": {
+        "T_ADMIN": 17
+      }
+    },
+    {
+      "codigo": "020181",
+      "nombre": "DURAN VARGAS JACQUELINE MARLITT",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 5,
+        "T1": 6,
+        "T3": 6
+      }
+    },
+    {
+      "codigo": "020144",
+      "nombre": "GOMEZ CUBILLO ELI DANIEL",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 5,
+        "T3": 6,
+        "T2": 6
+      }
+    },
+    {
+      "codigo": "020163",
+      "nombre": "GOMEZ VETTE ABRAHAM JOSE",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 12,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "020006",
+      "nombre": "GUTIERREZ MENDOZA NATALIA VANESSA",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 5,
+        "T3": 6,
+        "T2": 6
+      }
+    },
+    {
+      "codigo": "020112",
+      "nombre": "HURTADO PEREZ MARIA JOSE",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T3",
+      "turnos": {
+        "T1": 5,
+        "T3": 6,
+        "T2": 6
+      }
+    },
+    {
+      "codigo": "020108",
+      "nombre": "JIMENEZ UGALDE WENDY RAQUEL",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 9,
+        "T2": 8
+      }
+    },
+    {
+      "codigo": "020025",
+      "nombre": "JIRON CASTRO LUIS ANTONIO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 6,
+        "T3": 6,
+        "T2": 5
+      }
+    },
+    {
+      "codigo": "020143",
+      "nombre": "MARTINEZ BARRANTES DYLAN ANDREY",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 12,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "020024",
+      "nombre": "MATTEY VASQUEZ DOUGLAS",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 11,
+        "T2": 6
+      }
+    },
+    {
+      "codigo": "020105",
+      "nombre": "MENA SUAZO RIGOBERTO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T3": 5,
+        "T2": 6,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "020118",
+      "nombre": "MENDIETA GONZALEZ ANA LUISA",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T2": 8,
+        "T1": 9
+      }
+    },
+    {
+      "codigo": "020117",
+      "nombre": "MORALES MORALES MARIA DEL CARMEN",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 9,
+        "T2": 8
+      }
+    },
+    {
+      "codigo": "020003",
+      "nombre": "OCAMPO TENORIO LUIS ALFONSO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 6,
+        "T3": 6,
+        "T2": 5
+      }
+    },
+    {
+      "codigo": "020107",
+      "nombre": "PEÑA RAMIREZ SAMANTHA REBECCA",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 5,
+        "T1": 6,
+        "T3": 6
+      }
+    },
+    {
+      "codigo": "020088",
+      "nombre": "RETANA ROJAS JOHANNA",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T3",
+      "turnos": {
+        "T3": 4,
+        "T2": 6,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "020182",
+      "nombre": "RIVERA TORRES MARIA JACQUELINE",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T3": 5,
+        "T2": 6,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "019550",
+      "nombre": "SALGADO COTO CARLOS ALBERTO",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 10,
+        "T2": 7
+      }
+    },
+    {
+      "codigo": "020161",
+      "nombre": "SEGURA GUEVARA GEORGE DAVID",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T3",
+      "turnos": {
+        "T3": 5,
+        "T2": 6,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "020172",
+      "nombre": "SUAREZ LYONS MARIO ALBERTO",
+      "modalidad": "MT",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 11,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "020029",
+      "nombre": "UMAÑA BORBON BRYAN",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 6,
+        "T3": 6,
+        "T2": 5
+      }
+    },
+    {
+      "codigo": "020019",
+      "nombre": "UREÑA MAYORGA MARGOTH",
+      "modalidad": "FIJO",
+      "turnoFijo": "T1",
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 11,
+        "T2": 4
+      }
+    },
+    {
+      "codigo": "019997",
+      "nombre": "VARGAS LEON FRANCISCO",
+      "modalidad": "FIJO",
+      "turnoFijo": "T1",
+      "turnoInicioSemana1": "T1",
+      "turnos": {
+        "T1": 17
+      }
+    },
+    {
+      "codigo": "020027",
+      "nombre": "VEGA CORDERO VICTOR HUGO",
+      "modalidad": "FIJO",
+      "turnoFijo": "T_ADMIN",
+      "turnoInicioSemana1": "T_ADMIN",
+      "turnos": {
+        "T_ADMIN": 18
+      }
+    },
+    {
+      "codigo": "020191",
+      "nombre": "VICTOR JIRON JOSE ALBERTO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T3",
+      "turnos": {
+        "T3": 5,
+        "T2": 6,
+        "T1": 6
+      }
+    },
+    {
+      "codigo": "020012",
+      "nombre": "WEPOL FERNANDEZ BENITO DE LOS ANGELES",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T2",
+      "turnos": {
+        "T2": 6,
+        "T1": 6,
+        "T3": 5
+      }
+    },
+    {
+      "codigo": "020189",
+      "nombre": "ZUÑIGA UGARTE JUAN GERARDO",
+      "modalidad": "FULL",
+      "turnoFijo": null,
+      "turnoInicioSemana1": "T3",
+      "turnos": {
+        "T3": 6,
+        "T2": 6,
+        "T1": 5
+      }
+    }
+  ]
+}

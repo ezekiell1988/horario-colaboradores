@@ -1,9 +1,57 @@
 # 05 — Progreso del Proyecto
 
-> **Última actualización:** 2026-05-30 (sesión tarde)
-> **Estado:** Proyecto en producción — Fase 8 en curso (días libres configurables) · Fase 10 completada (guía de usuario en-app)
+> **Última actualización:** 2026-05-30 (sesión noche)
+> **Estado:** Proyecto en producción — Carga inicial BD completada · Fix T_ADMIN deployado · Fase 8 en curso (días libres configurables) · Fase 9 completada (timezone Costa Rica GMT-6) · Fase 10 completada (guía de usuario en-app)
 
 ## ✅ Completado
+
+### PC-SEED: Carga inicial de BD desde PDF de programación ✅
+- **Fecha:** 2026-05-30 (sesión noche)
+- **Fuente:** PDF "Detalle de la programación" — 102 páginas, periodo 12/05/2026 → 31/05/2026
+- **Scripts de extracción** (en `ia/assets/carga_inicial/`):
+  - `extract_pdf.py`: extrae filas del PDF → `programacion.json`
+  - `parse_pdf.py`: normaliza campos, detecta turnos y ausentismo
+  - `analyze_grupos.py`: clasifica empleados en FULL/MT/FIJO y define grupos → `grupos_seed.json`
+- **JSONs generados** (`ia/assets/carga_inicial/`):
+  - `programacion.json` — 759 registros, campos: `puestoNum`, `puestoNombre`, `fecha` (dd/MM/yyyy), `codigoOficial`, `nombreOficial`, `horaEntrada`, `horaSalida`, `turno` (T1/T2/T3/T_ADMIN/null), `ausentismo` (Normal/Libre), `pagina`
+  - `empleados.json` — 38 empleados únicos con estadísticas de turnos y días libres
+  - `grupos_seed.json` — 3 grupos FULL + 38 empleados clasificados; semanas: `2026-05-11`, `2026-05-18`, `2026-05-25`
+- **Estadísticas del PDF:**
+  - 759 registros · 38 empleados únicos · 20 fechas (12/05 → 31/05/2026) · 102 páginas
+  - Turnos: T1=246 · T2=243 · T3=124 · T_ADMIN=35 · sin turno=111
+  - Ausentismo: Normal=650 · Libre=109
+- **Clasificación de colaboradores:**
+  - **22 FULL** — rotan en 3 grupos: Grupo T1 (7), Grupo T2 (8), Grupo T3 (7)
+  - **11 MT** — medio tiempo, rotan entre T1 y T2, asignados a Grupo T1/T2 según turno de inicio
+  - **5 FIJO** — turno fijo: BADILLA CASCANTE (T2), UREÑA MAYORGA (T1), VARGAS LEON (T1), CHAVARRIA REYES (T_ADMIN), VEGA CORDERO (T_ADMIN)
+- **Cambios en schema para soportar la carga:**
+  - `Colaborador.turnoFijo` expandido de `NVarChar(2)` → `NVarChar(10)` (migración `20260531011604_expand_turno_fijo`)
+  - Modelo `ProgramacionPDF` creado (migración `20260531011511_init`)
+- **Seed ejecutado** (`src/prisma/seed.ts`):
+  - Limpieza previa en orden FK: `excepcionRoll`, `asistencia`, `informe`, `programacionPDF`, `user`, `colaborador`, `grupo`
+  - Resultado: `3 grupos | 38 colaboradores | 759 ProgramacionPDF | 1 admin`
+  - Usuario admin: `admin@rollmanager.com / Admin1234!`
+- **Bug T_ADMIN corregido y deployado:**
+  - `roll-engine.ts › getTurnoEfectivo()`: `turnoFijo === "T_ADMIN"` retorna `"T1"` en vez de cast inválido
+  - Causa: `getDiasLibres("T_ADMIN")` devolvía `undefined` → `undefined.includes(diaHoy)` → TypeError 500
+  - Afectados: CHAVARRIA REYES ALEJANDRO (020162) y VEGA CORDERO VICTOR HUGO (020027)
+  - Deploy a VM completado · `/admin/hoy` verificado en producción ✓
+- **Fix exportar PDF informes:**
+  - `ReportEditor.tsx`: reemplazado `<a download>` por botón con `fetch()` que maneja errores correctamente
+  - Antes: informe vacío → API devolvía JSON 422 → browser descargaba `pdf.json`
+  - Ahora: error se muestra en el editor, sin descarga errónea ✓
+
+### PC-F9: Timezone Costa Rica (GMT-6) ✅
+- Origen: requisito de negocio — todos los cálculos de fecha deben reflejar la hora de Costa Rica
+- `lib/roll-engine.ts`: nueva función exportada `nowCR()` que desplaza `Date.now()` por -6h (offset fijo, sin DST)
+- `api/roll/hoy/route.ts`: sustituye `new Date()` por `nowCR()`
+- `api/oficial/turno/route.ts`: sustituye `new Date()` por `nowCR()`
+- `admin/asistencia/page.tsx`: `getTodayISO()` usa `Intl.DateTimeFormat("en-CA", { timeZone: "America/Costa_Rica" })`
+- `coordinador/asistencia/page.tsx`: ídem
+- `admin/roll/page.tsx`: `getThisMonday()` obtiene día CR con `Intl` antes de calcular el lunes
+- `admin/informes/page.tsx`: `getHoyCR()` helper con offset -6h
+- `components/ReportEditor.tsx`: timestamp “Guardado HH:MM” incluye `timeZone: "America/Costa_Rica"`
+- Sin errores TypeScript ✓ · Deploy en producción ✓
 
 ### PC-F10: Guía de usuario en-app ✅
 - Origen: cliente pidió guía como URL en la app, enlazada desde el landing

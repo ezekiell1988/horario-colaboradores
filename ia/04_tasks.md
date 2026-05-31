@@ -1,9 +1,29 @@
 # 04 — Tareas Accionables
 
-> **Última actualización:** 2026-05-30 (sesión tarde)
-> **Prioridad actual:** Aplicar migración BD cuando esté accesible → adaptar roll-engine y asistencia
+> **Última actualización:** 2026-05-30 (sesión noche)
+> **Prioridad actual:** Aplicar migración `diaLibre`/`diaLibreExtra` en BD → adaptar roll-engine y asistencia
 
 ---
+
+## TASK-SEED-01: Carga inicial de BD desde PDF
+**Estado:** ✅ Completado (2026-05-30)
+
+Title: Parsear PDF de programación y cargar datos en BD de producción
+
+Context:
+El cliente entregó el PDF "Detalle de la programación" (102 páginas). Se extrajeron 759 registros de programación y se clasificaron 38 colaboradores en modalidades FULL/MT/FIJO.
+
+Changes:
+- `ia/assets/carga_inicial/extract_pdf.py`: extracción de filas del PDF
+- `ia/assets/carga_inicial/parse_pdf.py`: normalización de campos
+- `ia/assets/carga_inicial/analyze_grupos.py`: clasificación de empleados → grupos
+- `ia/assets/carga_inicial/programacion.json`: 759 registros de programación
+- `ia/assets/carga_inicial/empleados.json`: 38 empleados únicos
+- `ia/assets/carga_inicial/grupos_seed.json`: 3 grupos + 38 empleados clasificados
+- `prisma/schema.prisma`: modelo `ProgramacionPDF` + `turnoFijo NVarChar(10)`
+- `prisma/seed.ts`: seed completo con limpieza + carga desde JSONs
+- `lib/roll-engine.ts`: `getTurnoEfectivo()` maneja `T_ADMIN → "T1"`
+- `components/ReportEditor.tsx`: exportar PDF usa `fetch()` en vez de `<a download>`
 
 ---
 

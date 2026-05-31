@@ -78,12 +78,11 @@ type ExcepcionRoll = {
   tipo: string;
 };
 
-/** Devuelve el lunes de la semana actual en formato YYYY-MM-DD (UTC) */
+/** Devuelve el lunes de la semana actual en formato YYYY-MM-DD (timezone Costa Rica GMT-6) */
 function getThisMonday(): string {
-  const today = new Date();
-  const d = new Date(
-    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
-  );
+  // Obtener la fecha de hoy en Costa Rica
+  const todayISO = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Costa_Rica" }).format(new Date());
+  const d = new Date(`${todayISO}T00:00:00Z`);
   const day = d.getUTCDay();
   const diff = day === 0 ? -6 : 1 - day;
   d.setUTCDate(d.getUTCDate() + diff);

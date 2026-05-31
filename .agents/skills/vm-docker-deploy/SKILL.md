@@ -256,13 +256,15 @@ ssh -i credentials/id_rsa.pem -o StrictHostKeyChecking=no azureuser@172.191.128.
   docker run -d \
     --name roll-manager-green \
     --restart unless-stopped \
-    -p 127.0.0.1:3000:3000 \
+    --network host \
     --env-file ~/projects/roll-manager/.env \
     roll-manager-green-image
 "
 ```
 
 > **Seguridad**: `-p 127.0.0.1:3000:3000` — bind solo a localhost. nginx es el único punto de entrada público.
+
+> **Crítico — red del contenedor**: Usar `--network host` en el `docker run`. SQL Server corre en el host de la VM en `localhost:1433`; dentro de un contenedor bridge `localhost` apunta al propio contenedor y la conexión falla. Con `--network host` el contenedor comparte la red del host y `localhost:1433` resuelve correctamente. El flag `-p` se ignora con `--network host`, pero nginx sigue proxy-pasando a `127.0.0.1:3000` sin problema.
 
 ### Paso 6: DNS en Cloudflare
 

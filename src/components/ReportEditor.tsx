@@ -25,6 +25,7 @@ export default function ReportEditor({
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const [downloading, setDownloading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Autoguardado: contenido y titulo con debounce 2 s
@@ -80,6 +81,30 @@ export default function ReportEditor({
     }
   }
 
+  async function handleExportarPDF() {
+    setDownloading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/informes/${informeId}/pdf`);
+      if (!res.ok) {
+        const j = (await res.json()) as { error?: string };
+        throw new Error(j.error ?? "Error al generar el PDF");
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const fechaStr = new Date().toISOString().slice(0, 10);
+      a.href = url;
+      a.download = `informe-${fechaStr}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al exportar PDF");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
   async function handleGuardarFormal() {
     await save({ textoFormal });
   }
@@ -127,21 +152,20 @@ export default function ReportEditor({
           {formalizing ? "Formalizando…" : "✦ Formalizar con IA"}
         </button>
 
-        <a
-          href={`/api/informes/${informeId}/pdf`}
-          target="_blank"
-          rel="noopener noreferrer"
-          download
-          className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg font-medium hover:bg-green-700 transition-colors inline-block"
+        <button
+          type="button"
+          onClick={handleExportarPDF}
+          disabled={downloading}
+          className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          ↓ Exportar PDF
-        </a>
+          {downloading ? "Generando…" : "↓ Exportar PDF"}
+        </button>
 
         <span className="text-xs text-gray-400 ml-auto">
           {saving
             ? "Guardando…"
             : lastSaved
-            ? `Guardado ${lastSaved.toLocaleTimeString("es-CR", { hour: "2-digit", minute: "2-digit" })}`
+            ? `Guardado ${lastSaved.toLocaleTimeString("es-CR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Costa_Rica" })}`
             : "Sin cambios guardados"}
         </span>
       </div>

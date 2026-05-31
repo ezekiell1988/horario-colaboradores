@@ -107,27 +107,22 @@ describe("getTurnoForWeek — validación contra programación real (PDF Eli Dan
 });
 
 describe("getDiasLibres", () => {
-  it("T3 → libre Viernes(5) y Sábado(6)", () => {
-    expect(getDiasLibres("T3")).toEqual([5, 6]);
-  });
-
-  it("T2 → libre solo Sábado(6)", () => {
-    expect(getDiasLibres("T2")).toEqual([6]);
-  });
-
-  it("T1 → sin días libres (transición a T3 el sábado 22:00)", () => {
+  it("T1, T2 y T3 retornan [] — días libres son individuales por persona", () => {
     expect(getDiasLibres("T1")).toEqual([]);
+    expect(getDiasLibres("T2")).toEqual([]);
+    expect(getDiasLibres("T3")).toEqual([]);
   });
 
-  it("T3 incluye viernes pero T2 no", () => {
-    expect(getDiasLibres("T3").includes(5)).toBe(true);
-    expect(getDiasLibres("T2").includes(5)).toBe(false);
-  });
-
-  it("sábado(6) es libre para T2 y T3, pero no para T1", () => {
-    expect(getDiasLibres("T2").includes(6)).toBe(true);
-    expect(getDiasLibres("T3").includes(6)).toBe(true);
+  it("ningún turno tiene sábado(6) como libre por defecto", () => {
     expect(getDiasLibres("T1").includes(6)).toBe(false);
+    expect(getDiasLibres("T2").includes(6)).toBe(false);
+    expect(getDiasLibres("T3").includes(6)).toBe(false);
+  });
+
+  it("ningún turno tiene viernes(5) como libre por defecto", () => {
+    expect(getDiasLibres("T1").includes(5)).toBe(false);
+    expect(getDiasLibres("T2").includes(5)).toBe(false);
+    expect(getDiasLibres("T3").includes(5)).toBe(false);
   });
 });
 

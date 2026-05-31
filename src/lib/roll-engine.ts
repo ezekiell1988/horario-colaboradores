@@ -20,6 +20,18 @@ export interface GrupoRotacion {
 
 const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
+/** Offset fijo de Costa Rica: UTC-6, sin horario de verano. */
+const CR_OFFSET_MS = -6 * 60 * 60 * 1000;
+
+/**
+ * Retorna la fecha/hora actual ajustada a la zona horaria de Costa Rica (GMT-6).
+ * Los métodos getUTC*() del objeto retornado reflejan la hora local de CR,
+ * lo que permite usar las funciones de cálculo UTC-based sin ambigüedad de día.
+ */
+export function nowCR(): Date {
+  return new Date(Date.now() + CR_OFFSET_MS);
+}
+
 /**
  * Devuelve el lunes (00:00:00 UTC) de la semana a la que pertenece `date`.
  */
@@ -67,7 +79,11 @@ export function getTurnoEfectivo(
   turnoFijo: string | null,
   turnoSemana: Turno,
 ): Turno {
-  if (modalidad === "FIJO" && turnoFijo) return turnoFijo as Turno;
+  if (modalidad === "FIJO" && turnoFijo) {
+    // T_ADMIN = horario administrativo, se trata como T1 para la rotación visual
+    if (turnoFijo === "T_ADMIN") return "T1";
+    return turnoFijo as Turno;
+  }
   if (modalidad === "MT" && turnoSemana === "T3") return "T2";
   return turnoSemana;
 }
@@ -119,18 +135,41 @@ export function getTurnoPorDia(
  * Devuelve los días de la semana (UTC getDay: 0=Dom … 5=Vie, 6=Sáb) en que
  * un colaborador con el turno dado tiene día libre.
  *
- * Patrón confirmado:
- *   T3 (Noche → T2 la próxima): libre Viernes(5) + Sábado(6)
- *   T2 (Tarde → T1 la próxima): libre Sábado(6)
- *   T1 (Mañana → T3 la próxima): 0 libres (el sábado empieza T3 a las 22:00)
- *   MT_ALTERNO: siempre libre el Miércoles(3)
+ * Los días libres son INDIVIDUALES (configurados en diaLibre/diaLibreExtra).
+ * El único patrón fijo es MT_ALTERNO: siempre libre el Miércoles(3).
+ * Para T1/T2/T3 retorna [] — los libres se configuran por persona, no por turno.
  */
 export function getDiasLibres(turno: Turno | "MT_ALTERNO"): number[] {
-  if (turno === "MT_ALTERNO") return [3]; // Miércoles
-  const diasPorTurno: Record<Turno, number[]> = {
-    T3: [5, 6], // Viernes + Sábado
-    T2: [6],    // Sábado
-    T1: [],     // sin días libres (transición a T3)
-  };
-  return diasPorTurno[turno];
+  if (turno === "MT_ALTERNO") return [3]; // Miércoles — patrón fijo MT_ALTERNO
+  return []; // Sin libres por defecto; configurar diaLibre/diaLibreExtra individualmente
+}
+
+const DIA_SEMANA_MAP: Record<string, number> = {
+  DOMINGO: 0,
+  LUNES: 1,
+  MARTES: 2,
+  MIERCOLES: 3,
+  JUEVES: 4,
+  VIERNES: 5,
+  SABADO: 6,
+};
+
+/**
+ * Devuelve los días de la semana libre de un colaborador basándose en sus
+ * campos diaLibre y diaLibreExtra almacenados en BD.
+ * Si no hay días configurados, retorna null para indicar que se debe usar
+ * el patrón por defecto del turno (getDiasLibres).
+ */
+export function getDiasLibresColaborador(
+  diaLibre: string | null,
+  diaLibreExtra: string | null,
+): number[] | null {
+  const dias: number[] = [];
+  if (diaLibre && DIA_SEMANA_MAP[diaLibre] !== undefined) {
+    dias.push(DIA_SEMANA_MAP[diaLibre]);
+  }
+  if (diaLibreExtra && DIA_SEMANA_MAP[diaLibreExtra] !== undefined) {
+    dias.push(DIA_SEMANA_MAP[diaLibreExtra]);
+  }
+  return dias.length > 0 ? dias : null;
 }

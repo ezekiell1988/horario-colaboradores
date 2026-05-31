@@ -51,8 +51,13 @@ function getFechaStr(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
+/** Fecha actual en timezone Costa Rica (GMT-6). Los métodos getUTC* reflejan hora local CR. */
+function getHoyCR(): Date {
+  return new Date(Date.now() - 6 * 60 * 60 * 1000);
+}
+
 export default function InformesPage() {
-  const hoy = new Date();
+  const hoy = getHoyCR();
   const [mes, setMes] = useState<string>(getMesStr(hoy));
   const [fecha, setFecha] = useState<string>(getFechaStr(hoy));
   const [lista, setLista] = useState<InformeListItem[]>([]);

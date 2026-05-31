@@ -23,7 +23,7 @@ model Colaborador {
   nombre               String
   puesto               String?         @db.NVarChar(50)
   modalidad            String          @default("FULL") @db.NVarChar(15) // "FULL" | "MT" | "FIJO" | "MT_ALTERNO"
-  turnoFijo            String?         @db.NVarChar(2)
+  turnoFijo            String?         @db.NVarChar(10)
   fechaInicioPersonal  DateTime?       // solo MT_ALTERNO: lunes de referencia del ciclo propio
   diaLibre             String?         @db.NVarChar(10) // "LUNES"|"MARTES"|"MIERCOLES"|"JUEVES"|"VIERNES"|"SABADO"|"DOMINGO"
   diaLibreExtra        String?         @db.NVarChar(10) // segundo día libre opcional (ej. FULL en T3)
@@ -84,4 +84,23 @@ model ExcepcionRoll {
 
   @@unique([colaboradorId, semana])
   @@map("ExcepcionRoll")
+}
+
+/// Datos crudos importados del PDF de programación (Detalle de la programación)
+model ProgramacionPDF {
+  id             String   @id @default(cuid())
+  puestoNum      String   @db.NVarChar(10)
+  puestoNombre   String   @db.NVarChar(200)
+  fecha          DateTime
+  codigoOficial  String   @db.NVarChar(20)
+  nombreOficial  String   @db.NVarChar(150)
+  horaEntrada    String?  @db.NVarChar(5)
+  horaSalida     String?  @db.NVarChar(5)
+  turno          String?  @db.NVarChar(10)  // T1 | T2 | T3 | T_ADMIN
+  ausentismo     String   @db.NVarChar(20)  // Normal | Libre
+  pagina         Int
+
+  @@index([codigoOficial])
+  @@index([fecha])
+  @@map("ProgramacionPDF")
 }

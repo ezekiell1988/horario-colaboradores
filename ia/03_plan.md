@@ -1,9 +1,9 @@
 # 03 — Plan de Desarrollo
 
-> **Última actualización:** 2026-05-30 (sesión tarde)
+> **Última actualización:** 2026-05-30 (sesión noche)
 
 ## Visión general
-Fases 1–7 completadas en su totalidad. Proyecto en producción en https://roll-manager.ezekl.com con login funcional.
+Fases 1–9 completadas en su totalidad. Proyecto en producción en https://roll-manager.ezekl.com con login funcional.
 
 ## Fases del proyecto
 
@@ -78,6 +78,21 @@ Fases 1–7 completadas en su totalidad. Proyecto en producción en https://roll
 | Fix `DATABASE_URL`: `172.191.128.24` → `localhost` en VM | ✅ |
 | Secret `DATABASE_URL` actualizado en GitHub Actions | ✅ |
 | Login `admin@rollmanager.com` verificado en producción | ✅ |
+
+### Fase 9 — Timezone Costa Rica (GMT-6) ✅ Completada
+> **Fecha:** 2026-05-30
+
+| Componente | Estado |
+|--------------|--------|
+| `nowCR()` en `roll-engine.ts` — helper GMT-6 sin DST | ✅ |
+| `api/roll/hoy/route.ts`: `new Date()` → `nowCR()` | ✅ |
+| `api/oficial/turno/route.ts`: `new Date()` → `nowCR()` | ✅ |
+| `admin/asistencia/page.tsx`: `getTodayISO()` usa `Intl` CR | ✅ |
+| `coordinador/asistencia/page.tsx`: ídem | ✅ |
+| `admin/roll/page.tsx`: `getThisMonday()` usa `Intl` CR | ✅ |
+| `admin/informes/page.tsx`: `getHoyCR()` helper GMT-6 | ✅ |
+| `ReportEditor.tsx`: timestamp "Guardado" con tz CR | ✅ |
+| Deploy en VM Azure | ✅ |
 
 ### Fase 8 — Días libres configurables por colaborador 🔄 En curso
 > **Origen:** mensaje WhatsApp Eli Daniel 2026-05-30 — "debes dejarme la opción de escoger el día libre"

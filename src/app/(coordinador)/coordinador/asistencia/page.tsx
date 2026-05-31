@@ -40,8 +40,8 @@ const TOUR_STEPS: DriveStep[] = [
 ];
 
 function getTodayISO(): string {
-  const d = new Date();
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+  // Usar timezone de Costa Rica (GMT-6) en lugar de UTC del servidor
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Costa_Rica" }).format(new Date());
 }
 
 function shiftDay(fecha: string, days: number): string {

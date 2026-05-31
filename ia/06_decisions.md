@@ -39,3 +39,12 @@
 **Razón:** Permite que cada grupo tenga su propio punto de inicio en el ciclo sin duplicar lógica. El cálculo es determinista, sin estado acumulado que pueda desincronizarse.
 **Alternativas descartadas:**
 - Guardar el turno actual en BD y actualizarlo cada lunes con un cron: introduce estado mutable que puede quedar desincronizado si el cron falla.
+
+---
+
+## ADR-06: Timezone Costa Rica (GMT-6) sin librerías externas
+**Decisión:** Todos los cálculos de "hoy" usan `nowCR()` en el servidor (`lib/roll-engine.ts`) y `Intl.DateTimeFormat` con `timeZone: "America/Costa_Rica"` en el cliente.
+**Razón:** Costa Rica no aplica horario de verano (offset fijo -6h UTC). No se necesita `date-fns-tz` ni `luxon`; el runtime V8/Node ya incluye la base de datos IANA. Añadir una dependencia para un offset estático sería sobreingeniería.
+**Alternativas descartadas:**
+- Variable de entorno `TZ=America/Costa_Rica` en Docker: efectiva en servidor pero no en código cliente que corre en el browser del usuario.
+- `date-fns-tz` / `luxon`: dependencias pesadas innecesarias dado que el offset es invariable.
